@@ -3,19 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System;
 
 [System.Serializable]
-public class Save
+public class Save_class
 {
     public int num_scene;
     public bool[] array_flags;
     public string name_save;
 
-    Save(int num_scene, bool[] array_flags, string name_save)
+    public Save_class(int num_scene, bool[] array_flags, string name_save)
     {
-        this.num_scene = num_scene;
-        this.array_flags = array_flags;
-        this.name_save = name_save; 
+        this.num_scene = num_scene + 0;
+        this.array_flags = (bool[])array_flags.Clone();
+        this.name_save = name_save + ""; 
+    }
+
+    public Save_class(int num_scene, bool[] array_flags)
+    {
+        this.num_scene = num_scene + 0;
+        this.array_flags = (bool[])array_flags.Clone();
+        this.name_save = DateTime.Today.ToString(); //надо дописать выставление даты, как автомотическое имя
     }
 
     public void save()
