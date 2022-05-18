@@ -23,12 +23,12 @@ public class Save_class
     {
         this.num_scene = num_scene + 0;
         this.array_flags = (bool[])array_flags.Clone();
-        this.name_save = DateTime.Today.ToString(); //надо дописать выставление даты, как автомотическое имя
+        this.name_save = DateTime.Today.ToString();
     }
 
     public void save()
     {
-        string path = Application.persistentDataPath + "/" + this.name_save + ".save";
+        string path = Application.persistentDataPath + "\\" + this.name_save + ".save";
 
         BinaryFormatter bf = new BinaryFormatter();
         FileStream fs = new FileStream(path, FileMode.Create);
