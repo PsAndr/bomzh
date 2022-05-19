@@ -160,7 +160,7 @@ public class ConvertDialogueFileToSceneClass
                     break;
 
                 case 2:
-                    // дописать
+                    // РґРѕРїРёСЃР°С‚СЊ
                     break;
             }
         }
