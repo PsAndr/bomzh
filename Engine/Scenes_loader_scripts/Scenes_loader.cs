@@ -20,11 +20,13 @@ public class Scenes_loader
 {
     public string[] list_scenes_paths;
     public string[] list_scenes_names;
-    public Dictionary<int, Pair<Scene_class, string>> Scenes_dict;
+    public Dictionary<int, Scene_class> Scenes_dict;
+    public Dictionary<int, string> Scenes_names_dict;
 
     public Scenes_loader()
     {
-        this.Scenes_dict = new Dictionary<int, Pair<Scene_class, string>>();
+        this.Scenes_dict = new Dictionary<int, Scene_class>();
+        this.Scenes_names_dict = new Dictionary<int, string>();
         if (Application.isEditor) 
         { 
             Scenes_finder scenes_Finder = new Scenes_finder();
@@ -65,13 +67,19 @@ public class Scenes_loader
                     File.WriteAllText(path_name_scene, name_scene);
                 }
 
-                Scene_class new_scene = new Scene_class(num_scene, name_scene);
+                ConvertDialogueFileToSceneClass convertDialogueFileToScene = new ConvertDialogueFileToSceneClass(list_scenes_paths[i] + @"\dialogue.txt");
+                
+                Scene_class new_scene = new Scene_class(num_scene, name_scene, convertDialogueFileToScene.parts.ToArray());
 
                 if (!this.Scenes_dict.ContainsKey(num_scene))
                 {
-                    this.Scenes_dict.Add(num_scene, new Pair<Scene_class, string>(new_scene, name_scene));
+                    this.Scenes_dict.Add(num_scene, new_scene);
                 }
 
+                if (!this.Scenes_names_dict.ContainsKey(num_scene))
+                {
+                    this.Scenes_names_dict.Add(num_scene, name_scene);
+                }
             }
 
             mass_nums_scenes = new int[Scenes_dict.Count];
@@ -80,11 +88,19 @@ public class Scenes_loader
 
             int index = 0;
 
-            foreach (KeyValuePair<int, Pair<Scene_class, string>> kvp in this.Scenes_dict)
+            foreach (KeyValuePair<int, Scene_class> kvp in this.Scenes_dict)
             {
                 mass_nums_scenes[index] = kvp.Key;
-                mass_names_scenes[index] = kvp.Value.second;
-                mass_scenes[index] = kvp.Value.first;
+                mass_scenes[index] = kvp.Value;
+
+                index++;
+            }
+
+            index = 0;
+
+            foreach (KeyValuePair<int, string> kvp in this.Scenes_names_dict)
+            {
+                mass_names_scenes[index] = kvp.Value;
 
                 index++;
             }
@@ -131,7 +147,12 @@ public class Scenes_loader
             
             for (int i = 0; i < scenes.Length; i++)
             {
-                Scenes_dict.Add(nums_scenes[i], new Pair<Scene_class, string>(scenes[i], names_scenes[i]));
+                Scenes_dict.Add(nums_scenes[i], scenes[i]);
+            }
+
+            for (int i = 0; i < scenes.Length; i++)
+            {
+                Scenes_names_dict.Add(nums_scenes[i], names_scenes[i]);
             }
         }
     }
