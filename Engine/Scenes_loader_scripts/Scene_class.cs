@@ -63,7 +63,7 @@ public class Scene_class
     }
 
     [System.Serializable]
-    public class DialogueText // текст диалога и дополнительные параметры
+    public class DialogueText // С‚РµРєСЃС‚ РґРёР°Р»РѕРіР° Рё РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
     {
         public NeedFlag[] needFlags;
 
@@ -93,7 +93,7 @@ public class Scene_class
     }
 
     [System.Serializable]
-    public class ChoiceText // выборы и необходимы значения + команды
+    public class ChoiceText // РІС‹Р±РѕСЂС‹ Рё РЅРµРѕР±С…РѕРґРёРјС‹ Р·РЅР°С‡РµРЅРёСЏ + РєРѕРјР°РЅРґС‹
     {
         public NeedFlag[][] needFlags;
 
@@ -113,7 +113,7 @@ public class Scene_class
     }
 
     [System.Serializable]
-    public class NeedFlag // необходимый флаг
+    public class NeedFlag // РЅРµРѕР±С…РѕРґРёРјС‹Р№ С„Р»Р°Рі
     {
         public string name;
         public char compare_sign;
@@ -128,7 +128,7 @@ public class Scene_class
     }
 
     [System.Serializable]
-    public class ChangeFlag // изменение флага
+    public class ChangeFlag // РёР·РјРµРЅРµРЅРёРµ С„Р»Р°РіР°
     {
         public string name;
         public char change_sign;
