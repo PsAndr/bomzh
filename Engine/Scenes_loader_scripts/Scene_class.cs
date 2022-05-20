@@ -93,7 +93,7 @@ public class Scene_class
     }
 
     [System.Serializable]
-    public class ChoiceText // выборы и необходимы значения + изменение значений при выборе и/или сцены
+    public class ChoiceText // выборы и необходимы значения + команды
     {
         public NeedFlag[][] needFlags;
 
@@ -101,16 +101,14 @@ public class Scene_class
 
         public ChangeFlag[][] changeFlags;
 
-        public int[] scene_change_numbers;
-        public string[] scene_change_names;
+        public Command[][] commands;
 
-        public ChoiceText(NeedFlag[][] needFlags, string[] choices, ChangeFlag[][] changeFlags, int[] scene_change_numbers, string[] scene_change_names)
+        public ChoiceText(NeedFlag[][] needFlags, string[] choices, ChangeFlag[][] changeFlags, Command[][] commands)
         {
             this.needFlags = needFlags;
             this.choices = choices;
             this.changeFlags = changeFlags;
-            this.scene_change_numbers = scene_change_numbers;
-            this.scene_change_names = scene_change_names;
+            this.commands = commands;
         }
     }
 

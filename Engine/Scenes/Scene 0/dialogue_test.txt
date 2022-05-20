@@ -1,4 +1,4 @@
-{[];Вася
+{;Вася
 Привет, я Вася! И я хочу поговорить об огурцах.
 }
 [
@@ -9,8 +9,8 @@
 {[health>5];
 Я сильный!
 }
-background_name=ад
-sprite_number=2;location=2,3,1;size+5,0,0
+changeBackground_name=ад
+changeSprite_number=2:location=2,3,1:size+-5,0,0
 {;Петя
 Нет)
 }
