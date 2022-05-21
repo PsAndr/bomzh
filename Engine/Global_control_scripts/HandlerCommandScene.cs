@@ -117,7 +117,7 @@ public class HandlerCommandScene
 
     private void HandleChoice(Global_control global_Control, Scene_class.ChoiceText choiceText)
     {
-        global_Control.NewCommandScene();
+        
     }
 
     private bool CompareFlag(Global_control global_Control, Scene_class.NeedFlag flag)

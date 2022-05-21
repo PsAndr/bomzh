@@ -24,7 +24,7 @@ public class ConvertDialogueFileToSceneClass
         List <string> choices = new List <string>();
         List <Scene_class.ChangeFlag[]> changeFlagsChoice = new List <Scene_class.ChangeFlag[]>();
         List <Scene_class.Command[]> commandsChoice = new List <Scene_class.Command[]>();
-        int index_chioce = 0;
+        int index_choice = 0;
 
         foreach (string line in file_lines)
         {
@@ -176,7 +176,7 @@ public class ConvertDialogueFileToSceneClass
                         changeFlagsChoice = new List<Scene_class.ChangeFlag[]>();
                         choices = new List<string>();
                         commandsChoice = new List<Scene_class.Command[]>();
-                        index_chioce = 0;
+                        index_choice = 0;
                     }
                     else
                     {
@@ -353,7 +353,7 @@ public class ConvertDialogueFileToSceneClass
 
                         commandsChoice.Add(commands_choice);
 
-                        index_chioce++;
+                        index_choice++;
                     }
                     break;
             }

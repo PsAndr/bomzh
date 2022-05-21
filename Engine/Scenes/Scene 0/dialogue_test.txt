@@ -1,17 +1,17 @@
-{;Г‚Г Г±Гї
-ГЏГ°ГЁГўГҐГІ, Гї Г‚Г Г±Гї! Г€ Гї ГµГ®Г·Гі ГЇГ®ГЈГ®ГўГ®Г°ГЁГІГј Г®ГЎ Г®ГЈГіГ°Г¶Г Гµ.
+{;Вася
+Привет, я Вася! И я хочу поговорить об огурцах.
 }
 [
-[mind>1000];Гџ ГЈГҐГ©;<health+1><mind-1><school_scale_respect=1>;changeScene_name=ГЈГҐГ© ГЇГ Г°Г Г¤
-[mind=0][health=0][school_scale_respect>5];Гџ Г­Г ГІГіГ°Г Г«;<mind+1><school_scale_respect-1>;changeScene_number=15
-;ГЋГЇГ !;;
+[mind>1000];Я гей;<health+1><mind-1><school_scale_respect=1>;changeScene_name=гей парад
+[mind=0][health=0][school_scale_respect>5];Я натурал;<mind+1><school_scale_respect-1>;changeScene_number=15
+;Опа!;;
 ]
 {[health>5];
-Гџ Г±ГЁГ«ГјГ­Г»Г©!
+Я сильный!
 }
-changeBackground_name=Г Г¤
+changeBackground_name=ад
 changeSprite_number=2:location=2,3,1:size+-5,0,0
-{;ГЏГҐГІГї
-ГЌГҐГІ)
+{;Петя
+Нет)
 }
-changeScene_name=ГІГіГ Г«ГҐГІ 
+changeScene_name=туалет

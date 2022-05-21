@@ -8,7 +8,7 @@
 ;Опа!;;
 ]
 changeFlag_name=health:newValue=12
-changeFlag_name=health:newValue+-6
+changeFlag_name=health:newValue+-7
 changeFlag_name=mind:newValue=3
 {[health>5][mind=3];
 Я сильный!

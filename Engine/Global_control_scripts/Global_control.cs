@@ -5,13 +5,14 @@ using TMPro;
 using System.IO;
 using System;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class Global_control : MonoBehaviour
 {
     [SerializeField] public TextMeshProUGUI text_dialogue;
     [SerializeField] public TextMeshProUGUI text_character;
 
-    [SerializeField] public Sprite background;
+    [SerializeField] public Image background;
 
     private Scenes_loader scenes_Loader;
 
