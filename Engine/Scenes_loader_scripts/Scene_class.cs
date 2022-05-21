@@ -152,9 +152,9 @@ public class Scene_class
 
         public Dictionary<string, double[]> dict_values;
 
-        public char[] signs;
+        public Dictionary<string, char> signs;
 
-        public Command(string name_command, string name_obj, int number_obj, Dictionary<string, double[]> dict_values, char[] signs)
+        public Command(string name_command, string name_obj, int number_obj, Dictionary<string, double[]> dict_values, Dictionary<string, char> signs)
         {
             this.name_command = name_command;
             this.name_obj = name_obj;

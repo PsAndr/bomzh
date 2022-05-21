@@ -21,12 +21,12 @@ public class Scenes_loader
     public string[] list_scenes_paths;
     public string[] list_scenes_names;
     public Dictionary<int, Scene_class> Scenes_dict;
-    public Dictionary<int, string> Scenes_names_dict;
+    public Dictionary<string, int> Scenes_names_dict;
 
     public Scenes_loader()
     {
         this.Scenes_dict = new Dictionary<int, Scene_class>();
-        this.Scenes_names_dict = new Dictionary<int, string>();
+        this.Scenes_names_dict = new Dictionary<string, int>();
         if (Application.isEditor) 
         { 
             Scenes_finder scenes_Finder = new Scenes_finder();
@@ -76,9 +76,9 @@ public class Scenes_loader
                     this.Scenes_dict.Add(num_scene, new_scene);
                 }
 
-                if (!this.Scenes_names_dict.ContainsKey(num_scene))
+                if (!this.Scenes_names_dict.ContainsKey(name_scene))
                 {
-                    this.Scenes_names_dict.Add(num_scene, name_scene);
+                    this.Scenes_names_dict.Add(name_scene, num_scene);
                 }
             }
 
@@ -92,15 +92,7 @@ public class Scenes_loader
             {
                 mass_nums_scenes[index] = kvp.Key;
                 mass_scenes[index] = kvp.Value;
-
-                index++;
-            }
-
-            index = 0;
-
-            foreach (KeyValuePair<int, string> kvp in this.Scenes_names_dict)
-            {
-                mass_names_scenes[index] = kvp.Value;
+                mass_names_scenes[index] = kvp.Value.name;
 
                 index++;
             }
@@ -152,7 +144,7 @@ public class Scenes_loader
 
             for (int i = 0; i < scenes.Length; i++)
             {
-                Scenes_names_dict.Add(nums_scenes[i], names_scenes[i]);
+                Scenes_names_dict.Add(names_scenes[i], nums_scenes[i]);
             }
         }
     }

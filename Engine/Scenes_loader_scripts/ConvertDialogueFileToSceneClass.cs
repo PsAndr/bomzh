@@ -108,7 +108,7 @@ public class ConvertDialogueFileToSceneClass
                                     break;
                             }
 
-                            char[] signs = new char[parts_line.Length - 1];
+                            Dictionary<string, char> signs = new Dictionary<string, char>();
 
                             for (int i = 1; i < parts_line.Length; i++)
                             {
@@ -122,7 +122,7 @@ public class ConvertDialogueFileToSceneClass
                                     val_of_val_str = parts_line[i].Split('=')[1].Split(',');
                                     val_of_val = new double[val_of_val_str.Length];
 
-                                    signs[i - 1] = '=';
+                                    signs.Add(val_name, '=');
                                 }
                                 if (parts_line[i].IndexOf('+') != -1)
                                 {
@@ -130,7 +130,7 @@ public class ConvertDialogueFileToSceneClass
                                     val_of_val_str = parts_line[i].Split('+')[1].Split(',');
                                     val_of_val = new double[val_of_val_str.Length];
 
-                                    signs[i - 1] = '+';
+                                    signs.Add(val_name, '+');
                                 }
 
                                 for (int j = 0; j < val_of_val_str.Length; j++)
@@ -308,7 +308,7 @@ public class ConvertDialogueFileToSceneClass
                                         break;
                                 }
 
-                                char[] signs = new char[parts_command.Length - 1];
+                                Dictionary<string, char> signs = new Dictionary<string, char>();
 
                                 for (int j = 1; j < parts_command.Length; j++)
                                 {
@@ -322,7 +322,7 @@ public class ConvertDialogueFileToSceneClass
                                         val_of_val_str = parts_command[i].Split('=')[1].Split(',');
                                         val_of_val = new double[val_of_val_str.Length];
 
-                                        signs[i - 1] = '=';
+                                        signs.Add(val_name, '=');
                                     }
                                     if (parts_command[i].IndexOf('+') != -1)
                                     {
@@ -330,7 +330,7 @@ public class ConvertDialogueFileToSceneClass
                                         val_of_val_str = parts_command[i].Split('+')[1].Split(',');
                                         val_of_val = new double[val_of_val_str.Length];
 
-                                        signs[i - 1] = '+';
+                                        signs.Add(val_name, '+');
                                     }
 
                                     for (int k = 0; k < val_of_val_str.Length; k++)
