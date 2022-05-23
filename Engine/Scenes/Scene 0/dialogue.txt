@@ -13,9 +13,11 @@ changeFlag_name=mind:newValue=3
 {[health>5][mind=3];
 Я сильный!
 }
-changeBackground_name=ад
+changeBackground_number=2
+changeBackground_number=0
 changeSprite_number=2:location=2,3,1:size+-5,0,0
 {;Петя
 Нет)
 }
+changeBackground_number=2
 changeScene_name=туалет

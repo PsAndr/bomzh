@@ -29,8 +29,13 @@ public class Global_control : MonoBehaviour
     public List<string> Flags_name;
     //
 
+    public BackgroundsLoader backgroundsLoader;
+
+    [SerializeField] public float speed_printing_text = 6f; 
+
     private void Awake()
     {
+        this.backgroundsLoader = new BackgroundsLoader();
         this.scenes_Loader = new Scenes_loader();
         Flags = new Dictionary<string, int>();
     }

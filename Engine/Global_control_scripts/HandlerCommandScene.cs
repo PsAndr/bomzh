@@ -89,6 +89,31 @@ public class HandlerCommandScene
                 }
                 break;
 
+            case "changeBackground":
+                if (command.number_obj == -1 && command.name_obj == null)
+                {
+                    Debug.LogException(new Exception("Don`t get name or number background to change"));
+                    return;
+                }
+                else if (command.name_obj == null && !global_Control.backgroundsLoader.backgrounds_names.ContainsKey(command.number_obj))
+                {
+                    Debug.LogException(new Exception("Haven`t name background of this number"));
+                    return;
+                }
+                else if (command.name_obj == null)
+                {
+                    command.name_obj = global_Control.backgroundsLoader.backgrounds_names[command.number_obj];
+                }
+
+                if (!global_Control.backgroundsLoader.backgrounds.ContainsKey(command.name_obj))
+                {
+                    Debug.LogException(new Exception("Haven`t background of this name"));
+                    return;
+                }
+
+                global_Control.background.sprite = global_Control.backgroundsLoader.backgrounds[command.name_obj];
+                break;
+
             default:
                 Debug.LogException(new Exception("Don`t know this command: " + command.name_command));
                 break;
@@ -111,7 +136,8 @@ public class HandlerCommandScene
             return;
         }
 
-        global_Control.text_dialogue.text = dialogueText.text;
+        global_Control.gameObject.GetComponent<TextPrintingClass>().Init(global_Control, global_Control.text_dialogue, dialogueText.text);
+        //global_Control.text_dialogue.text = dialogueText.text;
         global_Control.text_character.text = dialogueText.character_name;
     }
 
