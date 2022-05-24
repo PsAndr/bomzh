@@ -2,12 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TMPro;
 
 public class HandlerCommandScene
 {
+    public bool IsPrintingText;
+
     public HandlerCommandScene()
     {
+        IsPrintingText = false;
+    }
 
+    public bool CanDoNextCommand()
+    {
+        bool flag = true;
+
+        flag = flag && !this.IsPrintingText;
+
+        return flag;
     }
 
     public void SetCommand(Global_control global_Control, Scene_class.DialogueOrChoiceOrCommand command)
@@ -36,7 +48,7 @@ public class HandlerCommandScene
         switch (command.name_command)
         {
             case "changeScene":
-                if (command.number_obj == -1 && command.name_obj == null)
+                if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
                 {
                     Debug.LogException(new Exception("Don`t get name or number scene to change"));
                 }
@@ -48,17 +60,17 @@ public class HandlerCommandScene
                 return;
 
             case "changeFlag":
-                if (command.number_obj == -1 && command.name_obj == null)
+                if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
                 {
                     Debug.LogException(new Exception("Don`t get name or number flag to change"));
                     return;
                 }
-                else if (command.name_obj == null && global_Control.Flags_name.Count <= command.number_obj)
+                else if (string.IsNullOrEmpty(command.name_obj) && global_Control.Flags_name.Count <= command.number_obj)
                 {
                     Debug.LogException(new Exception("Overflow flag number"));
                     return;
                 }
-                else if (command.name_obj == null)
+                else if (string.IsNullOrEmpty(command.name_obj))
                 {
                     command.name_obj = global_Control.Flags_name[command.number_obj];
                 }
@@ -90,24 +102,24 @@ public class HandlerCommandScene
                 break;
 
             case "changeBackground":
-                if (command.number_obj == -1 && command.name_obj == null)
+                if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
                 {
                     Debug.LogException(new Exception("Don`t get name or number background to change"));
                     return;
                 }
-                else if (command.name_obj == null && !global_Control.backgroundsLoader.backgrounds_names.ContainsKey(command.number_obj))
+                else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.backgroundsLoader.backgrounds_names.ContainsKey(command.number_obj))
                 {
-                    Debug.LogException(new Exception("Haven`t name background of this number"));
+                    Debug.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
                     return;
                 }
-                else if (command.name_obj == null)
+                else if (string.IsNullOrEmpty(command.name_obj))
                 {
                     command.name_obj = global_Control.backgroundsLoader.backgrounds_names[command.number_obj];
                 }
 
                 if (!global_Control.backgroundsLoader.backgrounds.ContainsKey(command.name_obj))
                 {
-                    Debug.LogException(new Exception("Haven`t background of this name"));
+                    Debug.LogException(new Exception("Haven`t background of this name: " + command.name_obj + "!"));
                     return;
                 }
 
@@ -136,14 +148,14 @@ public class HandlerCommandScene
             return;
         }
 
-        global_Control.gameObject.GetComponent<TextPrintingClass>().Init(global_Control, global_Control.text_dialogue, dialogueText.text);
+        global_Control.gameObject.GetComponent<TextPrintingClass>().Init(global_Control, global_Control.text_dialogue.GetComponent<TextMeshProUGUI>(), dialogueText.text);
         //global_Control.text_dialogue.text = dialogueText.text;
         global_Control.text_character.text = dialogueText.character_name;
     }
 
     private void HandleChoice(Global_control global_Control, Scene_class.ChoiceText choiceText)
     {
-        
+        global_Control.NewCommandScene();
     }
 
     private bool CompareFlag(Global_control global_Control, Scene_class.NeedFlag flag)

@@ -136,6 +136,11 @@ public class Scenes_loader
 
             string json_nums_scenes = Resources.Load<TextAsset>("Scenes_nums").text;
             int[] nums_scenes = new WorkWithJSON_mass<int>(json_nums_scenes).item;
+
+            foreach (Scene_class scene in scenes)
+            {
+                scene.UpdateAfterLoadingJSON();
+            }
             
             for (int i = 0; i < scenes.Length; i++)
             {

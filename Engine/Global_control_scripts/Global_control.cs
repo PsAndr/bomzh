@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class Global_control : MonoBehaviour
 {
-    [SerializeField] public TextMeshProUGUI text_dialogue;
+    [SerializeField] public GameObject text_dialogue;
     [SerializeField] public TextMeshProUGUI text_character;
 
     [SerializeField] public Image background;
@@ -30,13 +30,17 @@ public class Global_control : MonoBehaviour
     //
 
     public BackgroundsLoader backgroundsLoader;
+    public SpritesLoader spritesLoader;
 
-    [SerializeField] public float speed_printing_text = 6f; 
+    [SerializeField] public float speed_printing_text = 6f;
+
+    public HandlerCommandScene handlerCommandScene = new HandlerCommandScene();
 
     private void Awake()
     {
         this.backgroundsLoader = new BackgroundsLoader();
         this.scenes_Loader = new Scenes_loader();
+        this.spritesLoader = new SpritesLoader();
         Flags = new Dictionary<string, int>();
     }
 
@@ -78,20 +82,27 @@ public class Global_control : MonoBehaviour
 
     public void NewCommandScene()
     {
-        if (number_command_scene < this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length - 1)
+        
+        if (this.handlerCommandScene.CanDoNextCommand())
         {
             this.number_command_scene++;
             this.SceneCommands();
         }
-        else
+        else if (this.handlerCommandScene.IsPrintingText)
         {
-            Debug.LogWarning("The end");
+            gameObject.GetComponent<TextPrintingClass>().StopPrinting();
         }
     }
 
     private void SceneCommands()
     {
-        Scene_class.DialogueOrChoiceOrCommand command = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene];
-        new HandlerCommandScene().SetCommand(this, command);
+        if (number_command_scene >= this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length)
+        {
+            number_command_scene = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length;
+            Debug.LogWarning("The end");
+            return;
+        }
+            Scene_class.DialogueOrChoiceOrCommand command = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene];
+        handlerCommandScene.SetCommand(this, command);
     }
 }

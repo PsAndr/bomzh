@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
+using WorkWithDictionary;
 
 [System.Serializable]
 public class Scene_class
@@ -22,6 +23,27 @@ public class Scene_class
         this.number = number;
         this.name = name;
         this.parts_scene = parts_scene;
+    }
+
+    public void UpdateAfterLoadingJSON()
+    {
+        foreach (DialogueOrChoiceOrCommand dialogueOrChoiceOrCommand in parts_scene)
+        {
+            switch (dialogueOrChoiceOrCommand.type)
+            {
+                case 0:
+                    dialogueOrChoiceOrCommand.dialogue.UpdateAfterLoadingJSON();
+                    break;
+
+                case 1:
+                    dialogueOrChoiceOrCommand.choice.UpdateAfterLoadingJSON();
+                    break;
+
+                case 2:
+                    dialogueOrChoiceOrCommand.command.UpdateAfterLoadingJSON();
+                    break;
+            }
+        }
     }
 
     public string SaveToString()
@@ -81,14 +103,24 @@ public class Scene_class
             {
                 this.needFlags = new NeedFlag[0];
             }
-            if (character_name == null)
+            if (string.IsNullOrEmpty(character_name))
             {
                 this.character_name = "";
             }
-            if (text == null)
+            if (string.IsNullOrEmpty(text))
             {
                 this.text = "";
             }
+
+            while (this.text[^1] == ' ' || this.text[^1] == '\n')
+            {
+                this.text = this.text[..^1];
+            }
+        }
+
+        public void UpdateAfterLoadingJSON()
+        {
+            
         }
     }
 
@@ -103,10 +135,52 @@ public class Scene_class
 
         public Command[][] commands;
 
+        public PartChoice[] partsChoice;
+
         public ChoiceText(NeedFlag[][] needFlags, string[] choices, ChangeFlag[][] changeFlags, Command[][] commands)
         {
             this.needFlags = needFlags;
             this.choices = choices;
+            this.changeFlags = changeFlags;
+            this.commands = commands;
+
+            this.partsChoice = new PartChoice[choices.Length];
+
+            for (int i = 0; i < choices.Length; i++)
+            {
+                partsChoice[i] = new PartChoice(needFlags[i], choices[i], changeFlags[i], commands[i]);
+            }
+        }
+
+        public void UpdateAfterLoadingJSON()
+        {
+            this.needFlags = new NeedFlag[this.partsChoice.Length][];
+            this.choices = new string[this.partsChoice.Length];
+            this.changeFlags = new ChangeFlag[this.partsChoice.Length][];
+            this.commands = new Command[this.partsChoice.Length][];
+
+            for (int i = 0; i < this.partsChoice.Length; i++)
+            {
+                this.needFlags[i] = this.partsChoice[i].needFlags;
+                this.choices[i] = this.partsChoice[i].text_choice;
+                this.changeFlags[i] = this.partsChoice[i].changeFlags;
+                this.commands[i] = this.partsChoice[i].commands;
+            }
+        }
+    }
+
+    [System.Serializable]
+    public class PartChoice
+    {
+        public NeedFlag[] needFlags;
+        public string text_choice;
+        public ChangeFlag[] changeFlags;
+        public Command[] commands;
+
+        public PartChoice(NeedFlag[] needFlags, string text_choice, ChangeFlag[] changeFlags, Command[] commands)
+        {
+            this.needFlags = needFlags;
+            this.text_choice = text_choice;
             this.changeFlags = changeFlags;
             this.commands = commands;
         }
@@ -154,6 +228,9 @@ public class Scene_class
 
         public Dictionary<string, char> signs;
 
+        public DictionaryToTwoArrays<string, WorkWithJSON_mass<double>> values_arrays;
+        public DictionaryToTwoArrays<string, char> signs_arrays;
+
         public Command(string name_command, string name_obj, int number_obj, Dictionary<string, double[]> dict_values, Dictionary<string, char> signs)
         {
             this.name_command = name_command;
@@ -161,6 +238,47 @@ public class Scene_class
             this.number_obj = number_obj;
             this.dict_values = dict_values;
             this.signs = signs;
+
+            Dictionary<string, WorkWithJSON_mass<double>> dict_valuesJSON = new Dictionary<string, WorkWithJSON_mass<double>>();
+
+            foreach (KeyValuePair<string, double[]> kvp in dict_values)
+            {
+                dict_valuesJSON.Add(kvp.Key, new WorkWithJSON_mass<double>(kvp.Value));
+            }
+
+            this.values_arrays = new DictionaryToTwoArrays<string, WorkWithJSON_mass<double>>(dict_valuesJSON);
+            this.signs_arrays = new DictionaryToTwoArrays<string, char>(signs);
+        }
+
+        public Command(string name_command, string name_obj, int number_obj, DictionaryToTwoArrays<string, WorkWithJSON_mass<double>> values_arrays, DictionaryToTwoArrays<string, char> signs_arrays)
+        {
+            this.name_command = name_command;
+            this.name_obj = name_obj;
+            this.number_obj = number_obj;
+            
+            Dictionary<string, WorkWithJSON_mass<double>> dict_values = values_arrays.ConvertToDictionary();
+            this.dict_values = new Dictionary<string, double[]>();
+            foreach (KeyValuePair<string, WorkWithJSON_mass<double>> kvp in dict_values)
+            {
+                this.dict_values.Add(kvp.Key, kvp.Value.item);
+            }
+
+            this.signs = signs_arrays.ConvertToDictionary();
+
+            this.values_arrays = values_arrays;
+            this.signs_arrays = signs_arrays;
+        }
+
+        public void UpdateAfterLoadingJSON()
+        {
+            Dictionary<string, WorkWithJSON_mass<double>> dict_values = this.values_arrays.ConvertToDictionary();
+            this.dict_values = new Dictionary<string, double[]>();
+            foreach (KeyValuePair<string, WorkWithJSON_mass<double>> kvp in dict_values)
+            {
+                this.dict_values.Add(kvp.Key, kvp.Value.item);
+            }
+
+            this.signs = signs_arrays.ConvertToDictionary();
         }
     }
 }
