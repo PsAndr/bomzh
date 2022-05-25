@@ -12,7 +12,13 @@ public class Global_control : MonoBehaviour
     [SerializeField] public GameObject text_dialogue;
     [SerializeField] public TextMeshProUGUI text_character;
 
+    [SerializeField] public GameObject canvas;
+
+    [SerializeField] public GameObject ToSpawnSprite;
+
     [SerializeField] public Image background;
+
+    [SerializeField] public GameObject prefab_sprites;
 
     private Scenes_loader scenes_Loader;
 
@@ -104,5 +110,24 @@ public class Global_control : MonoBehaviour
         }
             Scene_class.DialogueOrChoiceOrCommand command = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene];
         handlerCommandScene.SetCommand(this, command);
+    }
+
+    public GameObject SpawnObject(GameObject prefab, Vector3 position, Vector3 size, Vector3 rotation, string name, Transform parent)
+    {
+        GameObject spawn_object = Instantiate(prefab, position, Quaternion.identity, parent);
+
+        spawn_object.transform.localPosition = position;
+
+        if (!string.IsNullOrEmpty(name))
+        {
+            spawn_object.name = name;
+        }
+
+        Quaternion quaternion = Quaternion.Euler(rotation);
+        spawn_object.transform.localRotation = quaternion;
+
+        spawn_object.transform.localScale = size;
+
+        return spawn_object;
     }
 }

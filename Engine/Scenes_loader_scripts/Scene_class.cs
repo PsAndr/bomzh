@@ -225,57 +225,83 @@ public class Scene_class
         public int number_obj;
 
         public Dictionary<string, double[]> dict_values;
+        public Dictionary<string, string[]> dict_values_str;
 
         public Dictionary<string, char> signs;
 
         public DictionaryToTwoArrays<string, WorkWithJSON_mass<double>> values_arrays;
+        public DictionaryToTwoArrays<string, WorkWithJSON_mass<string>> values_str_arrays;
         public DictionaryToTwoArrays<string, char> signs_arrays;
 
-        public Command(string name_command, string name_obj, int number_obj, Dictionary<string, double[]> dict_values, Dictionary<string, char> signs)
+        public Command(string name_command, string name_obj, int number_obj, Dictionary<string, double[]> dict_values, Dictionary<string, string[]> dict_values_str, Dictionary<string, char> signs)
         {
             this.name_command = name_command;
             this.name_obj = name_obj;
             this.number_obj = number_obj;
             this.dict_values = dict_values;
+            this.dict_values_str = dict_values_str;
             this.signs = signs;
 
             Dictionary<string, WorkWithJSON_mass<double>> dict_valuesJSON = new Dictionary<string, WorkWithJSON_mass<double>>();
+            Dictionary<string, WorkWithJSON_mass<string>> dict_values_strJSON = new Dictionary<string, WorkWithJSON_mass<string>>();
 
             foreach (KeyValuePair<string, double[]> kvp in dict_values)
             {
                 dict_valuesJSON.Add(kvp.Key, new WorkWithJSON_mass<double>(kvp.Value));
             }
+            foreach (KeyValuePair<string, string[]> kvp in dict_values_str)
+            {
+                dict_values_strJSON.Add(kvp.Key, new WorkWithJSON_mass<string>(kvp.Value));
+            }
 
             this.values_arrays = new DictionaryToTwoArrays<string, WorkWithJSON_mass<double>>(dict_valuesJSON);
+            this.values_str_arrays = new DictionaryToTwoArrays<string, WorkWithJSON_mass<string>>(dict_values_strJSON);
             this.signs_arrays = new DictionaryToTwoArrays<string, char>(signs);
         }
 
-        public Command(string name_command, string name_obj, int number_obj, DictionaryToTwoArrays<string, WorkWithJSON_mass<double>> values_arrays, DictionaryToTwoArrays<string, char> signs_arrays)
+        public Command(string name_command, string name_obj, int number_obj, DictionaryToTwoArrays<string, WorkWithJSON_mass<double>> values_arrays, DictionaryToTwoArrays<string, WorkWithJSON_mass<string>> values_str_arrays, DictionaryToTwoArrays<string, char> signs_arrays)
         {
             this.name_command = name_command;
             this.name_obj = name_obj;
             this.number_obj = number_obj;
             
             Dictionary<string, WorkWithJSON_mass<double>> dict_values = values_arrays.ConvertToDictionary();
+            Dictionary<string, WorkWithJSON_mass<string>> dict_values_str = values_str_arrays.ConvertToDictionary();
+
             this.dict_values = new Dictionary<string, double[]>();
+            this.dict_values_str = new Dictionary<string, string[]>();
+
             foreach (KeyValuePair<string, WorkWithJSON_mass<double>> kvp in dict_values)
             {
                 this.dict_values.Add(kvp.Key, kvp.Value.item);
+            }
+            foreach (KeyValuePair<string, WorkWithJSON_mass<string>> kvp in dict_values_str)
+            {
+                this.dict_values_str.Add(kvp.Key, kvp.Value.item);
             }
 
             this.signs = signs_arrays.ConvertToDictionary();
 
             this.values_arrays = values_arrays;
+            this.values_str_arrays = values_str_arrays;
             this.signs_arrays = signs_arrays;
         }
 
         public void UpdateAfterLoadingJSON()
         {
             Dictionary<string, WorkWithJSON_mass<double>> dict_values = this.values_arrays.ConvertToDictionary();
+            Dictionary<string, WorkWithJSON_mass<string>> dict_values_str = this.values_str_arrays.ConvertToDictionary();
+
             this.dict_values = new Dictionary<string, double[]>();
+            this.dict_values_str = new Dictionary<string, string[]>();
+
             foreach (KeyValuePair<string, WorkWithJSON_mass<double>> kvp in dict_values)
             {
                 this.dict_values.Add(kvp.Key, kvp.Value.item);
+            }
+            foreach (KeyValuePair<string, WorkWithJSON_mass<string>> kvp in dict_values_str)
+            {
+                this.dict_values_str.Add(kvp.Key, kvp.Value.item);
             }
 
             this.signs = signs_arrays.ConvertToDictionary();

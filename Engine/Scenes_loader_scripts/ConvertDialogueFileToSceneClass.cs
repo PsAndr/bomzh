@@ -96,6 +96,7 @@ public class ConvertDialogueFileToSceneClass
                             string name = null;
 
                             Dictionary<string, double[]> dict_values = new Dictionary<string, double[]>();
+                            Dictionary<string, string[]> dict_values_str = new Dictionary<string, string[]>();
 
                             switch (number_or_name)
                             {
@@ -133,15 +134,22 @@ public class ConvertDialogueFileToSceneClass
                                     signs.Add(val_name, '+');
                                 }
 
-                                for (int j = 0; j < val_of_val_str.Length; j++)
+                                if (val_name.IndexOf("name") == -1)
                                 {
-                                    val_of_val[j] = Convert.ToDouble(val_of_val_str[j]);
-                                }
+                                    for (int j = 0; j < val_of_val_str.Length; j++)
+                                    {
+                                        val_of_val[j] = Convert.ToDouble(val_of_val_str[j]);
+                                    }
 
-                                dict_values.Add(val_name, val_of_val);
+                                    dict_values.Add(val_name, val_of_val);
+                                }
+                                else
+                                {
+                                    dict_values_str.Add(val_name, val_of_val_str);
+                                }
                             }
 
-                            this.parts.Add(new Scene_class.DialogueOrChoiceOrCommand(2, new Scene_class.Command(name_command, name, number, dict_values, signs)));
+                            this.parts.Add(new Scene_class.DialogueOrChoiceOrCommand(2, new Scene_class.Command(name_command, name, number, dict_values, dict_values_str, signs)));
                         }
                     }
                     break;
@@ -296,6 +304,7 @@ public class ConvertDialogueFileToSceneClass
                                 string name = null;
 
                                 Dictionary<string, double[]> dict_values = new Dictionary<string, double[]>();
+                                Dictionary<string, string[]> dict_values_str = new Dictionary<string, string[]>();
 
                                 switch (number_or_name)
                                 {
@@ -333,15 +342,22 @@ public class ConvertDialogueFileToSceneClass
                                         signs.Add(val_name, '+');
                                     }
 
-                                    for (int k = 0; k < val_of_val_str.Length; k++)
+                                    if (val_name.IndexOf("name") == -1)
                                     {
-                                        val_of_val[k] = Convert.ToDouble(val_of_val_str[k]);
-                                    }
+                                        for (int k = 0; k < val_of_val_str.Length; k++)
+                                        {
+                                            val_of_val[k] = Convert.ToDouble(val_of_val_str[k]);
+                                        }
 
-                                    dict_values.Add(val_name, val_of_val);
+                                        dict_values.Add(val_name, val_of_val);
+                                    }
+                                    else
+                                    {
+                                        dict_values_str.Add(val_name, val_of_val_str);
+                                    }
                                 }
 
-                                new_command_choice = new Scene_class.Command(name_command, name, number, dict_values, signs);
+                                new_command_choice = new Scene_class.Command(name_command, name, number, dict_values, dict_values_str, signs);
 
                                 commands_choice[i - 3] = new_command_choice;
                             }

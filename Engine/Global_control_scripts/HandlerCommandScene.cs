@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using TMPro;
+using UnityEngine.UI;
 
 public class HandlerCommandScene
 {
@@ -124,6 +125,71 @@ public class HandlerCommandScene
                 }
 
                 global_Control.background.sprite = global_Control.backgroundsLoader.backgrounds[command.name_obj];
+                break;
+
+            case "spawnSprite":
+                if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
+                {
+                    Debug.LogException(new Exception("Don`t get name or number sprite to spawn"));
+                    return;
+                }
+                else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.spritesLoader.sprites_names.ContainsKey(command.number_obj))
+                {
+                    Debug.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
+                    return;
+                }
+                else if (string.IsNullOrEmpty(command.name_obj))
+                {
+                    command.name_obj = global_Control.spritesLoader.sprites_names[command.number_obj];
+                }
+
+                Sprite sprite = global_Control.spritesLoader.sprites[command.name_obj];
+
+                Vector3 position = new Vector3(0, 0, 0);
+                Vector3 rotation = new Vector3(0, 0, 0);
+                Vector3 size = new Vector3(1, 1, 1);
+
+                string name = null;
+
+                if (command.dict_values_str.ContainsKey("nameSprite"))
+                {
+                    name = command.dict_values_str["nameSprite"][0];
+                }
+
+                if (command.dict_values.ContainsKey("positionSprite"))
+                {
+                    double[] values = command.dict_values["positionSprite"];
+
+                    if (values.Length >= 3)
+                    {
+                        position = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
+                    }
+                }
+
+                if (command.dict_values.ContainsKey("sizeSprite"))
+                {
+                    double[] values = command.dict_values["sizeSprite"];
+
+                    if (values.Length >= 3)
+                    {
+                        size = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
+                    }
+                }
+
+                if (command.dict_values.ContainsKey("rotationSprite"))
+                {
+                    double[] values = command.dict_values["rotationSprite"];
+
+                    if (values.Length >= 3)
+                    {
+                        rotation = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
+                    }
+                }
+
+                GameObject sprite_obj = global_Control.SpawnObject(global_Control.prefab_sprites, position, size, rotation, name, global_Control.ToSpawnSprite.transform);
+                sprite_obj.GetComponent<Image>().sprite = sprite;
+                sprite_obj.GetComponent<RectTransform>().sizeDelta = new Vector2(sprite.textureRect.width, sprite.textureRect.height);
+
                 break;
 
             default:
