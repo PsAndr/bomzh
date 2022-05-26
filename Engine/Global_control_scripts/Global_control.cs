@@ -60,7 +60,7 @@ public class Global_control : MonoBehaviour
 
     }
 
-    public void ChangeScene(int number, string name)
+    public void ChangeScene(int number, string name, int num_command = 0)
     {
         if (number == -1)
         {
@@ -81,7 +81,7 @@ public class Global_control : MonoBehaviour
         this.scene_name = name;
         this.scene_number = number;
 
-        this.number_command_scene = 0;
+        this.number_command_scene = num_command;
 
         this.SceneCommands();
     }
@@ -108,7 +108,9 @@ public class Global_control : MonoBehaviour
             Debug.LogWarning("The end");
             return;
         }
-            Scene_class.DialogueOrChoiceOrCommand command = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene];
+
+        Scene_class.DialogueOrChoiceOrCommand command = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene];
+
         handlerCommandScene.SetCommand(this, command);
     }
 

@@ -52,11 +52,20 @@ public class HandlerCommandScene
                 if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
                 {
                     Debug.LogException(new Exception("Don`t get name or number scene to change"));
+                    return;
                 }
-                else
+
+                int number_command = 0;
+
+                if (command.dict_values.ContainsKey("commandNumber"))
                 {
-                    global_Control.ChangeScene(command.number_obj, command.name_obj);
-                }
+                    if (command.dict_values["commandNumber"].Length > 0)
+                    {
+                        number_command = Convert.ToInt32(command.dict_values["commandNumber"][0]);
+                    }
+                }    
+                
+                global_Control.ChangeScene(command.number_obj, command.name_obj, number_command);
 
                 return;
 
@@ -217,6 +226,9 @@ public class HandlerCommandScene
         global_Control.gameObject.GetComponent<TextPrintingClass>().Init(global_Control, global_Control.text_dialogue.GetComponent<TextMeshProUGUI>(), dialogueText.text);
         //global_Control.text_dialogue.text = dialogueText.text;
         global_Control.text_character.text = dialogueText.character_name;
+
+        float width_character_text = global_Control.text_dialogue.transform.GetComponent<RectTransform>().sizeDelta.x;
+        global_Control.text_character.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(width_character_text, global_Control.text_character.preferredHeight);
     }
 
     private void HandleChoice(Global_control global_Control, Scene_class.ChoiceText choiceText)

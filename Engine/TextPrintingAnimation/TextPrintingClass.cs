@@ -22,8 +22,8 @@ public class TextPrintingClass : MonoBehaviour
         this.letters_to_print = 0f;
         this.text_print.text = text_to_print;
 
-        float width = global_Control.text_dialogue.transform.GetComponent<RectTransform>().sizeDelta.x;
-        global_Control.text_dialogue.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(width, this.text_print.preferredHeight);
+        float width = this.text_print.transform.GetComponent<RectTransform>().sizeDelta.x;
+        this.text_print.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(width, this.text_print.preferredHeight);
 
         this.text_print.text = "";
 
