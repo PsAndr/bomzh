@@ -5,6 +5,7 @@ using System;
 using TMPro;
 using UnityEngine.UI;
 
+
 public class HandlerCommandScene
 {
     public bool IsPrintingText;
@@ -204,7 +205,9 @@ public class HandlerCommandScene
             default:
                 Debug.LogException(new Exception("Don`t know this command: " + command.name_command));
                 break;
+
         }
+
         global_Control.NewCommandScene();
     }
 

@@ -6,6 +6,9 @@ using System.IO;
 using System;
 using UnityEditor;
 using UnityEngine.UI;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Security;
 
 public class Global_control : MonoBehaviour
 {
@@ -131,5 +134,23 @@ public class Global_control : MonoBehaviour
         spawn_object.transform.localScale = size;
 
         return spawn_object;
+    }
+
+    public void DestroyObject(GameObject gameObject, float time_to_destroy)
+    {
+        Destroy(gameObject, time_to_destroy);
+    }
+
+    public void DestroyObject(Transform whereObjectIs, string name)
+    {
+        Destroy(whereObjectIs.Find(name).gameObject);
+    }
+
+    public void DestroyAllObjects(Transform from)
+    {
+        for (int i = 0; i < from.childCount; i++)
+        {
+            Destroy(from.GetChild(i).gameObject);
+        }
     }
 }
