@@ -82,6 +82,24 @@ public class Scene_class
                     return;
             }
         }
+
+        public DialogueOrChoiceOrCommand(DialogueText dialogueText)
+        {
+            this.type = 0;
+            this.dialogue = dialogueText;
+        }
+
+        public DialogueOrChoiceOrCommand(ChoiceText choiceText)
+        {
+            this.type = 1;
+            this.choice = choiceText;
+        }
+
+        public DialogueOrChoiceOrCommand(Command command)
+        {
+            this.type = 2;
+            this.command = command;
+        }
     }
 
     [System.Serializable]
