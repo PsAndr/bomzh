@@ -11,7 +11,10 @@ public class Scene_class
     public string name;
 
     public DialogueOrChoiceOrCommand[] parts_scene;
+    public Scene_class()
+    {
 
+    }
     public Scene_class(int number, string name)
     {
         this.number = number;

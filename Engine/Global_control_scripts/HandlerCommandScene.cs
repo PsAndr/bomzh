@@ -9,10 +9,12 @@ using UnityEngine.UI;
 public class HandlerCommandScene
 {
     public bool IsPrintingText;
-
+    WorkingButtons save_work_choices;
+    public bool flag_check_choice;
     public HandlerCommandScene()
     {
         IsPrintingText = false;
+        flag_check_choice = false;
     }
 
     public bool CanDoNextCommand()
@@ -20,6 +22,7 @@ public class HandlerCommandScene
         bool flag = true;
 
         flag = flag && !this.IsPrintingText;
+        flag = flag && !this.flag_check_choice;
 
         return flag;
     }
@@ -236,9 +239,56 @@ public class HandlerCommandScene
 
     private void HandleChoice(Global_control global_Control, Scene_class.ChoiceText choiceText)
     {
+        flag_check_choice = true;
+        int flag_index = 0;
+        int index_of_button = 0;
+        while (choiceText.needFlags.Length != flag_index)
+        {
+            bool flag_to_show = true;
+            foreach (Scene_class.NeedFlag needFlag in choiceText.needFlags[flag_index])
+            {
+                flag_to_show = flag_to_show && CompareFlag(global_Control, needFlag);
+            }
+            if (flag_to_show)
+            {
+                index_of_button++;
+            }
+            flag_index++;
+        }
+        WorkingButtons workingButtons = new WorkingButtons(index_of_button);
+        flag_index = 0;
+        index_of_button = 0;
+        while (choiceText.needFlags.Length != flag_index)
+        {
+            bool flag_to_show = true;
+            foreach (Scene_class.NeedFlag needFlag in choiceText.needFlags[flag_index])
+            {
+                flag_to_show = flag_to_show && CompareFlag(global_Control, needFlag);
+            }
+            if (flag_to_show)
+            {
+                workingButtons.names[index_of_button] = choiceText.choices[flag_index];
+                workingButtons.changeFlag[index_of_button] = choiceText.changeFlags[flag_index];
+                workingButtons.commands[index_of_button] = choiceText.commands[flag_index];
+                index_of_button++;
+            }
+            flag_index++;
+        }
+        workingButtons.count = index_of_button;
+        RectTransform rt = global_Control.button_field.GetComponent(typeof(RectTransform)) as RectTransform;
+        for (int i = 0; i < workingButtons.count; i++)
+        {
+            global_Control.SpawnObject(global_Control.button, new Vector3(0, -1 * rt.sizeDelta.y / (workingButtons.count + 1) * (i + 1) + rt.sizeDelta.y / 2, 90), new Vector3(1, 1, 1), new Vector3(0, 0, 0), i.ToString(), global_Control.button_field.transform).GetComponentInChildren<TextMeshProUGUI>().text = workingButtons.names[i];
+        }
+        save_work_choices = workingButtons;
+    }
+    public void On_Click_Choices(Global_control global_Control, string s)
+    {
+        int num_of_but = Convert.ToInt32(s);
+        global_Control.DestroyAllObjects(global_Control.button_field.transform);
+        flag_check_choice = false;
         global_Control.NewCommandScene();
     }
-
     private bool CompareFlag(Global_control global_Control, Scene_class.NeedFlag flag)
     {
         if (!global_Control.Flags.ContainsKey(flag.name))

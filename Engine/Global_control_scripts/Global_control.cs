@@ -17,6 +17,9 @@ public class Global_control : MonoBehaviour
 
     [SerializeField] public GameObject canvas;
 
+    [SerializeField] public GameObject button;
+    [SerializeField] public GameObject button_field;
+
     [SerializeField] public GameObject ToSpawnSprite;
 
     [SerializeField] public Image background;
