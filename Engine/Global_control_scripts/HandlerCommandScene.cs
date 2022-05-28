@@ -11,6 +11,7 @@ public class HandlerCommandScene
     public bool IsPrintingText;
     WorkingButtons save_work_choices;
     public bool flag_check_choice;
+
     public HandlerCommandScene()
     {
         IsPrintingText = false;
@@ -48,7 +49,7 @@ public class HandlerCommandScene
         }
     }
 
-    private void HandleCommand(Global_control global_Control, Scene_class.Command command)
+    private void HandleCommand(Global_control global_Control, Scene_class.Command command, bool IsStartedFromScene = true)
     {
         switch (command.name_command)
         {
@@ -211,7 +212,10 @@ public class HandlerCommandScene
 
         }
 
-        global_Control.NewCommandScene();
+        if (IsStartedFromScene)
+        {
+            global_Control.NewCommandScene();
+        }
     }
 
     private void HandleDialogue(Global_control global_Control, Scene_class.DialogueText dialogueText)
@@ -242,6 +246,7 @@ public class HandlerCommandScene
         flag_check_choice = true;
         int flag_index = 0;
         int index_of_button = 0;
+
         while (choiceText.needFlags.Length != flag_index)
         {
             bool flag_to_show = true;
@@ -255,9 +260,11 @@ public class HandlerCommandScene
             }
             flag_index++;
         }
+
         WorkingButtons workingButtons = new WorkingButtons(index_of_button);
         flag_index = 0;
         index_of_button = 0;
+
         while (choiceText.needFlags.Length != flag_index)
         {
             bool flag_to_show = true;
@@ -274,21 +281,82 @@ public class HandlerCommandScene
             }
             flag_index++;
         }
+
         workingButtons.count = index_of_button;
         RectTransform rt = global_Control.button_field.GetComponent(typeof(RectTransform)) as RectTransform;
+
         for (int i = 0; i < workingButtons.count; i++)
         {
-            global_Control.SpawnObject(global_Control.button, new Vector3(0, -1 * rt.sizeDelta.y / (workingButtons.count + 1) * (i + 1) + rt.sizeDelta.y / 2, 90), new Vector3(1, 1, 1), new Vector3(0, 0, 0), i.ToString(), global_Control.button_field.transform).GetComponentInChildren<TextMeshProUGUI>().text = workingButtons.names[i];
+            global_Control.SpawnObject(global_Control.button, new Vector3(0, -1 * rt.sizeDelta.y / (workingButtons.count + 1) * (i + 1) + rt.sizeDelta.y / 2, 90), 
+                new Vector3(1, 1, 1), new Vector3(0, 0, 0), i.ToString(), 
+                global_Control.button_field.transform).GetComponentInChildren<TextMeshProUGUI>().text = workingButtons.names[i];
         }
+
         save_work_choices = workingButtons;
     }
     public void On_Click_Choices(Global_control global_Control, string s)
     {
         int num_of_but = Convert.ToInt32(s);
+
         global_Control.DestroyAllObjects(global_Control.button_field.transform);
+
+        foreach (Scene_class.ChangeFlag changeFlag in this.save_work_choices.changeFlag[num_of_but])
+        {
+            this.ChangeFlag(global_Control, changeFlag);
+        }
+
+        bool flag_do_new_command = true;
+
+        foreach (Scene_class.Command command in this.save_work_choices.commands[num_of_but])
+        {
+            this.HandleCommand(global_Control, command, false);
+
+            if (command.name_command == "changeScene")
+            {
+                flag_do_new_command = false;
+            }
+        }
+
+        this.save_work_choices = null;
+
         flag_check_choice = false;
-        global_Control.NewCommandScene();
+
+        if (flag_do_new_command) 
+        { 
+            global_Control.NewCommandScene(); 
+        }
     }
+
+    private void ChangeFlag(Global_control global_Control, Scene_class.ChangeFlag changeFlag)
+    {
+        switch (changeFlag.change_sign)
+        {
+            case '=':
+                if (global_Control.Flags.ContainsKey(changeFlag.name))
+                {
+                    global_Control.Flags[changeFlag.name] = changeFlag.value;
+                }
+                break;
+
+            case '+':
+                if (global_Control.Flags.ContainsKey(changeFlag.name))
+                {
+                    global_Control.Flags[changeFlag.name] += changeFlag.value;
+                }
+                break;
+
+            case '-':
+                if (global_Control.Flags.ContainsKey(changeFlag.name))
+                {
+                    global_Control.Flags[changeFlag.name] -= changeFlag.value;
+                }
+                break;
+
+            default:
+                return;
+        }
+    }
+
     private bool CompareFlag(Global_control global_Control, Scene_class.NeedFlag flag)
     {
         if (!global_Control.Flags.ContainsKey(flag.name))

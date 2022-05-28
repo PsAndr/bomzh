@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class Window : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private AnimationClip animationClip_open;
+    [SerializeField] private AnimationClip animationClip_close;
+
+    public void OpenWindow()
     {
-        
+        gameObject.SetActive(true);
+        if (animationClip_open != null)
+        {
+            GetComponent<Animator>().Play(animationClip_open.name);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void CloseWindow()
     {
-        
+        gameObject.SetActive(false);
+        if (animationClip_close != null)
+        {
+            GetComponent<Animator>().Play(animationClip_close.name);
+        }
     }
 }

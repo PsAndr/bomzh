@@ -26,6 +26,10 @@ public class Global_control : MonoBehaviour
 
     [SerializeField] public GameObject prefab_sprites;
 
+    [SerializeField] private GameObject canvasToScreenshot;
+    [SerializeField] private Camera cameraToScreenshot;
+    [SerializeField] private GameObject[] RenderToScreenshot;
+
     private Scenes_loader scenes_Loader;
 
     //для управления сценами
@@ -59,6 +63,9 @@ public class Global_control : MonoBehaviour
     void Start()
     {
         this.ChangeScene(this.scene_number_start, this.scene_name_start);
+
+        this.cameraToScreenshot.gameObject.SetActive(false);
+        this.canvasToScreenshot.gameObject.SetActive(false);
     }
 
     void Update()
@@ -155,5 +162,41 @@ public class Global_control : MonoBehaviour
         {
             Destroy(from.GetChild(i).gameObject);
         }
+    }
+
+    public void MakeScreenshot()
+    {
+        this.cameraToScreenshot.gameObject.SetActive(true);
+        this.canvasToScreenshot.gameObject.SetActive(true);
+
+        foreach (GameObject to_spawn in this.RenderToScreenshot)
+        {
+            this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", this.canvasToScreenshot.transform);
+        }
+
+        StartCoroutine("WaitScreenshot");
+    }
+
+    IEnumerator WaitScreenshot()
+    {
+        yield return null;
+
+        RenderTexture texture = this.cameraToScreenshot.targetTexture;
+
+        Texture2D texture2D = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
+
+        RenderTexture.active = texture;
+
+        texture2D.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
+        texture2D.Apply();
+
+        File.WriteAllBytes(Application.dataPath + "/screenshot.jpg", texture2D.EncodeToJPG());
+
+        this.DestroyAllObjects(this.canvasToScreenshot.transform); 
+        
+        this.cameraToScreenshot.gameObject.SetActive(false);
+        this.canvasToScreenshot.gameObject.SetActive(false);
+
+        StopCoroutine("WaitScreenshot");
     }
 }
