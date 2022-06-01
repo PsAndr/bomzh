@@ -17,6 +17,8 @@ public class Global_control : MonoBehaviour
 
     [SerializeField] public GameObject canvas;
 
+    [SerializeField] public Button ButtonScreen;
+
     [SerializeField] public GameObject button;
     [SerializeField] public GameObject button_field;
 
@@ -30,6 +32,8 @@ public class Global_control : MonoBehaviour
     [SerializeField] private Camera cameraToScreenshot;
     [SerializeField] private GameObject[] RenderToScreenshot;
 
+    [SerializeField] public GameObject[] ObjectsStopLookScene;
+
     private Scenes_loader scenes_Loader;
 
     //для управления сценами
@@ -41,16 +45,16 @@ public class Global_control : MonoBehaviour
 
     private int number_command_scene;
 
-    public Dictionary<string, int> Flags;
-    public List<string> Flags_name;
+    [HideInInspector] public Dictionary<string, int> Flags;
+    [HideInInspector] public List<string> Flags_name;
     //
 
-    public BackgroundsLoader backgroundsLoader;
-    public SpritesLoader spritesLoader;
+    [HideInInspector] public BackgroundsLoader backgroundsLoader;
+    [HideInInspector] public SpritesLoader spritesLoader;
 
     [SerializeField] public float speed_printing_text = 6f;
 
-    public HandlerCommandScene handlerCommandScene = new HandlerCommandScene();
+    [HideInInspector] public HandlerCommandScene handlerCommandScene;
 
     private void Awake()
     {
@@ -58,6 +62,11 @@ public class Global_control : MonoBehaviour
         this.scenes_Loader = new Scenes_loader();
         this.spritesLoader = new SpritesLoader();
         Flags = new Dictionary<string, int>();
+        this.canvasToScreenshot.gameObject.SetActive(false);
+
+        gameObject.AddComponent<TextPrintingClass>();
+
+        handlerCommandScene = new HandlerCommandScene();
     }
 
     void Start()
@@ -65,12 +74,30 @@ public class Global_control : MonoBehaviour
         this.ChangeScene(this.scene_number_start, this.scene_name_start);
 
         this.cameraToScreenshot.gameObject.SetActive(false);
-        this.canvasToScreenshot.gameObject.SetActive(false);
     }
 
     void Update()
     {
+        this.CheckObjectsStopLookScene();
+    }
 
+    private void CheckObjectsStopLookScene()
+    {
+        foreach (GameObject obj in this.ObjectsStopLookScene)
+        {
+            if (obj.activeSelf)
+            {
+                if (this.handlerCommandScene.IsLookScene)
+                {
+                    this.handlerCommandScene.StopLookScene(this);
+                }
+                return;
+            }
+        }
+        if (!this.handlerCommandScene.IsLookScene)
+        {
+            this.handlerCommandScene.StartLookScene(this);
+        }
     }
 
     public void ChangeScene(int number, string name, int num_command = 0)
@@ -198,5 +225,10 @@ public class Global_control : MonoBehaviour
         this.canvasToScreenshot.gameObject.SetActive(false);
 
         StopCoroutine("WaitScreenshot");
+    }
+
+    public Pair<string, int> GetSceneValues()
+    {
+        return new Pair<string, int>(this.scene_name, this.number_command_scene);
     }
 }

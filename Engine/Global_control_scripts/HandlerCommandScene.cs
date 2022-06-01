@@ -12,10 +12,13 @@ public class HandlerCommandScene
     WorkingButtons save_work_choices;
     public bool flag_check_choice;
 
+    public bool IsLookScene;
+
     public HandlerCommandScene()
     {
         IsPrintingText = false;
         flag_check_choice = false;
+        IsLookScene = true;
     }
 
     public bool CanDoNextCommand()
@@ -24,8 +27,25 @@ public class HandlerCommandScene
 
         flag = flag && !this.IsPrintingText;
         flag = flag && !this.flag_check_choice;
+        flag = flag && this.IsLookScene;
 
         return flag;
+    }
+
+    public void StopLookScene(Global_control global_Control)
+    {
+        this.IsLookScene = false;
+        global_Control.ButtonScreen.enabled = false;
+
+        global_Control.gameObject.GetComponent<TextPrintingClass>().PausePrinting();
+    }
+
+    public void StartLookScene(Global_control global_Control)
+    {
+        this.IsLookScene = true;
+        global_Control.ButtonScreen.enabled = true;
+
+        global_Control.gameObject.GetComponent<TextPrintingClass>().ResumePrinting();
     }
 
     public void SetCommand(Global_control global_Control, Scene_class.DialogueOrChoiceOrCommand command)

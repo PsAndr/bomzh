@@ -14,6 +14,8 @@ public class TextPrintingClass : MonoBehaviour
 
     private Coroutine coroutine;
 
+    private bool IsPause = false;
+
     public void Init(Global_control global_Control, TextMeshProUGUI text_print, string text_to_print)
     {
         this.global_Control = global_Control;
@@ -21,6 +23,8 @@ public class TextPrintingClass : MonoBehaviour
         this.text_to_print = text_to_print;
         this.letters_to_print = 0f;
         this.text_print.text = text_to_print;
+
+        this.IsPause = false;
 
         float width = this.text_print.transform.GetComponent<RectTransform>().sizeDelta.x;
         this.text_print.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(width, this.text_print.preferredHeight);
@@ -44,6 +48,16 @@ public class TextPrintingClass : MonoBehaviour
         StopCoroutine(this.coroutine);
     }
 
+    public void PausePrinting()
+    {
+        this.IsPause = true;
+    }
+
+    public void ResumePrinting()
+    {
+        this.IsPause = false;
+    }
+
     IEnumerator PrintingText()
     {
         float speed = this.global_Control.speed_printing_text;
@@ -52,6 +66,11 @@ public class TextPrintingClass : MonoBehaviour
 
         while (i < this.text_to_print.Length)
         {
+            while (this.IsPause)
+            {
+                yield return null;
+            }
+
             this.letters_to_print += speed / (1f / 0.02f);
 
             while (letters_to_print >= 1f && i < this.text_to_print.Length)

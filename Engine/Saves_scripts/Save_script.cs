@@ -35,34 +35,25 @@ public class Save_class
         this.WorkAfterInit();
     }
 
-    public void WorkAfterInit()
+    public Save_class(string name_save)
+    {
+        this.name_save = name_save;
+        load();
+    }
+
+    private void WorkAfterInit()
     {
         if (string.IsNullOrEmpty(this.name_save))
         {
             this.name_save = DateTime.Now.ToString();
         }
 
-        string path = Application.persistentDataPath + "/list_names_saves.save";
-        string[] list_names;
+        Save_list_names save_List_Names = new Save_list_names();
 
-        if (!File.Exists(path))
-        {
-            list_names = new string[0];
-        }
-        else
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream fs = new FileStream(path, FileMode.Open);
-
-            list_names = (string[])bf.Deserialize(fs);
-
-            fs.Close();
-        }
-
-        if (IsStringInArray(list_names, this.name_save))
+        if (save_List_Names.ContainsName(this.name_save))
         {
             int index = 0;
-            while (IsStringInArray(list_names, this.name_save + "(" + index.ToString() + ")"))
+            while (save_List_Names.ContainsName(this.name_save + "(" + index.ToString() + ")"))
             {
                 index++;
             }
@@ -73,61 +64,138 @@ public class Save_class
         this.save();
     }
 
-    public void save()
+    private void save()
     {
-        string path = Application.persistentDataPath + "/" + this.name_save + ".save";
+        string path = Application.persistentDataPath + "/Saves/" + this.name_save + ".save";
 
         BinaryFormatter bf = new BinaryFormatter();
         FileStream fs = new FileStream(path, FileMode.Create);
         bf.Serialize(fs, this);
         fs.Close();
 
-        path = Application.persistentDataPath + "/list_names_saves.save";
+        Save_list_names save_List_Names = new Save_list_names();
+        save_List_Names.AddName(this.name_save);
+    }
 
-        string[] list_names;
+    private void load()
+    {
+        string path = Application.persistentDataPath + "/Saves/" + this.name_save + ".save";
 
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream fs = new FileStream(path, FileMode.Open);
+
+        Save_class save_Class = (Save_class)bf.Deserialize(fs);
+        fs.Close();
+
+        this.flags = save_Class.flags;
+        this.number_command_scene = save_Class.number_command_scene;
+        this.scene_name = save_Class.scene_name;
+    }
+
+    private void delete()
+    {
+        File.Delete(Application.persistentDataPath + "/Saves/" + this.name_save + ".save");
+    }
+
+    public void Change(string scene_name, int number_command_scene, Dictionary<string, int> flags)
+    {
+        this.scene_name = scene_name;
+        this.number_command_scene = number_command_scene;
+        this.flags = new DictionaryToTwoArrays<string, int>(flags);
+
+        this.save();
+    }
+
+    public void Change(string save_name)
+    {
+        delete();
+
+        this.name_save = save_name;
+
+        this.save();
+    }
+}
+
+public class Save_list_names
+{
+    public string[] list_names;
+
+    private string path = Application.persistentDataPath + "/list_names_saves.save";
+
+    public Save_list_names()
+    {
         if (!File.Exists(path))
         {
             list_names = new string[0];
+
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream fs = new FileStream(path, FileMode.Create);
+
+            bf.Serialize(fs, list_names);
+
+            fs.Close();
+
+            Directory.CreateDirectory(Application.persistentDataPath + "/Saves");
         }
         else
         {
-            bf = new BinaryFormatter();
-            fs = new FileStream(path, FileMode.Open);
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream fs = new FileStream(path, FileMode.Open);
 
             list_names = (string[])bf.Deserialize(fs);
 
             fs.Close();
         }
-
-        if (!IsStringInArray(list_names, this.name_save))
-        {
-            string[] list_names_new = new string[list_names.Length + 1];
-            for (int i = 0; i < list_names.Length; i++)
-            {
-                list_names_new[i] = list_names[i];
-            }
-            list_names_new[list_names.Length] = this.name_save;
-            list_names = (string[])list_names_new.Clone();    
-        }
-
-        bf = new BinaryFormatter();
-        fs = new FileStream(path, FileMode.Create);
-        bf.Serialize(fs, list_names);
-        fs.Close();
     }
 
-    private static bool IsStringInArray(string[] array, string str)
+    public bool ContainsName(string name)
     {
-        foreach (string str2 in array)
+        foreach (string str in list_names)
         {
-            if (str == str2)
+            if (str.Equals(name))
             {
                 return true;
             }
         }
-
         return false;
+    }
+
+    public void AddName(string name)
+    {
+        List<string> list = new List<string>(list_names);
+
+        if (!ContainsName(name))
+        {
+            list.Add(name);
+        }
+
+        this.list_names = list.ToArray();
+        list = null;
+
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream fs = new FileStream(path, FileMode.Create);
+
+        bf.Serialize(fs, list_names);
+
+        fs.Close();
+    }
+
+    public void RemoveName(string name)
+    {
+        List<string> list = new List<string>(list_names);
+        
+        list.Remove(name);
+
+        this.list_names = list.ToArray();
+
+        list = null;
+
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream fs = new FileStream(path, FileMode.Create);
+
+        bf.Serialize(fs, list_names);
+
+        fs.Close();
     }
 }
 
