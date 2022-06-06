@@ -14,11 +14,13 @@ public class SaveOverMouse
 
     int number;
     SaveModule save_Attach_GameObject;
+    [HideInInspector] public bool IsActive;
 
     public void Init(int number, SaveModule save_Attach_GameObject)
     {
         this.number = number;
         this.save_Attach_GameObject = save_Attach_GameObject;
+        this.IsActive = false;
 
         if (this.coveringMouseImage_new != null) 
         {
@@ -38,11 +40,14 @@ public class SaveOverMouse
 
     public void Enter()
     {
+        this.IsActive = true;
+        Debug.Log(coveringMouseImage_change.gameObject.name);
         save_Attach_GameObject.Enter(this.number);
     }
 
     public void Exit()
     {
+        this.IsActive = false;
         save_Attach_GameObject.Exit(this.number);
     }
 }

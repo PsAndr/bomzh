@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using System;
 
 [Serializable]
+[AddComponentMenu("Engine/Save/Module")]
 public class SaveModule : MonoBehaviour
 {
     [SerializeField] private Global_control global_Control;
@@ -18,6 +19,9 @@ public class SaveModule : MonoBehaviour
 
     [SerializeField] private Button button;
     [SerializeField] private Button startChangeName;
+    [SerializeField] private Button deleteButton;
+
+    [SerializeField] private Image screenshotImage;
 
     [HideInInspector] public bool IsNew;
 
@@ -25,16 +29,25 @@ public class SaveModule : MonoBehaviour
 
     [HideInInspector] public string nameSave = "Имя сохранения";
 
-    void Start()
+    [HideInInspector] private readonly char[] forbiddenSymbolsPath = { '/', '\\', '*', '\"', '?', '<', '>', '|' };
+
+    [HideInInspector] public SaveWindow saveWindow;
+
+    public void Init()
     {
+        if (this.global_Control == null)
+        {
+            this.global_Control = FindObjectOfType<Global_control>();
+        }
         this.name_save.text = this.nameSave;
-        this.IsNew = false;
-        
+
         this.button.onClick.AddListener(OnClick);
 
         this.name_save.onValueChanged.AddListener(this.NameChange);
         this.name_save.onDeselect.AddListener(this.DeselectName);
         this.name_save.onEndEdit.AddListener(this.EndChangeName);
+
+        this.deleteButton.onClick.AddListener(Delete);
 
         if (this.startChangeName == null)
         {
@@ -52,6 +65,20 @@ public class SaveModule : MonoBehaviour
             saveOverMouse.Init(i, this);
             i++;
         }
+
+        if (!this.IsNew)
+        {
+            this.screenshotImage.sprite = global_Control.screenshotSaverLoader.GetScreeenshot(this.nameSave);
+        }
+        else
+        {
+            this.screenshotImage.enabled = false;
+        }
+    }
+
+    void Start()
+    {
+        
     }
 
     /*private void OnGUI()
@@ -108,19 +135,50 @@ public class SaveModule : MonoBehaviour
     {
         if (this.IsNew)
         {
+            Save_class newSave = new Save_class(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second, this.global_Control.Flags);
+            this.nameSave = newSave.name_save;
+            this.name_save.text = newSave.name_save;
 
+            this.IsNew = false;
+
+            foreach (SaveOverMouse saveOverMouse in this.overMouse)
+            {
+                if (saveOverMouse.coveringMouseImage_change != null)
+                {
+                    if (saveOverMouse.IsActive) 
+                    {
+                        if (saveOverMouse.coveringMouseImage_new != null)
+                        {
+                            saveOverMouse.coveringMouseImage_new.SetActive(false);
+                        }
+                        saveOverMouse.coveringMouseImage_change.SetActive(true);
+                    }
+                }
+            }
+
+            this.saveWindow.SpawnNewSave();
         }
         else
         {
             new Save_class(this.name_save.text).Change(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second, this.global_Control.Flags);
             Debug.Log(Application.persistentDataPath);
         }
+        global_Control.screenshotSaverLoader.MakeScreenshot(this.nameSave, this.global_Control);
+        StartCoroutine(this.WaitScreenshot());
+    }
+
+    private void Delete()
+    {
+        global_Control.screenshotSaverLoader.Delete(this.nameSave);
+        new Save_class(this.nameSave).Delete();
+        this.saveWindow.StartWaitDeleteModule();
+        Destroy(this.gameObject);
     }
 
     private void CanChangeName()
     {
-        EventSystem.current.SetSelectedGameObject(name_save.gameObject);
         this.name_save.readOnly = false;
+        EventSystem.current.SetSelectedGameObject(name_save.gameObject);
     }
 
     private void NameChange(string s)
@@ -135,11 +193,33 @@ public class SaveModule : MonoBehaviour
 
     private void EndChangeName(string s)
     {
-        new Save_class(this.nameSave).Change(s);
+        foreach (char ch in this.forbiddenSymbolsPath)
+        {
+            s = s.Replace(ch, '-');
+        }
+
+        Save_class save_Class = new Save_class(this.nameSave);
+        save_Class.Change(s);
+
+        s = save_Class.name_save;
+
+        this.global_Control.screenshotSaverLoader.ChangeName(this.nameSave, s);
+
         this.nameSave = s;
+        this.name_save.text = s;
+
         if (this.startChangeName != null)
         {
             this.name_save.readOnly = true;
         }
+    }
+
+    IEnumerator WaitScreenshot()
+    {
+        yield return null;
+        yield return null;
+        this.screenshotImage.enabled = true;
+        this.screenshotImage.sprite = global_Control.screenshotSaverLoader.GetScreeenshot(this.nameSave);
+        yield break;
     }
 }

@@ -18,6 +18,8 @@ public class TextPrintingClass : MonoBehaviour
 
     public void Init(Global_control global_Control, TextMeshProUGUI text_print, string text_to_print)
     {
+        StopAllCoroutines();
+
         this.global_Control = global_Control;
         this.text_print = text_print;
         this.text_to_print = text_to_print;
@@ -79,6 +81,11 @@ public class TextPrintingClass : MonoBehaviour
 
                 this.letters_to_print -= 1f;
                 i++;
+            }
+
+            while (this.IsPause)
+            {
+                yield return null;
             }
             yield return new WaitForSeconds(0.02f);
         }

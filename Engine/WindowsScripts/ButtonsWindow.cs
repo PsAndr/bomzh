@@ -13,6 +13,7 @@ public enum TypeButton
     CloseAndOpen
 }
 
+[AddComponentMenu("Engine/Window/Button")]
 [Serializable]
 public class ButtonsWindow : MonoBehaviour
 {
@@ -110,6 +111,7 @@ public class ButtonsWindow : MonoBehaviour
     public void OnClick()
     {
         List<GameObject> OtherWindowPartsClose = new List<GameObject>();
+        List<GameObject> SaveOpenedWindows = new List<GameObject>();
 
         switch (this.typeButton)
         {
@@ -121,15 +123,16 @@ public class ButtonsWindow : MonoBehaviour
                     {
                         if (game_object.GetComponent<Window>() != null)
                         {
-                            if (!this.SaveOpenedWindows)
+                            if (this.SaveOpenedWindows && game_object.activeSelf)
                             {
-                                game_object.GetComponent<Window>().CloseWindow();
+                                SaveOpenedWindows.Add(game_object);
                             }
+                            game_object.SetActive(false);
                         }
                     }
                 }
 
-                this.window_script.CloseWindow();
+                this.window_script.CloseWindow(SaveOpenedWindows.ToArray());
                 break;
 
             case TypeButton.Open:

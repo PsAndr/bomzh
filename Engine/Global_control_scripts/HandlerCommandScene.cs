@@ -82,7 +82,7 @@ public class HandlerCommandScene
 
                 int number_command = 0;
 
-                if (command.dict_values.ContainsKey("commandNumber"))
+                if (command.dict_values != null && command.dict_values.ContainsKey("commandNumber"))
                 {
                     if (command.dict_values["commandNumber"].Length > 0)
                     {

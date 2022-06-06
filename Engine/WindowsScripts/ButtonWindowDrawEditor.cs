@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 
-
+#if UNITY_EDITOR
 [CustomEditor(typeof(ButtonsWindow))]
 public class ButtonWindowDrawEditor : Editor
 {
@@ -57,3 +57,4 @@ public class ButtonWindowDrawEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 }
+#endif

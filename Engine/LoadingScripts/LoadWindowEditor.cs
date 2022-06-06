@@ -1,30 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEditor;
 
 #if UNITY_EDITOR
-[CustomEditor(typeof(SaveWindow))]
-public class SaveWindowEditor : Editor
+[CustomEditor(typeof(LoadWindow))]
+public class LoadWindowEditor : Editor
 {
+    SerializedProperty restartScene;
+    SerializedProperty global_Control;
     SerializedProperty prefabModule;
     SerializedProperty countLines;
-    SerializedProperty countInLine;
-    SerializedProperty global_Control;
-    SerializedProperty toSpawnModules;
     SerializedProperty deltaHorizontal;
-    SerializedProperty scaleWithSavesCount;
+    SerializedProperty toSpawnModules;
 
     private void OnEnable()
     {
+        this.restartScene = serializedObject.FindProperty("restartScene");
+        this.global_Control = serializedObject.FindProperty("global_Control");
         this.prefabModule = serializedObject.FindProperty("prefabModule");
         this.countLines = serializedObject.FindProperty("countLines");
-        this.countInLine = serializedObject.FindProperty("countInLine");
-        this.global_Control = serializedObject.FindProperty("global_Control");
-        this.toSpawnModules = serializedObject.FindProperty("toSpawnModules");
         this.deltaHorizontal = serializedObject.FindProperty("deltaHorizontal");
-        this.scaleWithSavesCount = serializedObject.FindProperty("scaleWithSavesCount");
+        this.toSpawnModules = serializedObject.FindProperty("toSpawnModules");
     }
 
     public override void OnInspectorGUI()
@@ -35,13 +32,12 @@ public class SaveWindowEditor : Editor
         EditorGUILayout.PropertyField(this.prefabModule);
         EditorGUILayout.PropertyField(this.toSpawnModules);
         EditorGUILayout.PropertyField(this.countLines);
-        EditorGUILayout.PropertyField(this.countInLine);
-        EditorGUILayout.PropertyField(this.scaleWithSavesCount);
         EditorGUILayout.PropertyField(this.deltaHorizontal);
+        EditorGUILayout.PropertyField(this.restartScene);
 
-        if (((GameObject)this.prefabModule.objectReferenceValue) != null && ((GameObject)this.prefabModule.objectReferenceValue).GetComponent<SaveModule>() == null)
+        if (((GameObject)this.prefabModule.objectReferenceValue) != null && ((GameObject)this.prefabModule.objectReferenceValue).GetComponent<LoadModule>() == null)
         {
-            ((GameObject)this.prefabModule.objectReferenceValue).AddComponent<SaveModule>();
+            ((GameObject)this.prefabModule.objectReferenceValue).AddComponent<LoadModule>();
         }
 
         serializedObject.ApplyModifiedProperties();

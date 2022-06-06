@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[AddComponentMenu("Engine/Window/Window")]
+[System.Serializable]
 public class Window : MonoBehaviour
 {
     [SerializeField] private AnimationClip animationClip_open;
@@ -11,6 +13,7 @@ public class Window : MonoBehaviour
     private bool OpenPreviousWindow = false;
 
     private GameObject[] OpenWindowParts;
+    private GameObject[] OpenWindows;
 
     private bool IsPlayAnimation = false;
 
@@ -43,11 +46,22 @@ public class Window : MonoBehaviour
             StartCoroutine("Open");
         }
 
+        if (this.OpenWindows != null)
+        {
+            foreach (GameObject obj in this.OpenWindows)
+            {
+                obj.SetActive(true);
+            }
+            this.OpenWindows = null;
+        }
+
         return true;
     }
 
-    public bool CloseWindow()
+    public bool CloseWindow(GameObject[] OpenWindows = null)
     {
+        this.OpenWindows = OpenWindows;
+
         if (!gameObject.activeSelf || this.IsPlayAnimation)
         {
             return false;

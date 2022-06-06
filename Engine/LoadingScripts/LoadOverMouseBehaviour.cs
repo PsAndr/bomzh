@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SaveOverMouseBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class LoadOverMouseBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public SaveOverMouse parentScript;
+    [HideInInspector] public LoadOverMouse parentScript;
 
     public void OnPointerEnter(PointerEventData data)
     {
@@ -17,13 +17,8 @@ public class SaveOverMouseBehaviour : MonoBehaviour, IPointerEnterHandler, IPoin
         parentScript.Exit();
     }
 
-    /*public void OnGUI()
+    void OnDisable()
     {
-        Debug.Log(Event.current.mousePosition);
-    }*/
-
-    public void OnDisable()
-    {
-        parentScript.Exit();
+        parentScript.Exit();    
     }
 }

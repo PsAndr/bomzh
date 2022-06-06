@@ -55,12 +55,21 @@ public class Global_control : MonoBehaviour
     [SerializeField] public float speed_printing_text = 6f;
 
     [HideInInspector] public HandlerCommandScene handlerCommandScene;
+    [HideInInspector] public ScreenshotSaverLoader screenshotSaverLoader;
 
     private void Awake()
     {
         this.backgroundsLoader = new BackgroundsLoader();
         this.scenes_Loader = new Scenes_loader();
         this.spritesLoader = new SpritesLoader();
+
+        new Save_list_names(true);
+
+        this.screenshotSaverLoader = new ScreenshotSaverLoader();
+
+        FindObjectOfType<SaveWindow>(true).Init();
+        FindObjectOfType<LoadWindow>(true).Init();
+
         Flags = new Dictionary<string, int>();
         this.canvasToScreenshot.gameObject.SetActive(false);
 
@@ -104,7 +113,7 @@ public class Global_control : MonoBehaviour
     {
         if (number == -1)
         {
-            if (name == null)
+            if (string.IsNullOrEmpty(name))
             {
                 foreach (KeyValuePair<int, Scene_class> kvp in this.scenes_Loader.Scenes_dict)
                 {
@@ -173,7 +182,7 @@ public class Global_control : MonoBehaviour
         return spawn_object;
     }
 
-    public void DestroyObject(GameObject gameObject, float time_to_destroy)
+    public void DestroyObject(GameObject gameObject, float time_to_destroy = 0f)
     {
         Destroy(gameObject, time_to_destroy);
     }
@@ -191,7 +200,7 @@ public class Global_control : MonoBehaviour
         }
     }
 
-    public void MakeScreenshot()
+    public void MakeScreenshot(string path)
     {
         this.cameraToScreenshot.gameObject.SetActive(true);
         this.canvasToScreenshot.gameObject.SetActive(true);
@@ -201,10 +210,23 @@ public class Global_control : MonoBehaviour
             this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", this.canvasToScreenshot.transform);
         }
 
-        StartCoroutine("WaitScreenshot");
+        StartCoroutine(this.WaitScreenshot(path));
     }
 
-    IEnumerator WaitScreenshot()
+    public void MakeScreenshot(string path, string nameSave)
+    {
+        this.cameraToScreenshot.gameObject.SetActive(true);
+        this.canvasToScreenshot.gameObject.SetActive(true);
+
+        foreach (GameObject to_spawn in this.RenderToScreenshot)
+        {
+            this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", this.canvasToScreenshot.transform);
+        }
+
+        StartCoroutine(this.WaitScreenshot(path, nameSave));
+    }
+
+    IEnumerator WaitScreenshot(string path)
     {
         yield return null;
 
@@ -217,18 +239,45 @@ public class Global_control : MonoBehaviour
         texture2D.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
         texture2D.Apply();
 
-        File.WriteAllBytes(Application.dataPath + "/screenshot.jpg", texture2D.EncodeToJPG());
+        File.WriteAllBytes(path, texture2D.EncodeToJPG());
 
         this.DestroyAllObjects(this.canvasToScreenshot.transform); 
         
         this.cameraToScreenshot.gameObject.SetActive(false);
         this.canvasToScreenshot.gameObject.SetActive(false);
 
-        StopCoroutine("WaitScreenshot");
+        yield break;
     }
 
-    public Pair<string, int> GetSceneValues()
+    IEnumerator WaitScreenshot(string path, string nameSave)
     {
-        return new Pair<string, int>(this.scene_name, this.number_command_scene);
+        yield return null;
+
+        RenderTexture texture = this.cameraToScreenshot.targetTexture;
+
+        Texture2D texture2D = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
+
+        RenderTexture.active = texture;
+
+        texture2D.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
+        texture2D.Apply();
+
+        File.WriteAllBytes(path, texture2D.EncodeToJPG());
+
+        this.DestroyAllObjects(this.canvasToScreenshot.transform);
+
+        this.cameraToScreenshot.gameObject.SetActive(false);
+        this.canvasToScreenshot.gameObject.SetActive(false);
+
+        yield return null;
+
+        this.screenshotSaverLoader.Update(nameSave);
+
+        yield break;
+    }
+
+    public Pair<int, int> GetSceneValues()
+    {
+        return new Pair<int, int>(this.scene_number, this.number_command_scene);
     }
 }
