@@ -1,109 +1,135 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Engine;
+using Engine.WorkWithRectTransform;
 
-[AddComponentMenu("Engine/Window/Window")]
-[System.Serializable]
-public class Window : MonoBehaviour
+namespace Engine
 {
-    [SerializeField] private AnimationClip animationClip_open;
-    [SerializeField] private AnimationClip animationClip_close;
-
-    private Window previous_window;
-    private bool OpenPreviousWindow = false;
-
-    private GameObject[] OpenWindowParts;
-    private GameObject[] OpenWindows;
-
-    private bool IsPlayAnimation = false;
-
-    public bool CanOpenOrClose()
+    ///<summary>Class of window attach to <c>GameObject</c></summary>
+    [AddComponentMenu("Engine/Window/Window")]
+    [System.Serializable]
+    public class Window : MonoBehaviour
     {
-        bool flag = true;
+        [SerializeField] private AnimationClip animationClip_open;
+        [SerializeField] private AnimationClip animationClip_close;
 
-        flag = flag && !this.IsPlayAnimation;
+        [SerializeField] private RectTransform[] setDefaultOpen;
 
-        return flag;
-    }
+        [HideInInspector] public RectTransformSaveValues[] saveDefaultOpenValues;
 
-    public bool OpenWindow(Window previous_window, bool OpenPreviousWindow, GameObject[] OpenWindowParts)
-    {
-        if (gameObject.activeSelf || this.IsPlayAnimation)
+        private Window previous_window;
+        private bool OpenPreviousWindow = false;
+
+        private GameObject[] OpenWindowParts;
+        private GameObject[] OpenWindows;
+
+        private bool IsPlayAnimation = false;
+
+        public void UpdateDefaultOpenValues()
         {
-            return false;
-        }
-
-        this.previous_window = previous_window;
-        this.OpenPreviousWindow = OpenPreviousWindow;
-        this.OpenWindowParts = OpenWindowParts;
-
-        gameObject.SetActive(true);
-
-        if (animationClip_open != null)
-        {
-            GetComponent<Animator>().Play(animationClip_open.name);
-            this.IsPlayAnimation = true;
-            StartCoroutine("Open");
-        }
-
-        if (this.OpenWindows != null)
-        {
-            foreach (GameObject obj in this.OpenWindows)
+            this.saveDefaultOpenValues = new RectTransformSaveValues[this.setDefaultOpen.Length];
+            for (int i = 0; i < this.saveDefaultOpenValues.Length; i++)
             {
-                obj.SetActive(true);
+                this.saveDefaultOpenValues[i] = new RectTransformSaveValues(this.setDefaultOpen[i]);
             }
-            this.OpenWindows = null;
         }
 
-        return true;
-    }
-
-    public bool CloseWindow(GameObject[] OpenWindows = null)
-    {
-        this.OpenWindows = OpenWindows;
-
-        if (!gameObject.activeSelf || this.IsPlayAnimation)
+        public bool CanOpenOrClose()
         {
-            return false;
+            bool flag = true;
+
+            flag = flag && !this.IsPlayAnimation;
+
+            return flag;
         }
 
-        if (animationClip_close != null)
+        public bool OpenWindow(Window previous_window, bool OpenPreviousWindow, GameObject[] OpenWindowParts)
         {
-            GetComponent<Animator>().Play(animationClip_close.name);
-            this.IsPlayAnimation = true;
-            StartCoroutine("Close");
+            int i = 0;
+            foreach (RectTransformSaveValues rectTransform in this.saveDefaultOpenValues)
+            {
+                rectTransform.UpdateRectTransform(this.setDefaultOpen[i]);
+                i++;
+            }
+
+            if (gameObject.activeSelf || this.IsPlayAnimation)
+            {
+                return false;
+            }
+
+            this.previous_window = previous_window;
+            this.OpenPreviousWindow = OpenPreviousWindow;
+            this.OpenWindowParts = OpenWindowParts;
+
+            gameObject.SetActive(true);
+
+            if (animationClip_open != null)
+            {
+                GetComponent<Animator>().Play(animationClip_open.name);
+                this.IsPlayAnimation = true;
+                StartCoroutine("Open");
+            }
+
+            if (this.OpenWindows != null)
+            {
+                foreach (GameObject obj in this.OpenWindows)
+                {
+                    obj.SetActive(true);
+                }
+                this.OpenWindows = null;
+            }
+
+            return true;
         }
-        else
+
+        public bool CloseWindow(GameObject[] OpenWindows = null)
         {
+            this.OpenWindows = OpenWindows;
+
+            if (!gameObject.activeSelf || this.IsPlayAnimation)
+            {
+                return false;
+            }
+
+            if (animationClip_close != null)
+            {
+                GetComponent<Animator>().Play(animationClip_close.name);
+                this.IsPlayAnimation = true;
+                StartCoroutine("Close");
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
+
+            if (this.OpenPreviousWindow)
+            {
+                foreach (GameObject obj in this.OpenWindowParts)
+                {
+                    obj.SetActive(true);
+                }
+            }
+
+            return true;
+        }
+
+        IEnumerator Close()
+        {
+            yield return new WaitForSeconds(animationClip_close.length);
+
             gameObject.SetActive(false);
+
+            this.IsPlayAnimation = false;
+
+            StopCoroutine("Close");
         }
 
-        if (this.OpenPreviousWindow)
+        IEnumerator Open()
         {
-            foreach (GameObject obj in this.OpenWindowParts)
-            {
-                obj.SetActive(true);
-            }
+            yield return new WaitForSeconds(animationClip_open.length);
+            this.IsPlayAnimation = false;
+            StopCoroutine("Open");
         }
-
-        return true;
-    }
-
-    IEnumerator Close()
-    {
-        yield return new WaitForSeconds(animationClip_close.length);
-
-        gameObject.SetActive(false);
-
-        this.IsPlayAnimation = false;
-
-        StopCoroutine("Close");
-    }
-
-    IEnumerator Open()
-    {
-        yield return new WaitForSeconds(animationClip_open.length);
-        this.IsPlayAnimation = false;
-        StopCoroutine("Open");
     }
 }

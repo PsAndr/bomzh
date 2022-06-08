@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Engine;
 
 [System.Serializable]
 [AddComponentMenu("Engine/Save/Window")]
@@ -39,6 +40,11 @@ public class SaveWindow : MonoBehaviour
 
     private void Start()
     {
+    }
+
+    private void OnEnable()
+    {
+        CheckScale();
     }
 
     private void LoadSaves()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
+using Engine;
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(ButtonsWindow))]
@@ -33,20 +34,20 @@ public class ButtonWindowDrawEditor : Editor
         EditorGUILayout.PropertyField(keyCodes);
         EditorGUILayout.PropertyField(typeButton);
 
-        TypeButton type = (TypeButton)typeButton.enumValueIndex;
+        TypeButtonWindow type = (TypeButtonWindow)typeButton.enumValueIndex;
 
         switch (type)
         {
-            case TypeButton.Open:
+            case TypeButtonWindow.Open:
                 EditorGUILayout.PropertyField(CloseOtherWindows);
                 EditorGUILayout.PropertyField(CloseThisWindow);
                 break;
 
-            case TypeButton.Close:
+            case TypeButtonWindow.Close:
                 EditorGUILayout.PropertyField(SaveOpenedWindows);
                 break;
 
-            case TypeButton.CloseAndOpen:
+            case TypeButtonWindow.CloseAndOpen:
                 EditorGUILayout.PropertyField(CloseOtherWindows);
                 EditorGUILayout.PropertyField(CloseThisWindow);
                 EditorGUILayout.PropertyField(SaveOpenedWindows);

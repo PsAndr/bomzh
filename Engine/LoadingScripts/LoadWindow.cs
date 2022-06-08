@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [AddComponentMenu("Engine/Load/Window")]
 public class LoadWindow : MonoBehaviour
 {
-    [SerializeField] private bool restartScene;
+    [SerializeField] private bool startScene;
     [SerializeField] private Global_control global_Control;
+    [SerializeField] private SceneUnityController sceneUnityController;
 
     [SerializeField] private GameObject prefabModule;
 
@@ -14,6 +16,9 @@ public class LoadWindow : MonoBehaviour
     [SerializeField] private float deltaHorizontal;
 
     [SerializeField] private GameObject toSpawnModules;
+
+    [HideInInspector] public string newSceneStart;
+    [HideInInspector] public int sceneIndex; 
 
     private bool IsInit = false;
 
@@ -23,13 +28,20 @@ public class LoadWindow : MonoBehaviour
         {
             this.toSpawnModules = gameObject;
         }
+
         if (this.global_Control == null)
         {
             this.global_Control = FindObjectOfType<Global_control>();
         }
-        this.LoadSaves();
 
-        StartCoroutine(this.WaitNextFrame());
+        if (this.sceneUnityController == null)
+        {
+            this.sceneUnityController = FindObjectOfType<SceneUnityController>();
+        }
+
+        //this.LoadSaves();
+
+        this.IsInit = true;
     }
 
     IEnumerator WaitNextFrame()
@@ -76,7 +88,7 @@ public class LoadWindow : MonoBehaviour
             lineIndex %= this.countLines;
         }
 
-        StartCoroutine(this.WaitCheckScale());
+        this.CheckScale();
     }
 
     private void CheckScale()
@@ -118,9 +130,10 @@ public class LoadWindow : MonoBehaviour
     public void Load(string nameSave)
     {
         Save_class saveLoad = new Save_class(nameSave);
-        if (this.restartScene)
+        if (this.startScene)
         {
-
+            this.global_Control.sceneNow.SetValues(saveLoad.scene_number, null, saveLoad.number_command_scene);
+            sceneUnityController.LoadNewScene(this.newSceneStart);
         }
         else
         {

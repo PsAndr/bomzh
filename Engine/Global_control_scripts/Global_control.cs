@@ -9,7 +9,11 @@ using UnityEngine.UI;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
+using Engine;
 
+/// <summary>
+/// Controler all on a game scene
+/// </summary>
 public class Global_control : MonoBehaviour
 {
     [SerializeField] public GameObject text_dialogue;
@@ -34,11 +38,14 @@ public class Global_control : MonoBehaviour
 
     [SerializeField] public GameObject[] ObjectsStopLookScene;
 
+    [SerializeField] public SceneNow sceneNow;
+
     private Scenes_loader scenes_Loader;
 
-    //для управления сценами
-    [SerializeField] private int scene_number_start = -1;
-    [SerializeField] private string scene_name_start = null;
+    //for control scenes
+    [SerializeField] private int sceneNumberStart = -1;
+    [SerializeField] private string sceneNameStart = null;
+    [SerializeField] private int sceneNumberCommandStart = 0;
 
     private int scene_number;
     private string scene_name;
@@ -59,6 +66,11 @@ public class Global_control : MonoBehaviour
 
     private void Awake()
     {
+        if (Application.isEditor)
+        {
+            SaveLoadStartScene.Save(this.sceneNumberStart, this.sceneNameStart, this.sceneNumberCommandStart);
+        }
+
         this.backgroundsLoader = new BackgroundsLoader();
         this.scenes_Loader = new Scenes_loader();
         this.spritesLoader = new SpritesLoader();
@@ -80,7 +92,8 @@ public class Global_control : MonoBehaviour
 
     void Start()
     {
-        this.ChangeScene(this.scene_number_start, this.scene_name_start);
+        SceneEngine sceneStart = this.sceneNow.GetValue();
+        this.ChangeScene(sceneStart.sceneNumber, sceneStart.sceneName, sceneStart.numberCommandScene);
 
         this.cameraToScreenshot.gameObject.SetActive(false);
     }
