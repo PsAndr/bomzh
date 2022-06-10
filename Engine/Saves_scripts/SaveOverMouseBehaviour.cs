@@ -3,27 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SaveOverMouseBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+namespace Engine
 {
-    public SaveOverMouse parentScript;
-
-    public void OnPointerEnter(PointerEventData data)
+    public class SaveOverMouseBehaviour : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        parentScript.Enter();
-    }
+        public SaveOverMouse parentScript;
 
-    public void OnPointerExit(PointerEventData data)
-    {
-        parentScript.Exit();
-    }
+        public void OnPointerEnter(PointerEventData data)
+        {
+            parentScript.Enter();
+        }
 
-    /*public void OnGUI()
-    {
-        Debug.Log(Event.current.mousePosition);
-    }*/
+        public void OnPointerExit(PointerEventData data)
+        {
+            parentScript.Exit();
+        }
 
-    public void OnDisable()
-    {
-        parentScript.Exit();
+        /*public void OnGUI()
+        {
+            Debug.Log(Event.current.mousePosition);
+        }*/
+
+        public void OnDisable()
+        {
+            parentScript.Exit();
+        }
     }
 }

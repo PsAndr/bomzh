@@ -9,288 +9,366 @@ using UnityEngine.UI;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
-using Engine;
 
-/// <summary>
-/// Controler all on a game scene
-/// </summary>
-public class Global_control : MonoBehaviour
+namespace Engine
 {
-    [SerializeField] public GameObject text_dialogue;
-    [SerializeField] public TextMeshProUGUI text_character;
-
-    [SerializeField] public GameObject canvas;
-
-    [SerializeField] public Button ButtonScreen;
-
-    [SerializeField] public GameObject button;
-    [SerializeField] public GameObject button_field;
-
-    [SerializeField] public GameObject ToSpawnSprite;
-
-    [SerializeField] public Image background;
-
-    [SerializeField] public GameObject prefab_sprites;
-
-    [SerializeField] private GameObject canvasToScreenshot;
-    [SerializeField] private Camera cameraToScreenshot;
-    [SerializeField] private GameObject[] RenderToScreenshot;
-
-    [SerializeField] public GameObject[] ObjectsStopLookScene;
-
-    [SerializeField] public SceneNow sceneNow;
-
-    private Scenes_loader scenes_Loader;
-
-    //for control scenes
-    [SerializeField] private int sceneNumberStart = -1;
-    [SerializeField] private string sceneNameStart = null;
-    [SerializeField] private int sceneNumberCommandStart = 0;
-
-    private int scene_number;
-    private string scene_name;
-
-    private int number_command_scene;
-
-    [HideInInspector] public Dictionary<string, int> Flags;
-    [HideInInspector] public List<string> Flags_name;
-    //
-
-    [HideInInspector] public BackgroundsLoader backgroundsLoader;
-    [HideInInspector] public SpritesLoader spritesLoader;
-
-    [SerializeField] public float speed_printing_text = 6f;
-
-    [HideInInspector] public HandlerCommandScene handlerCommandScene;
-    [HideInInspector] public ScreenshotSaverLoader screenshotSaverLoader;
-
-    private void Awake()
+    /// <summary>
+    /// Controler all on a game scene
+    /// </summary>
+    public class Global_control : MonoBehaviour
     {
-        if (Application.isEditor)
+        [SerializeField] public TextMeshProUGUI text_dialogue;
+        [SerializeField] public TextMeshProUGUI text_character;
+
+        [SerializeField] public GameObject canvas;
+
+        [SerializeField] public Button ButtonScreen;
+
+        [SerializeField] public GameObject button;
+        [SerializeField] public GameObject button_field;
+
+        [SerializeField] public GameObject ToSpawnSprite;
+
+        [SerializeField] public Image background;
+
+        [SerializeField] public GameObject prefab_sprites;
+
+        [SerializeField] private GameObject canvasToScreenshot;
+        [SerializeField] private Camera cameraToScreenshot;
+        [SerializeField] private GameObject[] RenderToScreenshot;
+
+        [SerializeField] public GameObject[] ObjectsStopLookScene;
+
+        [SerializeField] public SceneNow sceneNow;
+
+        private Scenes_loader scenes_Loader;
+
+        //for control scenes
+        [SerializeField] private int sceneNumberStart = -1;
+        [SerializeField] private string sceneNameStart = null;
+        [SerializeField] private int sceneNumberCommandStart = 0;
+
+        private int scene_number;
+        private string scene_name;
+
+        private int number_command_scene;
+
+        [HideInInspector] public Dictionary<string, int> Flags;
+        [HideInInspector] public List<string> Flags_name;
+        //
+
+        [HideInInspector] public BackgroundsLoader backgroundsLoader;
+        [HideInInspector] public SpritesLoader spritesLoader;
+        [HideInInspector] public AudioLoader audioLoader;
+
+        [SerializeField] public float speed_printing_text = 6f;
+
+        [HideInInspector] public HandlerCommandScene handlerCommandScene;
+        [HideInInspector] public ScreenshotSaverLoader screenshotSaverLoader;
+
+        [HideInInspector] public AudioHandler audioHandler;
+
+        [HideInInspector] public int indexPrint = 0;
+
+        private void Awake()
+        {
+            if (Application.isEditor)
+            {
+                SaveStartSceneValues();
+            }
+
+            UpdateFiles();
+
+            this.audioHandler = gameObject.AddComponent<AudioHandler>();
+
+            new Save_list_names(true);
+
+            this.screenshotSaverLoader = new ScreenshotSaverLoader();
+
+            FindObjectOfType<SaveWindow>(true).Init();
+            FindObjectOfType<LoadWindow>(true).Init();
+
+            Flags = new Dictionary<string, int>();
+            this.canvasToScreenshot.gameObject.SetActive(false);
+
+            gameObject.AddComponent<TextPrintingClass>();
+
+            handlerCommandScene = new HandlerCommandScene();
+        }
+
+        public void SaveStartSceneValues()
         {
             SaveLoadStartScene.Save(this.sceneNumberStart, this.sceneNameStart, this.sceneNumberCommandStart);
         }
 
-        this.backgroundsLoader = new BackgroundsLoader();
-        this.scenes_Loader = new Scenes_loader();
-        this.spritesLoader = new SpritesLoader();
-
-        new Save_list_names(true);
-
-        this.screenshotSaverLoader = new ScreenshotSaverLoader();
-
-        FindObjectOfType<SaveWindow>(true).Init();
-        FindObjectOfType<LoadWindow>(true).Init();
-
-        Flags = new Dictionary<string, int>();
-        this.canvasToScreenshot.gameObject.SetActive(false);
-
-        gameObject.AddComponent<TextPrintingClass>();
-
-        handlerCommandScene = new HandlerCommandScene();
-    }
-
-    void Start()
-    {
-        SceneEngine sceneStart = this.sceneNow.GetValue();
-        this.ChangeScene(sceneStart.sceneNumber, sceneStart.sceneName, sceneStart.numberCommandScene);
-
-        this.cameraToScreenshot.gameObject.SetActive(false);
-    }
-
-    void Update()
-    {
-        this.CheckObjectsStopLookScene();
-    }
-
-    private void CheckObjectsStopLookScene()
-    {
-        foreach (GameObject obj in this.ObjectsStopLookScene)
+        public void UpdateFiles()
         {
-            if (obj.activeSelf)
+            this.backgroundsLoader = new BackgroundsLoader();
+            this.scenes_Loader = new Scenes_loader();
+            this.spritesLoader = new SpritesLoader();
+            this.audioLoader = new AudioLoader();
+        }
+
+        void Start()
+        {
+            this.ChangeScene(this.sceneNow.GetAllValues());
+
+            this.cameraToScreenshot.gameObject.SetActive(false);
+        }
+
+        void Update()
+        {
+            this.CheckObjectsStopLookScene();
+        }
+
+        private void CheckObjectsStopLookScene()
+        {
+            foreach (GameObject obj in this.ObjectsStopLookScene)
             {
-                if (this.handlerCommandScene.IsLookScene)
+                if (obj.activeSelf)
                 {
-                    this.handlerCommandScene.StopLookScene(this);
+                    if (this.handlerCommandScene.IsLookScene)
+                    {
+                        this.handlerCommandScene.StopLookScene(this);
+                    }
+                    return;
                 }
-                return;
+            }
+            if (!this.handlerCommandScene.IsLookScene)
+            {
+                this.handlerCommandScene.StartLookScene(this);
             }
         }
-        if (!this.handlerCommandScene.IsLookScene)
-        {
-            this.handlerCommandScene.StartLookScene(this);
-        }
-    }
 
-    public void ChangeScene(int number, string name, int num_command = 0)
-    {
-        if (number == -1)
+        public void ChangeScene(int number, string name, int num_command = 0)
         {
-            if (string.IsNullOrEmpty(name))
+            if (number == -1)
+            {
+                if (string.IsNullOrEmpty(name))
+                {
+                    foreach (KeyValuePair<int, Scene_class> kvp in this.scenes_Loader.Scenes_dict)
+                    {
+                        number = kvp.Key;
+                        break;
+                    }
+                }
+                else
+                {
+                    number = this.scenes_Loader.Scenes_names_dict[name];
+                }
+            }
+
+            this.scene_name = name;
+            this.scene_number = number;
+
+            this.number_command_scene = num_command;
+
+            this.SceneCommands();
+
+            if (!this.handlerCommandScene.IsLookScene)
+            {
+                this.handlerCommandScene.StopLookScene(this);
+            }
+        }
+
+        public void ChangeScene(Save_class saveClass)
+        {
+            if (saveClass.scene_number == -1)
             {
                 foreach (KeyValuePair<int, Scene_class> kvp in this.scenes_Loader.Scenes_dict)
                 {
-                    number = kvp.Key;
+                    saveClass.scene_number = kvp.Key;
                     break;
                 }
             }
+
+            if (saveClass.flags != null)
+            {
+                this.Flags = saveClass.flags.ConvertToDictionary();
+            }
             else
             {
-                number = this.scenes_Loader.Scenes_names_dict[name];
+                this.Flags = new Dictionary<string, int>();
+            }
+
+            if (!string.IsNullOrEmpty(saveClass.nameBackground))
+            {
+                this.background.sprite = this.backgroundsLoader.backgrounds[saveClass.nameBackground.Split(' ')[0]];
+            }
+
+            if (saveClass.audioHelpers != null)
+            {
+                this.audioHandler.StopAll();
+                foreach (AudioHelper.SaveClass audioHelper in saveClass.audioHelpers)
+                {
+                    this.audioHandler.PlayClip(this, audioHelper);
+                }
+            }
+
+            this.indexPrint = saveClass.indexPrint;
+
+            this.text_character.text = saveClass.textOnSceneCharacter;
+            this.text_dialogue.text = saveClass.textOnSceneDialogue;
+
+            TextMeshProUGUISclaeWithText.Scale(this.text_character);
+            TextMeshProUGUISclaeWithText.Scale(this.text_dialogue);
+
+            this.scene_number = saveClass.scene_number;
+            this.scene_name = null;
+            this.number_command_scene = saveClass.number_command_scene;
+
+            this.SceneCommands();
+
+            if (!this.handlerCommandScene.IsLookScene)
+            {
+                this.handlerCommandScene.StopLookScene(this);
             }
         }
 
-        this.scene_name = name;
-        this.scene_number = number;
-
-        this.number_command_scene = num_command;
-
-        this.SceneCommands();
-    }
-
-    public void NewCommandScene()
-    {
-        
-        if (this.handlerCommandScene.CanDoNextCommand())
+        public void NewCommandScene()
         {
-            this.number_command_scene++;
-            this.SceneCommands();
-        }
-        else if (this.handlerCommandScene.IsPrintingText)
-        {
-            gameObject.GetComponent<TextPrintingClass>().StopPrinting();
-        }
-    }
 
-    private void SceneCommands()
-    {
-        if (number_command_scene >= this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length)
-        {
-            number_command_scene = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length;
-            Debug.LogWarning("The end");
-            return;
+            if (this.handlerCommandScene.CanDoNextCommand())
+            {
+                this.number_command_scene++;
+                this.SceneCommands();
+            }
+            else if (this.handlerCommandScene.IsPrintingText)
+            {
+                gameObject.GetComponent<TextPrintingClass>().StopPrinting();
+            }
         }
 
-        Scene_class.DialogueOrChoiceOrCommand command = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene];
-
-        handlerCommandScene.SetCommand(this, command);
-    }
-
-    public GameObject SpawnObject(GameObject prefab, Vector3 position, Vector3 size, Vector3 rotation, string name, Transform parent)
-    {
-        GameObject spawn_object = Instantiate(prefab, position, Quaternion.identity, parent);
-
-        spawn_object.transform.localPosition = position;
-
-        if (!string.IsNullOrEmpty(name))
+        private void SceneCommands()
         {
-            spawn_object.name = name;
+            if (number_command_scene >= this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length)
+            {
+                number_command_scene = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length;
+                Debug.LogWarning("The end");
+                return;
+            }
+
+            Scene_class.DialogueOrChoiceOrCommand command = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene];
+
+            handlerCommandScene.SetCommand(this, command);
         }
 
-        Quaternion quaternion = Quaternion.Euler(rotation);
-        spawn_object.transform.localRotation = quaternion;
-
-        spawn_object.transform.localScale = size;
-
-        return spawn_object;
-    }
-
-    public void DestroyObject(GameObject gameObject, float time_to_destroy = 0f)
-    {
-        Destroy(gameObject, time_to_destroy);
-    }
-
-    public void DestroyObject(Transform whereObjectIs, string name)
-    {
-        Destroy(whereObjectIs.Find(name).gameObject);
-    }
-
-    public void DestroyAllObjects(Transform from)
-    {
-        for (int i = 0; i < from.childCount; i++)
+        public GameObject SpawnObject(GameObject prefab, Vector3 position, Vector3 size, Vector3 rotation, string name, Transform parent)
         {
-            Destroy(from.GetChild(i).gameObject);
-        }
-    }
+            GameObject spawn_object = Instantiate(prefab, position, Quaternion.identity, parent);
 
-    public void MakeScreenshot(string path)
-    {
-        this.cameraToScreenshot.gameObject.SetActive(true);
-        this.canvasToScreenshot.gameObject.SetActive(true);
+            spawn_object.transform.localPosition = position;
 
-        foreach (GameObject to_spawn in this.RenderToScreenshot)
-        {
-            this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", this.canvasToScreenshot.transform);
+            if (!string.IsNullOrEmpty(name))
+            {
+                spawn_object.name = name;
+            }
+
+            Quaternion quaternion = Quaternion.Euler(rotation);
+            spawn_object.transform.localRotation = quaternion;
+
+            spawn_object.transform.localScale = size;
+
+            return spawn_object;
         }
 
-        StartCoroutine(this.WaitScreenshot(path));
-    }
-
-    public void MakeScreenshot(string path, string nameSave)
-    {
-        this.cameraToScreenshot.gameObject.SetActive(true);
-        this.canvasToScreenshot.gameObject.SetActive(true);
-
-        foreach (GameObject to_spawn in this.RenderToScreenshot)
+        public void DestroyObject(GameObject gameObject, float time_to_destroy = 0f)
         {
-            this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", this.canvasToScreenshot.transform);
+            Destroy(gameObject, time_to_destroy);
         }
 
-        StartCoroutine(this.WaitScreenshot(path, nameSave));
-    }
+        public void DestroyObject(Transform whereObjectIs, string name)
+        {
+            Destroy(whereObjectIs.Find(name).gameObject);
+        }
 
-    IEnumerator WaitScreenshot(string path)
-    {
-        yield return null;
+        public void DestroyAllObjects(Transform from)
+        {
+            for (int i = 0; i < from.childCount; i++)
+            {
+                Destroy(from.GetChild(i).gameObject);
+            }
+        }
 
-        RenderTexture texture = this.cameraToScreenshot.targetTexture;
+        public void MakeScreenshot(string path)
+        {
+            this.cameraToScreenshot.gameObject.SetActive(true);
+            this.canvasToScreenshot.gameObject.SetActive(true);
 
-        Texture2D texture2D = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
+            foreach (GameObject to_spawn in this.RenderToScreenshot)
+            {
+                this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", this.canvasToScreenshot.transform);
+            }
 
-        RenderTexture.active = texture;
+            StartCoroutine(this.WaitScreenshot(path));
+        }
 
-        texture2D.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
-        texture2D.Apply();
+        public void MakeScreenshot(string path, string nameSave)
+        {
+            this.cameraToScreenshot.gameObject.SetActive(true);
+            this.canvasToScreenshot.gameObject.SetActive(true);
 
-        File.WriteAllBytes(path, texture2D.EncodeToJPG());
+            foreach (GameObject to_spawn in this.RenderToScreenshot)
+            {
+                this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", this.canvasToScreenshot.transform);
+            }
 
-        this.DestroyAllObjects(this.canvasToScreenshot.transform); 
-        
-        this.cameraToScreenshot.gameObject.SetActive(false);
-        this.canvasToScreenshot.gameObject.SetActive(false);
+            StartCoroutine(this.WaitScreenshot(path, nameSave));
+        }
 
-        yield break;
-    }
+        IEnumerator WaitScreenshot(string path)
+        {
+            yield return null;
 
-    IEnumerator WaitScreenshot(string path, string nameSave)
-    {
-        yield return null;
+            RenderTexture texture = this.cameraToScreenshot.targetTexture;
 
-        RenderTexture texture = this.cameraToScreenshot.targetTexture;
+            Texture2D texture2D = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
 
-        Texture2D texture2D = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
+            RenderTexture.active = texture;
 
-        RenderTexture.active = texture;
+            texture2D.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
+            texture2D.Apply();
 
-        texture2D.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
-        texture2D.Apply();
+            File.WriteAllBytes(path, texture2D.EncodeToJPG());
 
-        File.WriteAllBytes(path, texture2D.EncodeToJPG());
+            this.DestroyAllObjects(this.canvasToScreenshot.transform);
 
-        this.DestroyAllObjects(this.canvasToScreenshot.transform);
+            this.cameraToScreenshot.gameObject.SetActive(false);
+            this.canvasToScreenshot.gameObject.SetActive(false);
 
-        this.cameraToScreenshot.gameObject.SetActive(false);
-        this.canvasToScreenshot.gameObject.SetActive(false);
+            yield break;
+        }
 
-        yield return null;
+        IEnumerator WaitScreenshot(string path, string nameSave)
+        {
+            yield return null;
 
-        this.screenshotSaverLoader.Update(nameSave);
+            RenderTexture texture = this.cameraToScreenshot.targetTexture;
 
-        yield break;
-    }
+            Texture2D texture2D = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
 
-    public Pair<int, int> GetSceneValues()
-    {
-        return new Pair<int, int>(this.scene_number, this.number_command_scene);
+            RenderTexture.active = texture;
+
+            texture2D.ReadPixels(new Rect(0, 0, texture.width, texture.height), 0, 0);
+            texture2D.Apply();
+
+            File.WriteAllBytes(path, texture2D.EncodeToJPG());
+
+            this.DestroyAllObjects(this.canvasToScreenshot.transform);
+
+            this.cameraToScreenshot.gameObject.SetActive(false);
+            this.canvasToScreenshot.gameObject.SetActive(false);
+
+            yield return null;
+
+            this.screenshotSaverLoader.Update(nameSave);
+
+            yield break;
+        }
+
+        public Pair<int, int> GetSceneValues()
+        {
+            return new Pair<int, int>(this.scene_number, this.number_command_scene);
+        }
     }
 }

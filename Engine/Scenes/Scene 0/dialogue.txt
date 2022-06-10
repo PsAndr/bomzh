@@ -1,4 +1,5 @@
-spawnSprite_number=1:nameSprite=dodik:positionSprite=10,-12,0:sizeSprite=1,1,1:rotationSprite=0,0,45
+spawnSprite_number=1:positionSprite=10,-12.5,0:sizeSprite=1,1,1:rotationSprite=0,0,45
+playAudio_number=0:countRepeatAudio=-1:pitchAudio=1
 {;Вася
 Привет, я Вася! И я хочу поговорить об огурцах.
 У меня нет друзей.

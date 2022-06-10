@@ -7,219 +7,252 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 
-[Serializable]
-[AddComponentMenu("Engine/Save/Module")]
-public class SaveModule : MonoBehaviour
+namespace Engine
 {
-    [SerializeField] private Global_control global_Control;
-
-    [SerializeField] private TMP_InputField name_save;
-
-    [SerializeField] private SaveOverMouse[] overMouse;
-
-    [SerializeField] private Button button;
-    [SerializeField] private Button startChangeName;
-    [SerializeField] private Button deleteButton;
-
-    [SerializeField] private Image screenshotImage;
-
-    [HideInInspector] public bool IsNew;
-
-    [HideInInspector] public int numberSave;
-
-    [HideInInspector] public string nameSave = "Имя сохранения";
-
-    [HideInInspector] private readonly char[] forbiddenSymbolsPath = { '/', '\\', '*', '\"', '?', '<', '>', '|' };
-
-    [HideInInspector] public SaveWindow saveWindow;
-
-    public void Init()
+    [Serializable]
+    [AddComponentMenu("Engine/Save/Module")]
+    public class SaveModule : MonoBehaviour
     {
-        if (this.global_Control == null)
+        [SerializeField] private Global_control global_Control;
+
+        [SerializeField] private TMP_InputField name_save;
+
+        [SerializeField] private SaveOverMouse[] overMouse;
+
+        [SerializeField] private Button button;
+        [SerializeField] private Button startChangeName;
+        [SerializeField] private Button deleteButton;
+
+        [SerializeField] private Image screenshotImage;
+
+        [HideInInspector] public bool IsNew;
+
+        [HideInInspector] public int numberSave;
+
+        [HideInInspector] public string nameSave = "Имя сохранения";
+
+        [HideInInspector] private readonly char[] forbiddenSymbolsPath = { '/', '\\', '*', '\"', '?', '<', '>', '|' };
+
+        [HideInInspector] public SaveWindow saveWindow;
+
+        public void Init()
         {
-            this.global_Control = FindObjectOfType<Global_control>();
-        }
-        this.name_save.text = this.nameSave;
-
-        this.button.onClick.AddListener(OnClick);
-
-        this.name_save.onValueChanged.AddListener(this.NameChange);
-        this.name_save.onDeselect.AddListener(this.DeselectName);
-        this.name_save.onEndEdit.AddListener(this.EndChangeName);
-
-        this.deleteButton.onClick.AddListener(Delete);
-
-        if (this.startChangeName == null)
-        {
-            this.name_save.readOnly = false;
-        }
-        else
-        {
-            this.startChangeName.onClick.AddListener(CanChangeName);
-            this.name_save.readOnly = true;
-        }
-
-        int i = 0;
-        foreach (SaveOverMouse saveOverMouse in this.overMouse)
-        {
-            saveOverMouse.Init(i, this);
-            i++;
-        }
-
-        if (!this.IsNew)
-        {
-            this.screenshotImage.sprite = global_Control.screenshotSaverLoader.GetScreeenshot(this.nameSave);
-        }
-        else
-        {
-            this.screenshotImage.enabled = false;
-        }
-    }
-
-    void Start()
-    {
-        
-    }
-
-    /*private void OnGUI()
-    {
-        //Debug.Log(Event.current.mousePosition.ToString());
-    }*/
-
-    void Update()
-    {
-
-    }
-
-    public void Enter(int num)
-    {
-        if (this.IsNew)
-        {
-            if (this.overMouse[num].coveringMouseImage_new == null)
+            if (this.global_Control == null)
             {
-                return;
+                this.global_Control = FindObjectOfType<Global_control>();
             }
-            this.overMouse[num].coveringMouseImage_new.SetActive(true);
-        }
-        else
-        {
-            if (this.overMouse[num].coveringMouseImage_change == null)
+            this.name_save.text = this.nameSave;
+
+            this.button.onClick.AddListener(OnClick);
+
+            this.name_save.onValueChanged.AddListener(this.NameChange);
+            this.name_save.onDeselect.AddListener(this.DeselectName);
+            this.name_save.onEndEdit.AddListener(this.EndChangeName);
+
+            this.deleteButton.onClick.AddListener(Delete);
+
+            if (this.startChangeName == null)
             {
-                return;
+                this.name_save.readOnly = false;
             }
-            this.overMouse[num].coveringMouseImage_change.SetActive(true);
-        }
-    }
-
-    public void Exit(int num)
-    {
-        if (this.IsNew)
-        {
-            if (this.overMouse[num].coveringMouseImage_new == null)
+            else
             {
-                return;
+                this.startChangeName.onClick.AddListener(CanChangeName);
+                this.name_save.readOnly = true;
             }
-            this.overMouse[num].coveringMouseImage_new.SetActive(false);
-        }
-        else
-        {
-            if (this.overMouse[num].coveringMouseImage_change == null)
-            {
-                return;
-            }
-            this.overMouse[num].coveringMouseImage_change.SetActive(false);
-        }
-    }
 
-    private void OnClick()
-    {
-        if (this.IsNew)
-        {
-            Save_class newSave = new Save_class(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second, this.global_Control.Flags);
-            this.nameSave = newSave.name_save;
-            this.name_save.text = newSave.name_save;
-
-            this.IsNew = false;
-
+            int i = 0;
             foreach (SaveOverMouse saveOverMouse in this.overMouse)
             {
-                if (saveOverMouse.coveringMouseImage_change != null)
-                {
-                    if (saveOverMouse.IsActive) 
-                    {
-                        if (saveOverMouse.coveringMouseImage_new != null)
-                        {
-                            saveOverMouse.coveringMouseImage_new.SetActive(false);
-                        }
-                        saveOverMouse.coveringMouseImage_change.SetActive(true);
-                    }
-                }
+                saveOverMouse.Init(i, this);
+                i++;
             }
 
-            this.saveWindow.SpawnNewSave();
+            if (!this.IsNew)
+            {
+                this.screenshotImage.sprite = global_Control.screenshotSaverLoader.GetScreeenshot(this.nameSave);
+            }
+            else
+            {
+                this.screenshotImage.enabled = false;
+            }
         }
-        else
+
+        void Start()
         {
-            new Save_class(this.name_save.text).Change(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second, this.global_Control.Flags);
-            Debug.Log(Application.persistentDataPath);
+
         }
-        global_Control.screenshotSaverLoader.MakeScreenshot(this.nameSave, this.global_Control);
-        StartCoroutine(this.WaitScreenshot());
-    }
 
-    private void Delete()
-    {
-        global_Control.screenshotSaverLoader.Delete(this.nameSave);
-        new Save_class(this.nameSave).Delete();
-        this.saveWindow.StartWaitDeleteModule();
-        Destroy(this.gameObject);
-    }
-
-    private void CanChangeName()
-    {
-        this.name_save.readOnly = false;
-        EventSystem.current.SetSelectedGameObject(name_save.gameObject);
-    }
-
-    private void NameChange(string s)
-    {
-
-    }
-
-    private void DeselectName(string s)
-    {
-
-    }
-
-    private void EndChangeName(string s)
-    {
-        foreach (char ch in this.forbiddenSymbolsPath)
+        /*private void OnGUI()
         {
-            s = s.Replace(ch, '-');
-        }
+            //Debug.Log(Event.current.mousePosition.ToString());
+        }*/
 
-        Save_class save_Class = new Save_class(this.nameSave);
-        save_Class.Change(s);
-
-        s = save_Class.name_save;
-
-        this.global_Control.screenshotSaverLoader.ChangeName(this.nameSave, s);
-
-        this.nameSave = s;
-        this.name_save.text = s;
-
-        if (this.startChangeName != null)
+        void Update()
         {
-            this.name_save.readOnly = true;
-        }
-    }
 
-    IEnumerator WaitScreenshot()
-    {
-        yield return null;
-        yield return null;
-        this.screenshotImage.enabled = true;
-        this.screenshotImage.sprite = global_Control.screenshotSaverLoader.GetScreeenshot(this.nameSave);
-        yield break;
+        }
+
+        public void Enter(int num)
+        {
+            if (this.IsNew)
+            {
+                if (this.overMouse[num].coveringMouseImage_new == null)
+                {
+                    return;
+                }
+                this.overMouse[num].coveringMouseImage_new.SetActive(true);
+            }
+            else
+            {
+                if (this.overMouse[num].coveringMouseImage_change == null)
+                {
+                    return;
+                }
+                this.overMouse[num].coveringMouseImage_change.SetActive(true);
+            }
+        }
+
+        public void Exit(int num)
+        {
+            if (this.IsNew)
+            {
+                if (this.overMouse[num].coveringMouseImage_new == null)
+                {
+                    return;
+                }
+                this.overMouse[num].coveringMouseImage_new.SetActive(false);
+            }
+            else
+            {
+                if (this.overMouse[num].coveringMouseImage_change == null)
+                {
+                    return;
+                }
+                this.overMouse[num].coveringMouseImage_change.SetActive(false);
+            }
+        }
+
+        private void OnClick()
+        {
+            if (this.IsNew)
+            {
+                AudioHelper[] audioHelpers = this.global_Control.audioHandler.gameObject.GetComponents<AudioHelper>();
+                AudioHelper.SaveClass[] saveClasses = new AudioHelper.SaveClass[audioHelpers.Length];
+
+                for (int i = 0; i < audioHelpers.Length; i++)
+                {
+                    saveClasses[i] = audioHelpers[i].GetSave();
+                }
+
+
+                //string[] spritesNames 
+
+                TextPrintingClass textPrintingClass = global_Control.gameObject.GetComponent<TextPrintingClass>();
+
+                Save_class newSave = new Save_class(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second, 
+                    this.global_Control.Flags, saveClasses, this.global_Control.background.sprite.name, 
+                    textPrintingClass.GetProgress(), global_Control.text_dialogue.text, global_Control.text_character.text, null);
+
+                this.nameSave = newSave.name_save;
+                this.name_save.text = newSave.name_save;
+
+                this.IsNew = false;
+
+                foreach (SaveOverMouse saveOverMouse in this.overMouse)
+                {
+                    if (saveOverMouse.coveringMouseImage_change != null)
+                    {
+                        if (saveOverMouse.IsActive)
+                        {
+                            if (saveOverMouse.coveringMouseImage_new != null)
+                            {
+                                saveOverMouse.coveringMouseImage_new.SetActive(false);
+                            }
+                            saveOverMouse.coveringMouseImage_change.SetActive(true);
+                        }
+                    }
+                }
+
+                this.saveWindow.SpawnNewSave();
+            }
+            else
+            {
+                AudioHelper[] audioHelpers = this.global_Control.audioHandler.gameObject.GetComponents<AudioHelper>();
+                AudioHelper.SaveClass[] saveClasses = new AudioHelper.SaveClass[audioHelpers.Length];
+
+                for (int i = 0; i < audioHelpers.Length; i++)
+                {
+                    saveClasses[i] = audioHelpers[i].GetSave();
+                }
+
+                TextPrintingClass textPrintingClass = global_Control.gameObject.GetComponent<TextPrintingClass>();
+
+                new Save_class(this.nameSave).Change(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second,
+                    this.global_Control.Flags, saveClasses, this.global_Control.background.sprite.name,
+                    textPrintingClass.GetProgress(), global_Control.text_dialogue.text, global_Control.text_character.text, null);
+
+                Debug.Log(Application.persistentDataPath);
+                Debug.Log(textPrintingClass.GetProgress());
+            }
+            global_Control.screenshotSaverLoader.MakeScreenshot(this.nameSave, this.global_Control);
+            StartCoroutine(this.WaitScreenshot());
+        }
+
+        private void Delete()
+        {
+            global_Control.screenshotSaverLoader.Delete(this.nameSave);
+            new Save_class(this.nameSave).Delete();
+            this.saveWindow.StartWaitDeleteModule();
+            Destroy(this.gameObject);
+        }
+
+        private void CanChangeName()
+        {
+            this.name_save.readOnly = false;
+            EventSystem.current.SetSelectedGameObject(name_save.gameObject);
+        }
+
+        private void NameChange(string s)
+        {
+
+        }
+
+        private void DeselectName(string s)
+        {
+
+        }
+
+        private void EndChangeName(string s)
+        {
+            foreach (char ch in this.forbiddenSymbolsPath)
+            {
+                s = s.Replace(ch, '-');
+            }
+
+            Save_class save_Class = new Save_class(this.nameSave);
+            save_Class.Change(s);
+
+            s = save_Class.name_save;
+
+            this.global_Control.screenshotSaverLoader.ChangeName(this.nameSave, s);
+
+            this.nameSave = s;
+            this.name_save.text = s;
+
+            if (this.startChangeName != null)
+            {
+                this.name_save.readOnly = true;
+            }
+        }
+
+        IEnumerator WaitScreenshot()
+        {
+            yield return null;
+            yield return null;
+            this.screenshotImage.enabled = true;
+            this.screenshotImage.sprite = global_Control.screenshotSaverLoader.GetScreeenshot(this.nameSave);
+            yield break;
+        }
     }
 }

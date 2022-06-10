@@ -16,7 +16,7 @@ namespace Engine
 
         public void SetDefault()
         {
-            numberCommandScene = -1;
+            sceneNumber = -1;
             sceneName = null;
             numberCommandScene = 0;
         }
@@ -34,11 +34,16 @@ namespace Engine
             this.sceneName = sceneNow.sceneName + "";
             this.numberCommandScene = sceneNow.numberCommandScene + 0;
         }
+
+        public string SaveToString()
+        {
+            return JsonUtility.ToJson(this);
+        }
     }
 
     public class SaveLoadStartScene
     {
-        private readonly static string path = Application.dataPath + "/Resources/startScene.save";
+        private readonly static string path = Application.dataPath + "/Resources/startScene.json";
 
         public static void Save(int number, string name, int numberCommand)
         {
@@ -47,10 +52,7 @@ namespace Engine
 
             string path = SaveLoadStartScene.path;
 
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream fs = new FileStream(path, FileMode.Create);
-            bf.Serialize(fs, scene);
-            fs.Close();
+            File.WriteAllText(path, scene.SaveToString());
         }
 
         public static void Save(SceneEngine sceneNow)
@@ -60,10 +62,7 @@ namespace Engine
 
             string path = SaveLoadStartScene.path;
 
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream fs = new FileStream(path, FileMode.Create);
-            bf.Serialize(fs, scene);
-            fs.Close();
+            File.WriteAllText(path, scene.SaveToString());
         }
 
         public static SceneEngine Load()
@@ -81,12 +80,8 @@ namespace Engine
                 return scene;
             }
 
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream fs = new FileStream(path, FileMode.Open);
-
-            scene = (SceneEngine)bf.Deserialize(fs);
-
-            fs.Close();
+            string sceneJSON = File.ReadAllText(path);
+            scene = JsonUtility.FromJson<SceneEngine>(sceneJSON);
 
             return scene;
         }

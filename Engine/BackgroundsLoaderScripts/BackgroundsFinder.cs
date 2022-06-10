@@ -67,7 +67,7 @@ public class BackgroundsFinder
                 names_backgrounds.Add(name);
                 numbers_backgrounds.Add(number);
             }
-            File.WriteAllText(path + @"save_list_backgrounds.txt", text_file_list);
+            File.WriteAllText(path + @"save_list_backgrounds.txt", text_file_list, System.Text.Encoding.UTF8);
         }
     }
 }

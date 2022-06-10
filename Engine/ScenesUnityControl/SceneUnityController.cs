@@ -4,53 +4,56 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-[AddComponentMenu("Engine/ScenesUnity/SceneUnityController")]
-public class SceneUnityController : MonoBehaviour
+namespace Engine
 {
-    private Scene sceneNow;
-
-    private void Start()
+    [AddComponentMenu("Engine/ScenesUnity/SceneUnityController")]
+    public class SceneUnityController : MonoBehaviour
     {
-        this.sceneNow = gameObject.scene;
-    }
+        private Scene sceneNow;
 
-    public void LoadNewScene(string name, Slider slider = null)
-    {
-        StartCoroutine(this.Loading(name, slider));
-    }
-
-    public void LoadNewScene(int number, Slider slider = null)
-    {
-        StartCoroutine(this.Loading(number, slider));
-    }
-
-    IEnumerator Loading(string name, Slider slider)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(name);
-
-        while (!asyncLoad.isDone)
+        private void Start()
         {
-            if (slider != null)
-            {
-                slider.value = asyncLoad.progress;
-            }
-            yield return null;
+            this.sceneNow = gameObject.scene;
         }
-        yield break;
-    }
 
-    IEnumerator Loading(int number, Slider slider)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(number);
-
-        while (!asyncLoad.isDone)
+        public void LoadNewScene(string name, Slider slider = null)
         {
-            if (slider != null)
-            {
-                slider.value = asyncLoad.progress;
-            }
-            yield return null;
+            StartCoroutine(this.Loading(name, slider));
         }
-        yield break;
+
+        public void LoadNewScene(int number, Slider slider = null)
+        {
+            StartCoroutine(this.Loading(number, slider));
+        }
+
+        IEnumerator Loading(string name, Slider slider)
+        {
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(name);
+
+            while (!asyncLoad.isDone)
+            {
+                if (slider != null)
+                {
+                    slider.value = asyncLoad.progress;
+                }
+                yield return null;
+            }
+            yield break;
+        }
+
+        IEnumerator Loading(int number, Slider slider)
+        {
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(number);
+
+            while (!asyncLoad.isDone)
+            {
+                if (slider != null)
+                {
+                    slider.value = asyncLoad.progress;
+                }
+                yield return null;
+            }
+            yield break;
+        }
     }
 }

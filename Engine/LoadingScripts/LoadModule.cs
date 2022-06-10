@@ -4,42 +4,45 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-[System.Serializable]
-[AddComponentMenu("Engine/Load/Module")]
-public class LoadModule : MonoBehaviour
+namespace Engine
 {
-    [SerializeField] private Global_control global_Control;
-
-    [SerializeField] private TextMeshProUGUI nameLoad;
-
-    [SerializeField] private Image screenshotImage;
-
-    [SerializeField] private Button loadButton;
-
-    [SerializeField] private LoadOverMouse[] overMouse;
-
-    [HideInInspector] public LoadWindow loadWindow;
-
-    public void Init(string nameLoad)
+    [System.Serializable]
+    [AddComponentMenu("Engine/Load/Module")]
+    public class LoadModule : MonoBehaviour
     {
-        if (this.global_Control == null)
+        [SerializeField] private Global_control global_Control;
+
+        [SerializeField] private TextMeshProUGUI nameLoad;
+
+        [SerializeField] private Image screenshotImage;
+
+        [SerializeField] private Button loadButton;
+
+        [SerializeField] private LoadOverMouse[] overMouse;
+
+        [HideInInspector] public LoadWindow loadWindow;
+
+        public void Init(string nameLoad)
         {
-            this.global_Control = FindObjectOfType<Global_control>();
+            if (this.global_Control == null)
+            {
+                this.global_Control = FindObjectOfType<Global_control>();
+            }
+            this.nameLoad.text = nameLoad;
+
+            this.loadButton.onClick.AddListener(this.OnClick);
+
+            foreach (LoadOverMouse loadOverMouse in overMouse)
+            {
+                loadOverMouse.Init();
+            }
+
+            this.screenshotImage.sprite = this.global_Control.screenshotSaverLoader.GetScreeenshot(nameLoad);
         }
-        this.nameLoad.text = nameLoad;
 
-        this.loadButton.onClick.AddListener(this.OnClick);
-
-        foreach (LoadOverMouse loadOverMouse in overMouse)
+        private void OnClick()
         {
-            loadOverMouse.Init();
+            loadWindow.Load(this.nameLoad.text);
         }
-
-        this.screenshotImage.sprite = this.global_Control.screenshotSaverLoader.GetScreeenshot(nameLoad);
-    }
-
-    private void OnClick()
-    {
-        loadWindow.Load(this.nameLoad.text);
     }
 }

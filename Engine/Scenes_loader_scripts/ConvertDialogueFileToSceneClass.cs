@@ -138,7 +138,7 @@ public class ConvertDialogueFileToSceneClass
                                 {
                                     for (int j = 0; j < val_of_val_str.Length; j++)
                                     {
-                                        val_of_val[j] = Convert.ToDouble(val_of_val_str[j]);
+                                        val_of_val[j] = double.Parse(val_of_val_str[j], System.Globalization.CultureInfo.InvariantCulture);
                                     }
 
                                     dict_values.Add(val_name, val_of_val);
@@ -346,7 +346,7 @@ public class ConvertDialogueFileToSceneClass
                                     {
                                         for (int k = 0; k < val_of_val_str.Length; k++)
                                         {
-                                            val_of_val[k] = Convert.ToDouble(val_of_val_str[k]);
+                                            val_of_val[k] = double.Parse(val_of_val_str[k], System.Globalization.CultureInfo.InvariantCulture);
                                         }
 
                                         dict_values.Add(val_name, val_of_val);

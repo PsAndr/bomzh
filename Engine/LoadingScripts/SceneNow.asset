@@ -12,6 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3054febe55149a448820be677a4ad737, type: 3}
   m_Name: SceneNow
   m_EditorClassIdentifier: 
-  sceneNumber: 0
-  sceneName: 
-  numberCommandScene: 0
+  sceneEngine:
+    sceneNumber: 0
+    sceneName: 
+    numberCommandScene: 2
+  backgroundName: cat 0
+  audioHelpers:
+  - nameHelper: 
+    nameAudio: PianoSolo 0
+    cnt: -1
+    volume: 1
+    pitch: 1
+    panStereo: 0
+    time: 0
+    isPaused: 1
+  flags:
+    keys: []
+    values: 
+  indexPrint: 43
+  textOnSceneDialogue: "\u041F\u0440\u0438\u0432\u0435\u0442, \u044F \u0412\u0430\u0441\u044F!
+    \u0418 \u044F \u0445\u043E\u0447\u0443 \u043F\u043E\u0433\u043E\u0432\u043E\u0440\u0438\u0442\u044C
+    \u043E\u0431 \u043E\u0433\u0443\u0440"
+  textOnSceneCharacter: "\u0412\u0430\u0441\u044F"
