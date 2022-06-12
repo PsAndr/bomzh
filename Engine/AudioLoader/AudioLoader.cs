@@ -2,24 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioLoader
+namespace Engine
 {
-    public Dictionary<string, AudioClip> audioSources;
-    public Dictionary<int, string> audioNames;
-
-    public AudioLoader()
+    public class AudioLoader
     {
-        audioSources = new Dictionary<string, AudioClip>();
-        audioNames = new Dictionary<int, string>();
+        public Dictionary<string, AudioClip> audioSources;
+        public Dictionary<int, string> audioNames;
 
-        AudioFinder audioFinder = new AudioFinder();
-
-        for (int i = 0; i < audioFinder.pathsAudio.Count; i++)
+        public AudioLoader()
         {
-            AudioClip audio = Resources.Load<AudioClip>($"Audio/{audioFinder.pathsAudio[i]}");
+            audioSources = new Dictionary<string, AudioClip>();
+            audioNames = new Dictionary<int, string>();
 
-            audioSources.Add(audioFinder.namesAudio[i], audio);
-            audioNames.Add(audioFinder.numbersAudio[i], audioFinder.namesAudio[i]);
+            AudioFinder audioFinder = new AudioFinder();
+
+            for (int i = 0; i < audioFinder.pathsAudio.Count; i++)
+            {
+                AudioClip audio = Resources.Load<AudioClip>(audioFinder.pathsAudio[i]);
+
+                audioSources.Add(audioFinder.namesAudio[i], audio);
+                audioNames.Add(audioFinder.numbersAudio[i], audioFinder.namesAudio[i]);
+            }
         }
     }
 }

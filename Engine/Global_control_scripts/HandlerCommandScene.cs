@@ -40,11 +40,6 @@ namespace Engine
 
             global_Control.gameObject.GetComponent<TextPrintingClass>().PausePrinting();
 
-            foreach (AudioSource audioSource in global_Control.gameObject.GetComponents<AudioSource>())
-            {
-                audioSource.Pause();
-            }
-
             foreach (AudioHelper audioHelper in global_Control.gameObject.GetComponents<AudioHelper>())
             {
                 audioHelper.Pause();
@@ -57,11 +52,6 @@ namespace Engine
             global_Control.ButtonScreen.enabled = true;
 
             global_Control.gameObject.GetComponent<TextPrintingClass>().ResumePrinting();
-
-            foreach (AudioSource audioSource in global_Control.gameObject.GetComponents<AudioSource>())
-            {
-                audioSource.UnPause();
-            }
 
             foreach (AudioHelper audioHelper in global_Control.gameObject.GetComponents<AudioHelper>())
             {
@@ -263,7 +253,7 @@ namespace Engine
                         command.name_obj = global_Control.audioLoader.audioNames[command.number_obj];
                     }
 
-                    AudioClip audio = global_Control.audioLoader.audioSources[command.name_obj];
+                    DynamicArray<AudioClip> audio = new(global_Control.audioLoader.audioSources[command.name_obj]);
 
                     float volume = 1f;
                     float pitch = 1f;
@@ -302,7 +292,21 @@ namespace Engine
                         }
                     }
 
-                    global_Control.audioHandler.PlayClip(countRepeat, audio, panStereo, volume, pitch);
+                    if (command.dict_values_str.ContainsKey("nameExtraAudio"))
+                    {
+                        if (command.dict_values_str["nameExtraAudio"] != null && command.dict_values_str["nameExtraAudio"].Length > 0)
+                        {
+                            foreach (string nameAudio in command.dict_values_str["nameExtraAudio"]) 
+                            {
+                                if (global_Control.audioLoader.audioSources.ContainsKey(nameAudio)) 
+                                {
+                                    audio.Add(global_Control.audioLoader.audioSources[nameAudio]);
+                                }
+                            }
+                        }
+                    }
+
+                    global_Control.audioHandler.PlayClip(countRepeat, panStereo, volume, pitch, audio.ToArray());
 
                     break;
 

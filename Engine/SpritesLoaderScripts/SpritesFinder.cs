@@ -3,96 +3,77 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
+using Engine.Files;
 
-public class SpritesFinder
+namespace Engine
 {
-    public List<string> paths_sprites;
-    public List<string> names_sprites;
-    public List<int> numbers_sprites;
-
-    public SpritesFinder()
+    public class SpritesFinder
     {
-        paths_sprites = new List<string>();
-        names_sprites = new List<string>();
-        numbers_sprites = new List<int>();
+        public List<string> paths_sprites;
+        public List<string> names_sprites;
+        public List<int> numbers_sprites;
 
-        if (Application.platform == RuntimePlatform.WindowsPlayer)
+        private static class Constants
         {
-            string text_file_list = Resources.Load<TextAsset>("Sprites/save_list_sprites").text;
-
-            string[] names_and_nums_sprites = text_file_list.Split('\n');
-
-            foreach (string name_and_num_sprite in names_and_nums_sprites)
-            {
-                if (string.IsNullOrEmpty(name_and_num_sprite))
-                {
-                    continue;
-                }
-                string[] name_and_num_sprite_split = name_and_num_sprite.Split(' ');
-
-                string name = name_and_num_sprite_split[0];
-                int number = Convert.ToInt32(name_and_num_sprite_split[1]);
-
-                paths_sprites.Add(name_and_num_sprite);
-                names_sprites.Add(name);
-                numbers_sprites.Add(number);
-            }
+            public static readonly string[] types = { "png", "jpg" };
+            public static readonly string nameList = "save_list_sprites";
+            public static readonly string nameDirectory = "Sprites";
+            public static readonly string pathToResource = Application.dataPath + @"/Resources/";
+            public static readonly string pathResourceList = $"{nameDirectory}/{nameList}";
+            public static readonly string typeList = "txt";
+            public static readonly string path = pathToResource + $"{nameDirectory}/";
+            public static readonly string pathList = $"{path}/{nameList}.{typeList}";
+            public static readonly System.Text.Encoding encoding = System.Text.Encoding.UTF8;
         }
-        else if (Application.isEditor)
+
+        public SpritesFinder()
         {
-            string path = Application.dataPath + @"/Resources/Sprites/";
-            string[] paths_sprites_with_trash_jpg = Directory.GetFiles(path, "* *.jpg");
-            string[] paths_sprites_with_trash_png = Directory.GetFiles(path, "* *.png");
+            paths_sprites = new List<string>();
+            names_sprites = new List<string>();
+            numbers_sprites = new List<int>();
 
-            string text_file_list = "";
-
-            foreach (string str in paths_sprites_with_trash_jpg)
+            if (Application.platform == RuntimePlatform.WindowsPlayer)
             {
-                string name_and_num_sprite = str.Split('/')[^1][..^4];
-                string[] name_and_num_sprite_split = name_and_num_sprite.Split(' ');
+                string text_file_list = Resources.Load<TextAsset>(Constants.pathResourceList).text;
 
-                string name = name_and_num_sprite_split[0];
-                int number;
-                try
+                string[] names_and_nums_sprites = text_file_list.Split('\n');
+
+                foreach (string name_and_num_sprite in names_and_nums_sprites)
                 {
-                    number = Convert.ToInt32(name_and_num_sprite_split[1]);
-                }
-                catch
-                {
-                    continue;
-                }
+                    if (string.IsNullOrEmpty(name_and_num_sprite))
+                    {
+                        continue;
+                    }
+                    string[] name_and_num_sprite_split = name_and_num_sprite.Split(' ');
 
-                text_file_list += name_and_num_sprite + '\n';
+                    string name = name_and_num_sprite_split[0];
+                    int number = Convert.ToInt32(name_and_num_sprite_split[1]);
 
-                paths_sprites.Add(name_and_num_sprite);
-                names_sprites.Add(name);
-                numbers_sprites.Add(number);
+                    paths_sprites.Add($"{Constants.nameDirectory}/{name_and_num_sprite}");
+                    names_sprites.Add(name);
+                    numbers_sprites.Add(number);
+                }
             }
-
-            foreach (string str in paths_sprites_with_trash_png)
+            else if (Application.isEditor)
             {
-                string name_and_num_sprite = str.Split('/')[^1][..^4];
-                string[] name_and_num_sprite_split = name_and_num_sprite.Split(' ');
+                string path = Constants.path;
 
-                string name = name_and_num_sprite_split[0];
-                int number;
-                try
+                WorkWithFiles.CheckFiles(path, Constants.types);
+
+                Pair<string, int>[] numsAndNames = WorkWithFiles.GetFilesNumsAndNames(path, Constants.types);
+
+                string text_file_list = "";
+
+                foreach ((string name, int number) in numsAndNames)
                 {
-                    number = Convert.ToInt32(name_and_num_sprite_split[1]);
-                }
-                catch
-                {
-                    continue;
+                    this.names_sprites.Add(name);
+                    this.numbers_sprites.Add(number);
+                    this.paths_sprites.Add($"{Constants.nameDirectory}/{name} {number}");
+                    text_file_list += $"{name} {number}\n";
                 }
 
-                text_file_list += name_and_num_sprite + '\n';
-
-                paths_sprites.Add(name_and_num_sprite);
-                names_sprites.Add(name);
-                numbers_sprites.Add(number);
+                File.WriteAllText(Constants.pathList, text_file_list, Constants.encoding);
             }
-
-            File.WriteAllText(path + @"save_list_sprites.txt", text_file_list);
         }
     }
 }

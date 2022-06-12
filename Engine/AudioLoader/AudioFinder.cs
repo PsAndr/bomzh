@@ -3,76 +3,76 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
+using Engine.Files;
 
-public class AudioFinder
+namespace Engine
 {
-    public List<string> pathsAudio;
-    public List<string> namesAudio;
-    public List<int> numbersAudio;
-    public AudioFinder()
+    public class AudioFinder
     {
-        pathsAudio = new List<string>();
-        namesAudio = new List<string>();    
-        numbersAudio = new List<int>();
+        public List<string> pathsAudio;
+        public List<string> namesAudio;
+        public List<int> numbersAudio;
 
-        if (Application.isEditor)
+        private static class Constants
         {
-            string path = Application.dataPath + "/Resources/Audio/";
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            string[] pathsAudioWithTrash = Directory.GetFiles(path, "* *.mp3");
-
-            string textFileList = "";
-
-            foreach (string pathTrash in pathsAudioWithTrash)
-            {
-                string nameNumAudio = pathTrash.Split('/')[^1][..^4];
-                string[] nameNumAudioSplit = nameNumAudio.Split(' ');
-
-                string name = nameNumAudioSplit[0];
-                int number;
-
-                try
-                {
-                    number = Convert.ToInt32(nameNumAudioSplit[1]);
-                }
-                catch
-                {
-                    continue;
-                }
-
-                textFileList += nameNumAudio + '\n';
-
-                this.pathsAudio.Add(nameNumAudio);
-                this.namesAudio.Add(name);
-                this.numbersAudio.Add(number);
-            }
-
-            File.WriteAllText(path + "saveListAudio.txt", textFileList, System.Text.Encoding.UTF8);
+            public static readonly string[] types = { "mp3" };
+            public static readonly string nameList = "saveListAudio";
+            public static readonly string nameDirectory = "Audio";
+            public static readonly string pathToResource = Application.dataPath + @"/Resources/";
+            public static readonly string pathResourceList = $"{nameDirectory}/{nameList}";
+            public static readonly string typeList = "txt";
+            public static readonly string path = pathToResource + $"{nameDirectory}/";
+            public static readonly string pathList = $"{path}/{nameList}.{typeList}";
+            public static readonly System.Text.Encoding encoding = System.Text.Encoding.UTF8;
         }
-        else if(Application.platform == RuntimePlatform.WindowsPlayer)
+
+        public AudioFinder()
         {
-            string textFileList = Resources.Load<TextAsset>("Audio/saveListAudio").text;
+            pathsAudio = new List<string>();
+            namesAudio = new List<string>();
+            numbersAudio = new List<int>();
 
-            string[] nameNumAudios = textFileList.Split('\n');
-
-            foreach (string nameNumAudio in nameNumAudios)
+            if (Application.isEditor)
             {
-                if (string.IsNullOrEmpty(nameNumAudio))
+                string path = Constants.path;
+
+                WorkWithFiles.CheckFiles(path, Constants.types);
+
+                Pair<string, int>[] numsAndNames = WorkWithFiles.GetFilesNumsAndNames(path, Constants.types);
+
+                string text_file_list = "";
+
+                foreach ((string name, int number) in numsAndNames)
                 {
-                    continue;
+                    this.namesAudio.Add(name);
+                    this.numbersAudio.Add(number);
+                    this.pathsAudio.Add($"{Constants.nameDirectory}/{name} {number}");
+                    text_file_list += $"{name} {number}\n";
                 }
-                string[] nameNumAudioSplit = nameNumAudio.Split(' ');
 
-                string name = nameNumAudioSplit[0];
-                int number = Convert.ToInt32(nameNumAudioSplit[1]);
+                File.WriteAllText(Constants.pathList, text_file_list, Constants.encoding);
+            }
+            else if (Application.platform == RuntimePlatform.WindowsPlayer)
+            {
+                string textFileList = Resources.Load<TextAsset>(Constants.pathResourceList).text;
 
-                this.pathsAudio.Add(nameNumAudio);
-                this.namesAudio.Add(name);
-                this.numbersAudio.Add(number);
+                string[] nameNumAudios = textFileList.Split('\n');
+
+                foreach (string nameNumAudio in nameNumAudios)
+                {
+                    if (string.IsNullOrEmpty(nameNumAudio))
+                    {
+                        continue;
+                    }
+                    string[] nameNumAudioSplit = nameNumAudio.Split(' ');
+
+                    string name = nameNumAudioSplit[0];
+                    int number = Convert.ToInt32(nameNumAudioSplit[1]);
+
+                    this.pathsAudio.Add($"{Constants.nameDirectory}/{nameNumAudio}");
+                    this.namesAudio.Add(name);
+                    this.numbersAudio.Add(number);
+                }
             }
         }
     }

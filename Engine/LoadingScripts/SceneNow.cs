@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Engine;
+using Engine.WorkWithRectTransform;
 using WorkWithDictionary;
 
 namespace Engine
@@ -19,6 +19,10 @@ namespace Engine
 
         [SerializeField] public string textOnSceneDialogue;
         [SerializeField] public string textOnSceneCharacter;
+
+        [SerializeField] public string[] spritesNames;
+        [SerializeField] public string[] spritesObjectNames;
+        [SerializeField] public RectTransformSaveValuesSerializable[] rectTransformsSprites;
 
         public void SetDefault()
         {
@@ -59,6 +63,9 @@ namespace Engine
             this.indexPrint = saveClass.indexPrint;
             this.textOnSceneDialogue = saveClass.textOnSceneDialogue;
             this.textOnSceneCharacter = saveClass.textOnSceneCharacter;
+            this.spritesNames = saveClass.spritesNames;
+            this.spritesObjectNames = saveClass.spritesObjectNames;
+            this.rectTransformsSprites = saveClass.rectTransformsSprites;
         }
 
         public SceneEngine GetValue()
@@ -78,6 +85,9 @@ namespace Engine
                 indexPrint = this.indexPrint,
                 textOnSceneCharacter = this.textOnSceneCharacter,
                 textOnSceneDialogue = this.textOnSceneDialogue,
+                spritesNames = this.spritesNames,
+                spritesObjectNames = this.spritesObjectNames,
+                rectTransformsSprites = this.rectTransformsSprites,
             };
 
             return save_Class;

@@ -31,6 +31,7 @@ namespace Engine
             }
         }
 
+        [System.Serializable]
         public class RectTransformSaveValuesSerializable
         {
             public float[] localPosition;
@@ -78,72 +79,6 @@ namespace Engine
                 rectTransform.localRotation = Quaternion.Euler(WorkWithVectors.ConvertArrayToVector3(this.localRotation));
                 rectTransform.sizeDelta = WorkWithVectors.ConvertArrayToVector2(this.sizeDelta);
             }
-        }
-    }
-
-    [System.Serializable]
-    public class DynamicArray<T>
-    {
-        private int Length;
-        private T[] values;
-
-        public T Get(int index)
-        {
-            if (index < 0)
-            {
-                index = -index;
-                index %= this.Length;
-                index = Length - index;
-            }
-
-            if (index >= this.Length)
-            {
-                index %= this.Length;
-            }
-
-            return values[index];
-        }
-
-        public int Size()
-        {
-            return this.Length;
-        }
-
-        public DynamicArray(T[] values)
-        {
-            this.values = (T[])values.Clone();
-            Length = values.Length;
-        }
-
-        public DynamicArray(int Length)
-        {
-            this.values = new T[Length];
-            this.Length = Length;
-        }
-
-        public void Resize(int Length)
-        {
-            T[] newValues = new T[Length];
-
-            for (int i = 0; i < Mathf.Min(Length, this.Length); i++)
-            {
-                newValues[i] = this.values[i];
-            }
-
-            this.values = newValues;
-            this.Length = Length;
-        }
-
-        public void Reverse()
-        {
-            T[] newValues = new T[this.Length];
-
-            for (int i = 0; i < this.Length; i++)
-            {
-                newValues[i] = this.values[this.Length - 1 - i];
-            }
-
-            this.values = newValues;
         }
     }
 }

@@ -14,46 +14,106 @@ namespace Engine
 
         }
 
-        public void PlayClip(int cnt, AudioClip audio)
+        public void PlayClip(int cnt, params AudioClip[] audio)
         {
-            gameObject.AddComponent<AudioHelper>().Init(null, audio.name, cnt, 1f, 1f, 0f, 0f, audio, this);
+            string[] audioNames = new string[audio.Length];
+            for (int i = 0; i < audio.Length; i++)
+            {
+                audioNames[i] = audio[i].name.Split(' ')[0];
+            }
+
+            gameObject.AddComponent<AudioHelper>().Init(null, audioNames, cnt, 1f, 1f, 0f, 0f, 0f, 0f, 0, this, audio);
         }
 
-        public void PlayClip(AudioClip audio)
+        public void PlayClip(params AudioClip[] audio)
         {
-            gameObject.AddComponent<AudioHelper>().Init(null, audio.name, 1, 1f, 1f, 0f, 0f, audio, this);
+            string[] audioNames = new string[audio.Length];
+            for (int i = 0; i < audio.Length; i++)
+            {
+                audioNames[i] = audio[i].name.Split(' ')[0];
+            }
+
+            gameObject.AddComponent<AudioHelper>().Init(null, audioNames, 1, 1f, 1f, 0f, 0f, 0f, 0f, 0, this, audio);
         }
 
-        public void PlayClip(int cnt, AudioClip audio, float panStereo)
+        public void PlayClip(int cnt, float panStereo, params AudioClip[] audio)
         {
-            gameObject.AddComponent<AudioHelper>().Init(null, audio.name, cnt, 1f, 1f, panStereo, 0f, audio, this);
+            string[] audioNames = new string[audio.Length];
+            for (int i = 0; i < audio.Length; i++)
+            {
+                audioNames[i] = audio[i].name.Split(' ')[0];
+            }
+
+            gameObject.AddComponent<AudioHelper>().Init(null, audioNames, cnt, 1f, 1f, panStereo, 0f, 0f, 0f, 0, this, audio);
         }
 
-        public void PlayClip(AudioClip audio, float panStereo)
+        public void PlayClip(float panStereo, params AudioClip[] audio)
         {
-            gameObject.AddComponent<AudioHelper>().Init(null, audio.name, 1, 1f, 1f, panStereo, 0f, audio, this);
+            string[] audioNames = new string[audio.Length];
+            for (int i = 0; i < audio.Length; i++)
+            {
+                audioNames[i] = audio[i].name.Split(' ')[0];
+            }
+
+            gameObject.AddComponent<AudioHelper>().Init(null, audioNames, 1, 1f, 1f, panStereo, 0f, 0f, 0f, 0, this, audio);
         }
 
-        public void PlayClip(int cnt, AudioClip audio, float panStereo, float volume, float pitch)
+        public void PlayClip(int cnt, float panStereo, float volume, float pitch, params AudioClip[] audio)
         {
-            gameObject.AddComponent<AudioHelper>().Init(null, audio.name, cnt, volume, pitch, panStereo, 0f, audio, this);
+            string[] audioNames = new string[audio.Length];
+            for (int i = 0; i < audio.Length; i++)
+            {
+                audioNames[i] = audio[i].name.Split(' ')[0];
+            }
+
+            gameObject.AddComponent<AudioHelper>().Init(null, audioNames, cnt, volume, pitch, panStereo, 0f, 0f, 0f, 0, this, audio);
         }
 
-        public void PlayClip(AudioClip audio, float panStereo, float volume)
+        public void PlayClip(int cnt, float panStereo, float volume, float pitch, float startWait, float betweenWait, params AudioClip[] audio)
         {
-            gameObject.AddComponent<AudioHelper>().Init(null, audio.name, 1, volume, 1f, panStereo, 0f, audio, this);
+            string[] audioNames = new string[audio.Length];
+            for (int i = 0; i < audio.Length; i++)
+            {
+                audioNames[i] = audio[i].name.Split(' ')[0];
+            }
+
+            gameObject.AddComponent<AudioHelper>().Init(null, audioNames, cnt, volume, pitch, panStereo, 0f, startWait, betweenWait, 0, this, audio);
         }
 
-        public void PlayClip(AudioClip audio, float panStereo, float volume, float pitch)
+        public void PlayClip(float panStereo, float volume, params AudioClip[] audio)
         {
-            gameObject.AddComponent<AudioHelper>().Init(null, audio.name, 1, volume, pitch, panStereo, 0f, audio, this);
+            string[] audioNames = new string[audio.Length];
+            for (int i = 0; i < audio.Length; i++)
+            {
+                audioNames[i] = audio[i].name.Split(' ')[0];
+            }
+
+            gameObject.AddComponent<AudioHelper>().Init(null, audioNames, 1, volume, 1f, panStereo, 0f, 0f, 0f, 0, this, audio);
+        }
+
+        public void PlayClip(float panStereo, float volume, float pitch, params AudioClip[] audio)
+        {
+            string[] audioNames = new string[audio.Length];
+            for (int i = 0; i < audio.Length; i++)
+            {
+                audioNames[i] = audio[i].name.Split(' ')[0];
+            }
+
+            gameObject.AddComponent<AudioHelper>().Init(null, audioNames, 1, volume, pitch, panStereo, 0f, 0f, 0f, 0, this, audio);
         }
 
         public void PlayClip(Global_control global_Control, AudioHelper.SaveClass audioHelper)
         {
             AudioHelper audioHelperNew = gameObject.AddComponent<AudioHelper>();
+
+            AudioClip[] audios = new AudioClip[audioHelper.nameAudio.Length];
+            for (int i = 0; i < audioHelper.nameAudio.Length; i++)
+            {
+                audios[i] = global_Control.audioLoader.audioSources[audioHelper.nameAudio[i]];
+            }
+
             audioHelperNew.Init(audioHelper.nameHelper, audioHelper.nameAudio, audioHelper.cnt, audioHelper.volume,
-                audioHelper.pitch, audioHelper.panStereo, audioHelper.time, global_Control.audioLoader.audioSources[audioHelper.nameAudio.Split(' ')[0]], this);
+                audioHelper.pitch, audioHelper.panStereo, audioHelper.time, audioHelper.startWait, audioHelper.betweenWait, audioHelper.indexAudio, this, audios);
         }
 
         public AudioSource GetAudioSource()

@@ -2,23 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BackgroundsLoader
+namespace Engine
 {
-    public Dictionary<string, Sprite> backgrounds;
-    public Dictionary<int, string> backgrounds_names;
-
-    public BackgroundsLoader()
+    public class BackgroundsLoader
     {
-        BackgroundsFinder backgroundsFinder = new BackgroundsFinder();
-        backgrounds_names = new Dictionary<int, string>();
-        backgrounds = new Dictionary<string, Sprite>();
+        public Dictionary<string, Sprite> backgrounds;
+        public Dictionary<int, string> backgrounds_names;
 
-        for (int index = 0; index < backgroundsFinder.paths_backgrounds.Count; index++)
+        public BackgroundsLoader()
         {
-            Sprite background_image = Resources.Load<Sprite>("Backgrounds/" + backgroundsFinder.paths_backgrounds[index]);
+            BackgroundsFinder backgroundsFinder = new BackgroundsFinder();
+            backgrounds_names = new Dictionary<int, string>();
+            backgrounds = new Dictionary<string, Sprite>();
 
-            backgrounds.Add(backgroundsFinder.names_backgrounds[index], background_image);
-            backgrounds_names.Add(backgroundsFinder.numbers_backgrounds[index], backgroundsFinder.names_backgrounds[index]);     
+            for (int index = 0; index < backgroundsFinder.paths_backgrounds.Count; index++)
+            {
+                Sprite background_image = Resources.Load<Sprite>(backgroundsFinder.paths_backgrounds[index]);
+
+                backgrounds.Add(backgroundsFinder.names_backgrounds[index], background_image);
+                backgrounds_names.Add(backgroundsFinder.numbers_backgrounds[index], backgroundsFinder.names_backgrounds[index]);
+            }
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Engine
 
         public static Vector3 ConvertArrayToVector3(float[] array)
         {
-            Vector3 result = new Vector3();
+            Vector3 result;
             result = Vector3.zero;
 
             if (array == null || array.Length == 0)
@@ -70,7 +70,7 @@ namespace Engine
 
         public static Vector2 ConvertArrayToVector2(float[] array)
         {
-            Vector2 result = new Vector2();
+            Vector2 result;
             result = Vector2.zero;
 
             if (array == null || array.Length == 0)

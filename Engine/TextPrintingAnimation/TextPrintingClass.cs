@@ -15,6 +15,7 @@ namespace Engine
         private float letters_to_print;
 
         private bool IsPause = false;
+        public bool IsInit = false;
 
         private int indexPrint = 0;
 
@@ -29,6 +30,7 @@ namespace Engine
             this.text_print.text = text_to_print;
 
             this.IsPause = false;
+            this.IsInit = true;
 
             float width = this.text_print.transform.GetComponent<RectTransform>().sizeDelta.x;
             this.text_print.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(width, this.text_print.preferredHeight);
@@ -44,6 +46,17 @@ namespace Engine
             StartCoroutine(this.PrintingText(indexStart));
         }
 
+        public void FinishPrinting()
+        {
+            this.text_print.text = this.text_to_print;
+
+            this.indexPrint = this.text_to_print.Length;
+
+            global_Control.handlerCommandScene.IsPrintingText = false;
+
+            StopAllCoroutines();
+        }
+
         public void StopPrinting()
         {
             this.text_print.text = this.text_to_print;
@@ -51,6 +64,7 @@ namespace Engine
             global_Control.handlerCommandScene.IsPrintingText = false;
 
             this.indexPrint = 0;
+            this.IsInit = false;
 
             StopAllCoroutines();
         }
@@ -96,7 +110,7 @@ namespace Engine
                 }
                 yield return new WaitForSeconds(0.02f);
             }
-            StopPrinting();
+            FinishPrinting();
 
             yield break;
         }

@@ -2,23 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpritesLoader
+namespace Engine
 {
-    public Dictionary<string, Sprite> sprites;
-    public Dictionary<int, string> sprites_names;
-
-    public SpritesLoader()
+    public class SpritesLoader
     {
-        SpritesFinder spritesFinder = new SpritesFinder();
-        sprites_names = new Dictionary<int, string>();
-        sprites = new Dictionary<string, Sprite>();
+        public Dictionary<string, Sprite> sprites;
+        public Dictionary<int, string> sprites_names;
 
-        for (int index = 0; index < spritesFinder.paths_sprites.Count; index++)
+        public SpritesLoader()
         {
-            Sprite sprite_image = Resources.Load<Sprite>("Sprites/" + spritesFinder.paths_sprites[index]);
+            SpritesFinder spritesFinder = new SpritesFinder();
+            sprites_names = new Dictionary<int, string>();
+            sprites = new Dictionary<string, Sprite>();
 
-            sprites.Add(spritesFinder.names_sprites[index], sprite_image);
-            sprites_names.Add(spritesFinder.numbers_sprites[index], spritesFinder.names_sprites[index]);
+            for (int index = 0; index < spritesFinder.paths_sprites.Count; index++)
+            {
+                Sprite sprite_image = Resources.Load<Sprite>(spritesFinder.paths_sprites[index]);
+
+                sprites.Add(spritesFinder.names_sprites[index], sprite_image);
+                sprites_names.Add(spritesFinder.numbers_sprites[index], spritesFinder.names_sprites[index]);
+            }
         }
     }
 }

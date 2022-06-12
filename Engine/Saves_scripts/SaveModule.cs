@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
+using Engine.WorkWithRectTransform;
 
 namespace Engine
 {
@@ -145,14 +146,24 @@ namespace Engine
                     saveClasses[i] = audioHelpers[i].GetSave();
                 }
 
+                Image[] sprites = global_Control.ToSpawnSprite.GetComponentsInChildren<Image>();
+                string[] spritesNames = new string[sprites.Length]; 
+                string[] spritesNamesObjects = new string[sprites.Length]; 
+                RectTransformSaveValuesSerializable[] rectTransformsSprites = new RectTransformSaveValuesSerializable[sprites.Length]; 
 
-                //string[] spritesNames 
+                for (int i = 0; i < sprites.Length; i++)
+                {
+                    spritesNames[i] = sprites[i].sprite.name;
+                    spritesNamesObjects[i] = sprites[i].gameObject.name;
+                    rectTransformsSprites[i] = new RectTransformSaveValuesSerializable(sprites[i].gameObject.GetComponent<RectTransform>());
+                }
 
                 TextPrintingClass textPrintingClass = global_Control.gameObject.GetComponent<TextPrintingClass>();
 
                 Save_class newSave = new Save_class(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second, 
                     this.global_Control.Flags, saveClasses, this.global_Control.background.sprite.name, 
-                    textPrintingClass.GetProgress(), global_Control.text_dialogue.text, global_Control.text_character.text, null);
+                    textPrintingClass.GetProgress(), global_Control.text_dialogue.text, global_Control.text_character.text, 
+                    spritesNames, spritesNamesObjects, rectTransformsSprites);
 
                 this.nameSave = newSave.name_save;
                 this.name_save.text = newSave.name_save;
@@ -186,14 +197,26 @@ namespace Engine
                     saveClasses[i] = audioHelpers[i].GetSave();
                 }
 
+                Image[] sprites = global_Control.ToSpawnSprite.GetComponentsInChildren<Image>();
+                string[] spritesNames = new string[sprites.Length];
+                string[] spritesNamesObjects = new string[sprites.Length];
+                RectTransformSaveValuesSerializable[] rectTransformsSprites = new RectTransformSaveValuesSerializable[sprites.Length];
+
+                for (int i = 0; i < sprites.Length; i++)
+                {
+                    spritesNames[i] = sprites[i].sprite.name;
+                    spritesNamesObjects[i] = sprites[i].gameObject.name;
+                    rectTransformsSprites[i] = new RectTransformSaveValuesSerializable(sprites[i].gameObject.GetComponent<RectTransform>());
+                }
+
                 TextPrintingClass textPrintingClass = global_Control.gameObject.GetComponent<TextPrintingClass>();
 
                 new Save_class(this.nameSave).Change(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second,
                     this.global_Control.Flags, saveClasses, this.global_Control.background.sprite.name,
-                    textPrintingClass.GetProgress(), global_Control.text_dialogue.text, global_Control.text_character.text, null);
+                    textPrintingClass.GetProgress(), global_Control.text_dialogue.text, global_Control.text_character.text, 
+                    spritesNames, spritesNamesObjects, rectTransformsSprites);
 
                 Debug.Log(Application.persistentDataPath);
-                Debug.Log(textPrintingClass.GetProgress());
             }
             global_Control.screenshotSaverLoader.MakeScreenshot(this.nameSave, this.global_Control);
             StartCoroutine(this.WaitScreenshot());

@@ -9,9 +9,11 @@ using UnityEngine.UI;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
+using Engine.WorkWithRectTransform;
 
 namespace Engine
 {
+    [AddComponentMenu("Engine/Global control")]
     /// <summary>
     /// Controler all on a game scene
     /// </summary>
@@ -205,6 +207,20 @@ namespace Engine
                 }
             }
 
+            if (saveClass.spritesNames != null && saveClass.spritesObjectNames != null && saveClass.rectTransformsSprites != null)
+            {
+                int length = Mathf.Min(saveClass.spritesNames.Length, saveClass.spritesObjectNames.Length, saveClass.rectTransformsSprites.Length);
+
+                this.DestroyAllObjects(this.ToSpawnSprite.transform);
+
+                for (int i = 0; i < length; i++)
+                {
+                    GameObject newSprite = this.SpawnObject(this.prefab_sprites, saveClass.spritesObjectNames[i], this.ToSpawnSprite.transform);
+                    saveClass.rectTransformsSprites[i].UpdateRectTransform(newSprite.GetComponent<RectTransform>());
+                    newSprite.GetComponent<Image>().sprite = this.spritesLoader.sprites[saveClass.spritesNames[i].Split(' ')[0]]; 
+                }
+            }
+
             this.indexPrint = saveClass.indexPrint;
 
             this.text_character.text = saveClass.textOnSceneCharacter;
@@ -230,12 +246,17 @@ namespace Engine
 
             if (this.handlerCommandScene.CanDoNextCommand())
             {
+                if (gameObject.GetComponent<TextPrintingClass>().IsInit)
+                {
+                    gameObject.GetComponent<TextPrintingClass>().StopPrinting();
+                }
+
                 this.number_command_scene++;
                 this.SceneCommands();
             }
             else if (this.handlerCommandScene.IsPrintingText)
             {
-                gameObject.GetComponent<TextPrintingClass>().StopPrinting();
+                gameObject.GetComponent<TextPrintingClass>().FinishPrinting();
             }
         }
 
@@ -268,6 +289,18 @@ namespace Engine
             spawn_object.transform.localRotation = quaternion;
 
             spawn_object.transform.localScale = size;
+
+            return spawn_object;
+        }
+
+        public GameObject SpawnObject(GameObject prefab, string name, Transform parent)
+        {
+            GameObject spawn_object = Instantiate(prefab, Vector3.zero, Quaternion.identity, parent);
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                spawn_object.name = name;
+            }
 
             return spawn_object;
         }

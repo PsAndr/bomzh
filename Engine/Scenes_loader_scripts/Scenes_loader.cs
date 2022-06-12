@@ -5,18 +5,6 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-[System.Serializable]
-public class Pair<TFirst, TSecond>
-{
-    public TFirst first { get; set; }   
-    public TSecond second { get; set; }
-
-    public Pair(TFirst first, TSecond second)
-    {
-        (this.first, this.second) = (first, second);
-    }
-}
-
 public class Scenes_loader
 {
     public string[] list_scenes_paths;
