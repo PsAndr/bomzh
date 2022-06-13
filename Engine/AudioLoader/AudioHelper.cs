@@ -114,7 +114,11 @@ namespace Engine
                         }
                     }
                 }
-                this.saveClass.cnt--;
+
+                if (this.saveClass.cnt != -1)
+                {
+                    this.saveClass.cnt--;
+                }
             }
 
             audioSource.Stop();

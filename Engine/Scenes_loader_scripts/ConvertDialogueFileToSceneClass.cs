@@ -88,7 +88,7 @@ public class ConvertDialogueFileToSceneClass
                     {
                         if (!string.IsNullOrEmpty(line))
                         {
-                            string[] parts_line = line.Split(':');
+                            string[] parts_line = line.Split(';')[0].Split(':');
                             string name_command = parts_line[0].Split('_')[0];
                             string number_or_name = parts_line[0].Split('_')[1].Split('=')[0];
 
@@ -149,7 +149,8 @@ public class ConvertDialogueFileToSceneClass
                                 }
                             }
 
-                            this.parts.Add(new Scene_class.DialogueOrChoiceOrCommand(2, new Scene_class.Command(name_command, name, number, dict_values, dict_values_str, signs)));
+                            this.parts.Add(new Scene_class.DialogueOrChoiceOrCommand(2, 
+                                new Scene_class.Command(name_command, name, number, dict_values, dict_values_str, signs, GetNeedFlags(line.Split(';')[1]))));
                         }
                     }
                     break;
@@ -357,7 +358,7 @@ public class ConvertDialogueFileToSceneClass
                                     }
                                 }
 
-                                new_command_choice = new Scene_class.Command(name_command, name, number, dict_values, dict_values_str, signs);
+                                new_command_choice = new Scene_class.Command(name_command, name, number, dict_values, dict_values_str, signs, new Scene_class.NeedFlag[0]);
 
                                 commands_choice[i - 3] = new_command_choice;
                             }
@@ -386,6 +387,58 @@ public class ConvertDialogueFileToSceneClass
             }
         }
         return cnt;
+    }
+
+    public Scene_class.NeedFlag[] GetNeedFlags(string line)
+    {
+        List<Scene_class.NeedFlag> needFlags = new List<Scene_class.NeedFlag>();
+
+        int startFlag = line.IndexOf('[');
+        int endFlag = 0;
+
+        while (startFlag != -1 && endFlag != -1)
+        {
+            startFlag++;
+            endFlag = line.IndexOf(']', startFlag);
+
+            if (endFlag != -1)
+            {
+                string strFlag = line[startFlag..endFlag];
+
+                string nameFlag;
+                int valueFlag;
+                char signFlag;
+
+                if (strFlag.IndexOf('=') != -1)
+                {
+                    signFlag = '=';
+                    valueFlag = Convert.ToInt32(strFlag.Split('=')[1]);
+                    nameFlag = strFlag.Split('=')[0];
+                    Scene_class.NeedFlag needFlag = new Scene_class.NeedFlag(nameFlag, signFlag, valueFlag);
+                    needFlags.Add(needFlag);
+                }
+                else if (strFlag.IndexOf('>') != -1)
+                {
+                    signFlag = '>';
+                    valueFlag = Convert.ToInt32(strFlag.Split('>')[1]);
+                    nameFlag = strFlag.Split('>')[0];
+                    Scene_class.NeedFlag needFlag = new Scene_class.NeedFlag(nameFlag, signFlag, valueFlag);
+                    needFlags.Add(needFlag);
+                }
+                else if (strFlag.IndexOf('<') != -1)
+                {
+                    signFlag = '<';
+                    valueFlag = Convert.ToInt32(strFlag.Split('<')[1]);
+                    nameFlag = strFlag.Split('<')[0];
+                    Scene_class.NeedFlag needFlag = new Scene_class.NeedFlag(nameFlag, signFlag, valueFlag);
+                    needFlags.Add(needFlag);
+                }
+
+                startFlag = line.IndexOf('[', endFlag);
+            }
+        }
+
+        return needFlags.ToArray();
     }
 }
 

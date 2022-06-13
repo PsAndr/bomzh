@@ -56,7 +56,6 @@ namespace Engine
         private int number_command_scene;
 
         [HideInInspector] public Dictionary<string, int> Flags;
-        [HideInInspector] public List<string> Flags_name;
         //
 
         [HideInInspector] public BackgroundsLoader backgroundsLoader;

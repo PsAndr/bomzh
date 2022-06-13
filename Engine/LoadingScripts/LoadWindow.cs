@@ -138,7 +138,6 @@ namespace Engine
         public void Load(string nameSave)
         {
             Save_class saveLoad = new Save_class(nameSave);
-            Debug.Log(saveLoad.indexPrint);
             if (this.startScene)
             {
                 this.global_Control.sceneNow.SetValues(saveLoad);

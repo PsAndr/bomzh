@@ -13,6 +13,7 @@ namespace Engine
             public Vector3 localScale;
             public Quaternion localRotation;
             public Vector2 sizeDelta;
+            public Vector2 pivot;
 
             public RectTransformSaveValues(RectTransform rectTransform)
             {
@@ -20,6 +21,7 @@ namespace Engine
                 this.localScale = rectTransform.localScale;
                 this.localRotation = rectTransform.localRotation;
                 this.sizeDelta = rectTransform.sizeDelta;
+                this.pivot = rectTransform.pivot;
             }
 
             public void UpdateRectTransform(RectTransform rectTransform)
@@ -28,6 +30,7 @@ namespace Engine
                 rectTransform.localScale = this.localScale;
                 rectTransform.localRotation = this.localRotation;
                 rectTransform.sizeDelta = this.sizeDelta;
+                rectTransform.pivot = this.pivot;
             }
         }
 
@@ -38,13 +41,15 @@ namespace Engine
             public float[] localScale;
             public float[] localRotation;
             public float[] sizeDelta;
+            public float[] pivot;
 
-            public RectTransformSaveValuesSerializable(float[] localPosition, float[] localScale, float[] localRotation, float[] sizeDelta)
+            public RectTransformSaveValuesSerializable(float[] localPosition, float[] localScale, float[] localRotation, float[] sizeDelta, float[] pivot)
             {
                 this.localPosition = localPosition;
                 this.localScale = localScale;
                 this.localRotation = localRotation;
                 this.sizeDelta = sizeDelta;
+                this.pivot = pivot;
             }
 
             public RectTransformSaveValuesSerializable(RectTransform rectTransform)
@@ -53,31 +58,44 @@ namespace Engine
                 this.localScale = WorkWithVectors.ConvertToArrayVector(rectTransform.localScale);
                 this.localRotation = WorkWithVectors.ConvertToArrayVector(rectTransform.localRotation.eulerAngles);
                 this.sizeDelta = WorkWithVectors.ConvertToArrayVector(rectTransform.sizeDelta);
+                this.pivot = WorkWithVectors.ConvertToArrayVector(rectTransform.pivot);
             }
 
-            public RectTransformSaveValuesSerializable(Vector3 localPosition, Vector3 localScale, Quaternion localRotationQ, Vector2 sizeDelta)
+            public RectTransformSaveValuesSerializable(Vector3 localPosition, Vector3 localScale, Quaternion localRotationQ, Vector2 sizeDelta, Vector2 pivot)
             {
                 Vector3 localRotation = localRotationQ.eulerAngles;
                 this.localPosition = WorkWithVectors.ConvertToArrayVector(localPosition);
                 this.localScale = WorkWithVectors.ConvertToArrayVector(localScale);
                 this.localRotation = WorkWithVectors.ConvertToArrayVector(localRotation);
                 this.sizeDelta = WorkWithVectors.ConvertToArrayVector(sizeDelta);
+                this.pivot = WorkWithVectors.ConvertToArrayVector(pivot);
             }
 
-            public RectTransformSaveValuesSerializable(Vector3 localPosition, Vector3 localScale, Vector3 localRotation, Vector2 sizeDelta)
+            public RectTransformSaveValuesSerializable(Vector3 localPosition, Vector3 localScale, Vector3 localRotation, Vector2 sizeDelta, Vector2 pivot)
             {
                 this.localPosition = WorkWithVectors.ConvertToArrayVector(localPosition);
                 this.localScale = WorkWithVectors.ConvertToArrayVector(localScale);
                 this.localRotation = WorkWithVectors.ConvertToArrayVector(localRotation);
                 this.sizeDelta = WorkWithVectors.ConvertToArrayVector(sizeDelta);
+                this.pivot = WorkWithVectors.ConvertToArrayVector(pivot);
             }
-            
+
+            public RectTransformSaveValuesSerializable(RectTransformSaveValues rectTransformSaveValues)
+            {
+                this.localPosition = WorkWithVectors.ConvertToArrayVector(rectTransformSaveValues.localPosition);
+                this.localScale = WorkWithVectors.ConvertToArrayVector(rectTransformSaveValues.localScale);
+                this.localRotation = WorkWithVectors.ConvertToArrayVector(rectTransformSaveValues.localRotation.eulerAngles);
+                this.sizeDelta = WorkWithVectors.ConvertToArrayVector(rectTransformSaveValues.sizeDelta);
+                this.pivot = WorkWithVectors.ConvertToArrayVector(rectTransformSaveValues.pivot);
+            }
+
             public void UpdateRectTransform(RectTransform rectTransform)
             {
                 rectTransform.localPosition = WorkWithVectors.ConvertArrayToVector3(this.localPosition);
                 rectTransform.localScale = WorkWithVectors.ConvertArrayToVector3(this.localScale);
                 rectTransform.localRotation = Quaternion.Euler(WorkWithVectors.ConvertArrayToVector3(this.localRotation));
                 rectTransform.sizeDelta = WorkWithVectors.ConvertArrayToVector2(this.sizeDelta);
+                rectTransform.pivot = WorkWithVectors.ConvertArrayToVector2(this.pivot);
             }
         }
     }

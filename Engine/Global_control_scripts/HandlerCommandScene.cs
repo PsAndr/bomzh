@@ -80,240 +80,259 @@ namespace Engine
             }
         }
 
+        public void SetCommand(Global_control global_Control, Scene_class.Command command, bool IsStartedFromScene = true)
+        {
+            this.HandleCommand(global_Control, command, IsStartedFromScene);
+        }
+
+        public void SetCommand(Global_control global_Control, Scene_class.DialogueText command)
+        {
+            this.HandleDialogue(global_Control, command);
+        }
+
+        public void SetCommand(Global_control global_Control, Scene_class.ChoiceText command)
+        {
+            this.HandleChoice(global_Control, command);
+        }
+
         private void HandleCommand(Global_control global_Control, Scene_class.Command command, bool IsStartedFromScene = true)
         {
-            switch (command.name_command)
+            if (CompareFlags(global_Control, command.needFlags))
             {
-                case "changeScene":
-                    if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
-                    {
-                        Debug.LogException(new Exception("Don`t get name or number scene to change"));
-                        return;
-                    }
-
-                    int number_command = 0;
-
-                    if (command.dict_values != null && command.dict_values.ContainsKey("commandNumber"))
-                    {
-                        if (command.dict_values["commandNumber"].Length > 0)
+                switch (command.name_command)
+                {
+                    case "changeScene":
+                        if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
                         {
-                            number_command = Convert.ToInt32(command.dict_values["commandNumber"][0]);
-                        }
-                    }
-
-                    global_Control.ChangeScene(command.number_obj, command.name_obj, number_command);
-
-                    return;
-
-                case "changeFlag":
-                    if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
-                    {
-                        Debug.LogException(new Exception("Don`t get name or number flag to change"));
-                        return;
-                    }
-                    else if (string.IsNullOrEmpty(command.name_obj) && global_Control.Flags_name.Count <= command.number_obj)
-                    {
-                        Debug.LogException(new Exception("Overflow flag number"));
-                        return;
-                    }
-                    else if (string.IsNullOrEmpty(command.name_obj))
-                    {
-                        command.name_obj = global_Control.Flags_name[command.number_obj];
-                    }
-
-                    if (!global_Control.Flags.ContainsKey(command.name_obj))
-                    {
-                        global_Control.Flags.Add(command.name_obj, 0);
-                        global_Control.Flags_name.Add(command.name_obj);
-                    }
-
-                    if (command.dict_values.ContainsKey("newValue"))
-                    {
-                        if (command.dict_values["newValue"].Length == 0 || command.dict_values["newValue"] == null)
-                        {
-                            Debug.LogException(new Exception("Don`t get new value to flag"));
+                            Debug.LogException(new Exception("Don`t get name or number scene to change"));
                             return;
                         }
-                        switch (command.signs["newValue"])
+
+                        int number_command = 0;
+
+                        if (command.dict_values != null && command.dict_values.ContainsKey("commandNumber"))
                         {
-                            case '=':
-                                global_Control.Flags[command.name_obj] = Convert.ToInt32(command.dict_values["newValue"][0]);
-                                break;
-
-                            case '+':
-                                global_Control.Flags[command.name_obj] += Convert.ToInt32(command.dict_values["newValue"][0]);
-                                break;
-                        }
-                    }
-                    break;
-
-                case "changeBackground":
-                    if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
-                    {
-                        Debug.LogException(new Exception("Don`t get name or number background to change"));
-                        return;
-                    }
-                    else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.backgroundsLoader.backgrounds_names.ContainsKey(command.number_obj))
-                    {
-                        Debug.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
-                        return;
-                    }
-                    else if (string.IsNullOrEmpty(command.name_obj))
-                    {
-                        command.name_obj = global_Control.backgroundsLoader.backgrounds_names[command.number_obj];
-                    }
-
-                    if (!global_Control.backgroundsLoader.backgrounds.ContainsKey(command.name_obj))
-                    {
-                        Debug.LogException(new Exception("Haven`t background of this name: " + command.name_obj + "!"));
-                        return;
-                    }
-
-                    global_Control.background.sprite = global_Control.backgroundsLoader.backgrounds[command.name_obj];
-                    break;
-
-                case "spawnSprite":
-                    if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
-                    {
-                        Debug.LogException(new Exception("Don`t get name or number sprite to spawn"));
-                        return;
-                    }
-                    else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.spritesLoader.sprites_names.ContainsKey(command.number_obj))
-                    {
-                        Debug.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
-                        return;
-                    }
-                    else if (string.IsNullOrEmpty(command.name_obj))
-                    {
-                        command.name_obj = global_Control.spritesLoader.sprites_names[command.number_obj];
-                    }
-
-                    Sprite sprite = global_Control.spritesLoader.sprites[command.name_obj];
-
-                    Vector3 position = new Vector3(0, 0, 0);
-                    Vector3 rotation = new Vector3(0, 0, 0);
-                    Vector3 size = new Vector3(1, 1, 1);
-
-                    string name = null;
-
-                    if (command.dict_values_str.ContainsKey("nameSprite"))
-                    {
-                        name = command.dict_values_str["nameSprite"][0];
-                    }
-
-                    if (command.dict_values.ContainsKey("positionSprite"))
-                    {
-                        double[] values = command.dict_values["positionSprite"];
-
-                        if (values.Length >= 3)
-                        {
-                            position = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
-                        }
-                    }
-
-                    if (command.dict_values.ContainsKey("sizeSprite"))
-                    {
-                        double[] values = command.dict_values["sizeSprite"];
-
-                        if (values.Length >= 3)
-                        {
-                            size = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
-                        }
-                    }
-
-                    if (command.dict_values.ContainsKey("rotationSprite"))
-                    {
-                        double[] values = command.dict_values["rotationSprite"];
-
-                        if (values.Length >= 3)
-                        {
-                            rotation = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
-                        }
-                    }
-
-                    GameObject sprite_obj = global_Control.SpawnObject(global_Control.prefab_sprites, position, size, rotation, name, global_Control.ToSpawnSprite.transform);
-                    sprite_obj.GetComponent<Image>().sprite = sprite;
-                    sprite_obj.GetComponent<RectTransform>().sizeDelta = new Vector2(sprite.textureRect.width, sprite.textureRect.height);
-
-                    break;
-
-                case "playAudio":
-                    if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
-                    {
-                        Debug.LogException(new Exception("Don`t get name or number audio"));
-                        return;
-                    }
-                    else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.audioLoader.audioNames.ContainsKey(command.number_obj))
-                    {
-                        Debug.LogException(new Exception("Haven`t name audio of this number: " + command.number_obj.ToString() + "!"));
-                        return;
-                    }
-                    else if (string.IsNullOrEmpty(command.name_obj))
-                    {
-                        command.name_obj = global_Control.audioLoader.audioNames[command.number_obj];
-                    }
-
-                    DynamicArray<AudioClip> audio = new(global_Control.audioLoader.audioSources[command.name_obj]);
-
-                    float volume = 1f;
-                    float pitch = 1f;
-                    float panStereo = 0f;
-                    int countRepeat = 1;
-
-                    if (command.dict_values.ContainsKey("volumeAudio"))
-                    {
-                        if (command.dict_values["volumeAudio"] != null && command.dict_values["volumeAudio"].Length > 0)
-                        {
-                            volume = (float)command.dict_values["volumeAudio"][0];
-                        }
-                    }
-
-                    if (command.dict_values.ContainsKey("pitchAudio"))
-                    {
-                        if (command.dict_values["pitchAudio"] != null && command.dict_values["pitchAudio"].Length > 0)
-                        {
-                            pitch = (float)command.dict_values["pitchAudio"][0];
-                        }
-                    }
-
-                    if (command.dict_values.ContainsKey("panStereoAudio"))
-                    {
-                        if (command.dict_values["panStereoAudio"] != null && command.dict_values["panStereoAudio"].Length > 0)
-                        {
-                            panStereo = (float)command.dict_values["panStereoAudio"][0];
-                        }
-                    }
-
-                    if (command.dict_values.ContainsKey("countRepeatAudio"))
-                    {
-                        if (command.dict_values["countRepeatAudio"] != null && command.dict_values["countRepeatAudio"].Length > 0)
-                        {
-                            countRepeat = Convert.ToInt32(command.dict_values["countRepeatAudio"][0]);
-                        }
-                    }
-
-                    if (command.dict_values_str.ContainsKey("nameExtraAudio"))
-                    {
-                        if (command.dict_values_str["nameExtraAudio"] != null && command.dict_values_str["nameExtraAudio"].Length > 0)
-                        {
-                            foreach (string nameAudio in command.dict_values_str["nameExtraAudio"]) 
+                            if (command.dict_values["commandNumber"].Length > 0)
                             {
-                                if (global_Control.audioLoader.audioSources.ContainsKey(nameAudio)) 
+                                number_command = Convert.ToInt32(command.dict_values["commandNumber"][0]);
+                            }
+                        }
+
+                        global_Control.ChangeScene(command.number_obj, command.name_obj, number_command);
+
+                        return;
+
+                    case "changeFlag":
+                        if (string.IsNullOrEmpty(command.name_obj))
+                        {
+                            Debug.LogException(new Exception("Don`t get name of flag to change"));
+                            return;
+                        }
+
+                        if (!global_Control.Flags.ContainsKey(command.name_obj))
+                        {
+                            global_Control.Flags.Add(command.name_obj, 0);
+                        }
+
+                        if (command.dict_values.ContainsKey("newValue"))
+                        {
+                            if (command.dict_values["newValue"].Length == 0 || command.dict_values["newValue"] == null)
+                            {
+                                Debug.LogException(new Exception("Don`t get new value to flag"));
+                                return;
+                            }
+                            switch (command.signs["newValue"])
+                            {
+                                case '=':
+                                    global_Control.Flags[command.name_obj] = Convert.ToInt32(command.dict_values["newValue"][0]);
+                                    break;
+
+                                case '+':
+                                    global_Control.Flags[command.name_obj] += Convert.ToInt32(command.dict_values["newValue"][0]);
+                                    break;
+                            }
+                        }
+                        break;
+
+                    case "changeBackground":
+                        if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
+                        {
+                            Debug.LogException(new Exception("Don`t get name or number background to change"));
+                            return;
+                        }
+                        else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.backgroundsLoader.backgrounds_names.ContainsKey(command.number_obj))
+                        {
+                            Debug.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
+                            return;
+                        }
+                        else if (string.IsNullOrEmpty(command.name_obj))
+                        {
+                            command.name_obj = global_Control.backgroundsLoader.backgrounds_names[command.number_obj];
+                        }
+
+                        if (!global_Control.backgroundsLoader.backgrounds.ContainsKey(command.name_obj))
+                        {
+                            Debug.LogException(new Exception("Haven`t background of this name: " + command.name_obj + "!"));
+                            return;
+                        }
+
+                        global_Control.background.sprite = global_Control.backgroundsLoader.backgrounds[command.name_obj];
+                        break;
+
+                    case "spawnSprite":
+                        if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
+                        {
+                            Debug.LogException(new Exception("Don`t get name or number sprite to spawn"));
+                            return;
+                        }
+                        else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.spritesLoader.sprites_names.ContainsKey(command.number_obj))
+                        {
+                            Debug.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
+                            return;
+                        }
+                        else if (string.IsNullOrEmpty(command.name_obj))
+                        {
+                            command.name_obj = global_Control.spritesLoader.sprites_names[command.number_obj];
+                        }
+
+                        Sprite sprite = global_Control.spritesLoader.sprites[command.name_obj];
+
+                        Vector3 position = new Vector3(0, 0, 0);
+                        Vector3 rotation = new Vector3(0, 0, 0);
+                        Vector3 size = new Vector3(1, 1, 1);
+                        Vector2 sizeDelta = new Vector2(sprite.textureRect.width, sprite.textureRect.height);
+
+                        string name = null;
+
+                        if (command.dict_values_str.ContainsKey("nameSprite"))
+                        {
+                            name = command.dict_values_str["nameSprite"][0];
+                        }
+
+                        if (command.dict_values.ContainsKey("positionSprite"))
+                        {
+                            double[] values = command.dict_values["positionSprite"];
+
+                            if (values.Length >= 3)
+                            {
+                                position = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
+                            }
+                        }
+
+                        if (command.dict_values.ContainsKey("sizeSprite"))
+                        {
+                            double[] values = command.dict_values["sizeSprite"];
+
+                            if (values.Length >= 3)
+                            {
+                                size = new Vector3((float)values[0], (float)values[1], (float)values[2]);
+                            }
+                        }
+
+                        if (command.dict_values.ContainsKey("sizeDeltaSprite"))
+                        {
+                            double[] values = command.dict_values["sizeDeltaSprite"];
+
+                            if (values.Length >= 2)
+                            {
+                                sizeDelta = new Vector2((float)values[0], (float)values[1]);
+                            }
+                        }
+
+                        if (command.dict_values.ContainsKey("rotationSprite"))
+                        {
+                            double[] values = command.dict_values["rotationSprite"];
+
+                            if (values.Length >= 3)
+                            {
+                                rotation = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
+                            }
+                        }
+
+                        GameObject sprite_obj = global_Control.SpawnObject(global_Control.prefab_sprites, position, size, rotation, name, global_Control.ToSpawnSprite.transform);
+                        sprite_obj.GetComponent<Image>().sprite = sprite;
+                        sprite_obj.GetComponent<RectTransform>().sizeDelta = sizeDelta;
+
+                        break;
+
+                    case "playAudio":
+                        if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
+                        {
+                            Debug.LogException(new Exception("Don`t get name or number audio"));
+                            return;
+                        }
+                        else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.audioLoader.audioNames.ContainsKey(command.number_obj))
+                        {
+                            Debug.LogException(new Exception("Haven`t name audio of this number: " + command.number_obj.ToString() + "!"));
+                            return;
+                        }
+                        else if (string.IsNullOrEmpty(command.name_obj))
+                        {
+                            command.name_obj = global_Control.audioLoader.audioNames[command.number_obj];
+                        }
+
+                        DynamicArray<AudioClip> audio = new(global_Control.audioLoader.audioSources[command.name_obj]);
+
+                        float volume = 1f;
+                        float pitch = 1f;
+                        float panStereo = 0f;
+                        int countRepeat = 1;
+
+                        if (command.dict_values.ContainsKey("volumeAudio"))
+                        {
+                            if (command.dict_values["volumeAudio"] != null && command.dict_values["volumeAudio"].Length > 0)
+                            {
+                                volume = (float)command.dict_values["volumeAudio"][0];
+                            }
+                        }
+
+                        if (command.dict_values.ContainsKey("pitchAudio"))
+                        {
+                            if (command.dict_values["pitchAudio"] != null && command.dict_values["pitchAudio"].Length > 0)
+                            {
+                                pitch = (float)command.dict_values["pitchAudio"][0];
+                            }
+                        }
+
+                        if (command.dict_values.ContainsKey("panStereoAudio"))
+                        {
+                            if (command.dict_values["panStereoAudio"] != null && command.dict_values["panStereoAudio"].Length > 0)
+                            {
+                                panStereo = (float)command.dict_values["panStereoAudio"][0];
+                            }
+                        }
+
+                        if (command.dict_values.ContainsKey("countRepeatAudio"))
+                        {
+                            if (command.dict_values["countRepeatAudio"] != null && command.dict_values["countRepeatAudio"].Length > 0)
+                            {
+                                countRepeat = Convert.ToInt32(command.dict_values["countRepeatAudio"][0]);
+                            }
+                        }
+
+                        if (command.dict_values_str.ContainsKey("nameExtraAudio"))
+                        {
+                            if (command.dict_values_str["nameExtraAudio"] != null && command.dict_values_str["nameExtraAudio"].Length > 0)
+                            {
+                                foreach (string nameAudio in command.dict_values_str["nameExtraAudio"])
                                 {
-                                    audio.Add(global_Control.audioLoader.audioSources[nameAudio]);
+                                    if (global_Control.audioLoader.audioSources.ContainsKey(nameAudio))
+                                    {
+                                        audio.Add(global_Control.audioLoader.audioSources[nameAudio]);
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    global_Control.audioHandler.PlayClip(countRepeat, panStereo, volume, pitch, audio.ToArray());
+                        global_Control.audioHandler.PlayClip(countRepeat, panStereo, volume, pitch, audio.ToArray());
 
-                    break;
+                        break;
 
-                default:
-                    Debug.LogException(new Exception("Don`t know this command: " + command.name_command));
-                    break;
+                    default:
+                        Debug.LogException(new Exception("Don`t know this command: " + command.name_command));
+                        break;
 
+                }
             }
 
             if (IsStartedFromScene)
@@ -469,7 +488,6 @@ namespace Engine
             if (!global_Control.Flags.ContainsKey(flag.name))
             {
                 global_Control.Flags.Add(flag.name, 0);
-                global_Control.Flags_name.Add(flag.name);
             }
 
             switch (flag.compare_sign)
@@ -486,6 +504,40 @@ namespace Engine
                 default:
                     return false;
             }
+        }
+
+        private bool CompareFlags(Global_control global_Control, params Scene_class.NeedFlag[] flags)
+        {
+            bool isCompare = true;
+
+            foreach (Scene_class.NeedFlag flag in flags)
+            {
+                if (!global_Control.Flags.ContainsKey(flag.name))
+                {
+                    global_Control.Flags.Add(flag.name, 0);
+                }
+
+                switch (flag.compare_sign)
+                {
+                    case '=':
+                        isCompare = isCompare && global_Control.Flags[flag.name] == flag.value;
+                        break;
+
+                    case '>':
+                        isCompare = isCompare && global_Control.Flags[flag.name] > flag.value;
+                        break;
+
+                    case '<':
+                        isCompare = isCompare && global_Control.Flags[flag.name] < flag.value;
+                        break;
+
+                    default:
+                        isCompare = isCompare && false;
+                        break;
+                }
+            }
+
+            return isCompare;
         }
     }
 }

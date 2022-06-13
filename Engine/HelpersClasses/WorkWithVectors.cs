@@ -4,7 +4,10 @@ using UnityEngine;
 
 namespace Engine
 {
-    public class WorkWithVectors
+    /// <summary>
+    /// Convert from vectors and to vectors 
+    /// </summary>
+    public static class WorkWithVectors
     {
         public static float[] ConvertToArrayVector3(Vector3 vector)
         {

@@ -254,7 +254,10 @@ public class Scene_class
         public DictionaryToTwoArrays<string, WorkWithJSON_mass<string>> values_str_arrays;
         public DictionaryToTwoArrays<string, char> signs_arrays;
 
-        public Command(string name_command, string name_obj, int number_obj, Dictionary<string, double[]> dict_values, Dictionary<string, string[]> dict_values_str, Dictionary<string, char> signs)
+        public NeedFlag[] needFlags;
+
+        public Command(string name_command, string name_obj, int number_obj, Dictionary<string, double[]> dict_values, Dictionary<string, string[]> dict_values_str, 
+            Dictionary<string, char> signs, NeedFlag[] needFlags)
         {
             this.name_command = name_command;
             this.name_obj = name_obj;
@@ -278,9 +281,12 @@ public class Scene_class
             this.values_arrays = new DictionaryToTwoArrays<string, WorkWithJSON_mass<double>>(dict_valuesJSON);
             this.values_str_arrays = new DictionaryToTwoArrays<string, WorkWithJSON_mass<string>>(dict_values_strJSON);
             this.signs_arrays = new DictionaryToTwoArrays<string, char>(signs);
+            this.needFlags = needFlags;
         }
 
-        public Command(string name_command, string name_obj, int number_obj, DictionaryToTwoArrays<string, WorkWithJSON_mass<double>> values_arrays, DictionaryToTwoArrays<string, WorkWithJSON_mass<string>> values_str_arrays, DictionaryToTwoArrays<string, char> signs_arrays)
+        public Command(string name_command, string name_obj, int number_obj, DictionaryToTwoArrays<string, WorkWithJSON_mass<double>> values_arrays, 
+            DictionaryToTwoArrays<string, WorkWithJSON_mass<string>> values_str_arrays, DictionaryToTwoArrays<string, char> signs_arrays,
+            NeedFlag[] needFlags)
         {
             this.name_command = name_command;
             this.name_obj = name_obj;
@@ -306,6 +312,7 @@ public class Scene_class
             this.values_arrays = values_arrays;
             this.values_str_arrays = values_str_arrays;
             this.signs_arrays = signs_arrays;
+            this.needFlags = needFlags;
         }
 
         public void UpdateAfterLoadingJSON()
