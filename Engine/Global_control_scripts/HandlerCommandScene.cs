@@ -255,6 +255,20 @@ namespace Engine
 
                         break;
 
+                    case "changeSprite":
+                        if (!MakersCommandScene.ChangeSprite(global_Control, command))
+                        {
+                            return;
+                        }
+                        break;
+
+                    case "deleteSprite":
+                        if (!MakersCommandScene.DeleteSprite(global_Control, command))
+                        {
+                            return;
+                        }
+                        break;
+
                     case "playAudio":
                         if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
                         {
