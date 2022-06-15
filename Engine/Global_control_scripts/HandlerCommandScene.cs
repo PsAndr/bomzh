@@ -270,76 +270,17 @@ namespace Engine
                         break;
 
                     case "playAudio":
-                        if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
+                        if (!MakersCommandScene.PlayAudio(global_Control, command))
                         {
-                            Debug.LogException(new Exception("Don`t get name or number audio"));
                             return;
                         }
-                        else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.audioLoader.audioNames.ContainsKey(command.number_obj))
+                        break;
+
+                    case "deleteAudio":
+                        if (!MakersCommandScene.DeleteAudio(global_Control, command))
                         {
-                            Debug.LogException(new Exception("Haven`t name audio of this number: " + command.number_obj.ToString() + "!"));
                             return;
                         }
-                        else if (string.IsNullOrEmpty(command.name_obj))
-                        {
-                            command.name_obj = global_Control.audioLoader.audioNames[command.number_obj];
-                        }
-
-                        DynamicArray<AudioClip> audio = new(global_Control.audioLoader.audioSources[command.name_obj]);
-
-                        float volume = 1f;
-                        float pitch = 1f;
-                        float panStereo = 0f;
-                        int countRepeat = 1;
-
-                        if (command.dict_values.ContainsKey("volumeAudio"))
-                        {
-                            if (command.dict_values["volumeAudio"] != null && command.dict_values["volumeAudio"].Length > 0)
-                            {
-                                volume = (float)command.dict_values["volumeAudio"][0];
-                            }
-                        }
-
-                        if (command.dict_values.ContainsKey("pitchAudio"))
-                        {
-                            if (command.dict_values["pitchAudio"] != null && command.dict_values["pitchAudio"].Length > 0)
-                            {
-                                pitch = (float)command.dict_values["pitchAudio"][0];
-                            }
-                        }
-
-                        if (command.dict_values.ContainsKey("panStereoAudio"))
-                        {
-                            if (command.dict_values["panStereoAudio"] != null && command.dict_values["panStereoAudio"].Length > 0)
-                            {
-                                panStereo = (float)command.dict_values["panStereoAudio"][0];
-                            }
-                        }
-
-                        if (command.dict_values.ContainsKey("countRepeatAudio"))
-                        {
-                            if (command.dict_values["countRepeatAudio"] != null && command.dict_values["countRepeatAudio"].Length > 0)
-                            {
-                                countRepeat = Convert.ToInt32(command.dict_values["countRepeatAudio"][0]);
-                            }
-                        }
-
-                        if (command.dict_values_str.ContainsKey("nameExtraAudio"))
-                        {
-                            if (command.dict_values_str["nameExtraAudio"] != null && command.dict_values_str["nameExtraAudio"].Length > 0)
-                            {
-                                foreach (string nameAudio in command.dict_values_str["nameExtraAudio"])
-                                {
-                                    if (global_Control.audioLoader.audioSources.ContainsKey(nameAudio))
-                                    {
-                                        audio.Add(global_Control.audioLoader.audioSources[nameAudio]);
-                                    }
-                                }
-                            }
-                        }
-
-                        global_Control.audioHandler.PlayClip(countRepeat, panStereo, volume, pitch, audio.ToArray());
-
                         break;
 
                     default:

@@ -95,6 +95,11 @@ namespace Engine
             gameObject.AddComponent<TextPrintingClass>();
 
             handlerCommandScene = new HandlerCommandScene();
+
+            foreach (Window window in FindObjectsOfType<Window>(true))
+            {
+                window.Init();
+            }
         }
 
         public void SaveStartSceneValues()

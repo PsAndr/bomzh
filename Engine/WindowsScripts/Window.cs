@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Engine;
+using UnityEngine.EventSystems;
 using Engine.WorkWithRectTransform;
 
 namespace Engine
@@ -14,6 +14,9 @@ namespace Engine
         [SerializeField] private AnimationClip animationClip_open;
         [SerializeField] private AnimationClip animationClip_close;
 
+        [SerializeField] private AudioClip audioOpen;
+        [SerializeField] private AudioClip audioClose;
+
         [SerializeField] private RectTransform[] setDefaultOpen;
 
         [HideInInspector] public RectTransformSaveValues[] saveDefaultOpenValues;
@@ -25,6 +28,22 @@ namespace Engine
         private GameObject[] OpenWindows;
 
         private bool IsPlayAnimation = false;
+
+        private AudioHandler audioHandler;
+
+        public void Init()
+        {
+            if (GameObject.Find("___helperAudioWindows___") != null)
+            {
+                audioHandler = GameObject.Find("___helperAudioWindows___").GetComponent<AudioHandler>();
+            }
+            else
+            {
+                GameObject helperAudio = new GameObject();
+                helperAudio.name = "___helperAudioWindows___";
+                audioHandler = helperAudio.AddComponent<AudioHandler>();
+            }
+        }
 
         public void UpdateDefaultOpenValues()
         {
@@ -46,6 +65,12 @@ namespace Engine
 
         public bool OpenWindow(Window previous_window, bool OpenPreviousWindow, GameObject[] OpenWindowParts)
         {
+            if (gameObject.activeSelf || this.IsPlayAnimation)
+            {
+                return false;
+            }
+
+
             int i = 0;
             foreach (RectTransformSaveValues rectTransform in this.saveDefaultOpenValues)
             {
@@ -53,9 +78,9 @@ namespace Engine
                 i++;
             }
 
-            if (gameObject.activeSelf || this.IsPlayAnimation)
+            if (audioOpen != null)
             {
-                return false;
+                audioHandler.PlayClip(audioOpen);
             }
 
             this.previous_window = previous_window;
@@ -90,6 +115,11 @@ namespace Engine
             if (!gameObject.activeSelf || this.IsPlayAnimation)
             {
                 return false;
+            }
+
+            if (audioClose != null)
+            {
+                audioHandler.PlayClip(audioClose);
             }
 
             if (animationClip_close != null)

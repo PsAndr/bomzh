@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,6 @@ using UnityEngine.UI;
 using UnityEditor;
 using Engine;
 
-#if UNITY_EDITOR
 [CustomEditor(typeof(ButtonsWindow))]
 public class ButtonWindowDrawEditor : Editor
 {

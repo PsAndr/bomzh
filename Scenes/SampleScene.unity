@@ -1595,7 +1595,6 @@ MonoBehaviour:
   sceneNumberStart: 0
   sceneNameStart: 
   sceneNumberCommandStart: 0
-  Flags_name: []
   speed_printing_text: 30
   audioHandler: {fileID: 0}
   indexPrint: 0
@@ -1659,8 +1658,8 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
+  m_Volume: 0
+  m_Pitch: 3
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -1669,7 +1668,7 @@ AudioSource:
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
-  Pan2D: 0
+  Pan2D: -1
   rolloffMode: 0
   BypassEffects: 0
   BypassListenerEffects: 0
@@ -2408,6 +2407,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animationClip_open: {fileID: 0}
   animationClip_close: {fileID: 0}
+  audioOpen: {fileID: 0}
+  audioClose: {fileID: 0}
   setDefaultOpen:
   - {fileID: 302261514}
   saveDefaultOpenValues:
@@ -2415,6 +2416,7 @@ MonoBehaviour:
     localScale: {x: 1, y: 1, z: 1}
     localRotation: {x: -0, y: -0, z: -0, w: 1}
     sizeDelta: {x: 4555.855, y: 2112}
+    pivot: {x: 0, y: 0}
 --- !u!114 &831876426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2904,6 +2906,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animationClip_open: {fileID: 0}
   animationClip_close: {fileID: 0}
+  audioOpen: {fileID: 0}
+  audioClose: {fileID: 0}
   setDefaultOpen:
   - {fileID: 1003529657}
   saveDefaultOpenValues:
@@ -2911,6 +2915,7 @@ MonoBehaviour:
     localScale: {x: 1, y: 1, z: 1}
     localRotation: {x: -0, y: -0, z: -0, w: 1}
     sizeDelta: {x: 4555.855, y: 2112}
+    pivot: {x: 0, y: 0}
 --- !u!114 &1194015194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3165,6 +3170,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animationClip_open: {fileID: 7400000, guid: dbe856a7fbb0cad4688e3057a2b3ef88, type: 2}
   animationClip_close: {fileID: 7400000, guid: d11108ae3961cb7448eca15c6593bcb3, type: 2}
+  audioOpen: {fileID: 8300000, guid: 80cb9874f5d6836488b844f5d2a24624, type: 3}
+  audioClose: {fileID: 0}
   setDefaultOpen: []
   saveDefaultOpenValues: []
 --- !u!95 &1290417432
@@ -3552,6 +3559,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animationClip_open: {fileID: 0}
   animationClip_close: {fileID: 0}
+  audioOpen: {fileID: 0}
+  audioClose: {fileID: 0}
   setDefaultOpen: []
   saveDefaultOpenValues: []
 --- !u!1 &1606898225

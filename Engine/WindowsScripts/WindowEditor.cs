@@ -11,11 +11,15 @@ public class WindowEditor : Editor
     SerializedProperty animationClip_open;
     SerializedProperty animationClip_close;
     SerializedProperty setDefaultOpen;
+    SerializedProperty audioOpen;
+    SerializedProperty audioClose;
 
     private void OnEnable()
     {
         this.animationClip_open = serializedObject.FindProperty("animationClip_open");
         this.animationClip_close = serializedObject.FindProperty("animationClip_close");
+        this.audioClose = serializedObject.FindProperty("audioClose");
+        this.audioOpen = serializedObject.FindProperty("audioOpen");
         this.setDefaultOpen = serializedObject.FindProperty("setDefaultOpen");
     }
 
@@ -25,6 +29,8 @@ public class WindowEditor : Editor
 
         EditorGUILayout.PropertyField(animationClip_open);
         EditorGUILayout.PropertyField(animationClip_close);
+        EditorGUILayout.PropertyField(audioOpen);
+        EditorGUILayout.PropertyField(audioClose);
         EditorGUILayout.PropertyField(setDefaultOpen);
 
         Window window = (Window)target;

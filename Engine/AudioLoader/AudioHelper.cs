@@ -23,6 +23,7 @@ namespace Engine
             [HideInInspector] public float time;
 
             [HideInInspector] public bool isPaused;
+            [HideInInspector] public bool isDeleted;
 
             [HideInInspector] public float startWait;
             [HideInInspector] public float betweenWait;
@@ -50,6 +51,9 @@ namespace Engine
             this.saveClass.startWait = startWait;
             this.saveClass.indexAudio = indexAudio;
 
+            this.saveClass.isPaused = false;
+            this.saveClass.isDeleted = false;
+
             StartCoroutine(this.PlayClipCoroutine(cnt, audio, panStereo, volume, pitch, time, startWait, betweenWait, indexAudio, audioHandler));
         }
 
@@ -69,8 +73,16 @@ namespace Engine
             this.saveClass.startWait = startWait;
             while (this.saveClass.startWait > 0f)
             {
-                this.saveClass.startWait -= 0.05f;
-                yield return new WaitForSeconds(0.05f);
+                if (!this.saveClass.isPaused) 
+                {
+                    this.saveClass.startWait -= 0.05f;
+                    yield return new WaitForSeconds(0.05f);
+                }
+
+                if (this.saveClass.isDeleted)
+                {
+                    Destroy(this);
+                }
             }
             this.saveClass.startWait = 0f;
 
@@ -84,8 +96,18 @@ namespace Engine
                     this.saveClass.startWait = betweenWait;
                     while (this.saveClass.startWait > 0f)
                     {
-                        this.saveClass.startWait -= 0.05f;
-                        yield return new WaitForSeconds(0.05f);
+                        if (!this.saveClass.isPaused)
+                        {
+                            this.saveClass.startWait -= 0.05f;
+                            yield return new WaitForSeconds(0.05f);
+                        }
+
+                        if (this.saveClass.isDeleted)
+                        {
+                            audioSource.Stop();
+                            audioSource.clip = null;
+                            Destroy(this);
+                        }
                     }
                     this.saveClass.startWait = 0f;
 
@@ -96,6 +118,7 @@ namespace Engine
                     audioSource.loop = false;
                     audioSource.Play();
                     audioSource.time = time;
+                    audioSource.playOnAwake = false;
                     time = 0f;
 
                     while (audioSource.isPlaying || this.saveClass.isPaused)
@@ -111,6 +134,13 @@ namespace Engine
                         else
                         {
                             audioSource.UnPause();
+                        }
+
+                        if (this.saveClass.isDeleted)
+                        {
+                            audioSource.Stop();
+                            audioSource.clip = null;
+                            Destroy(this);
                         }
                     }
                 }
@@ -136,6 +166,11 @@ namespace Engine
         public void UnPause()
         {
             this.saveClass.isPaused = false;
+        }
+
+        public void Delete()
+        {
+            this.saveClass.isDeleted = true;
         }
     }
 }
