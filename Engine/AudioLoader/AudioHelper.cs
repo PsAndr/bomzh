@@ -82,6 +82,8 @@ namespace Engine
                 if (this.saveClass.isDeleted)
                 {
                     Destroy(this);
+
+                    yield break;
                 }
             }
             this.saveClass.startWait = 0f;
@@ -106,7 +108,10 @@ namespace Engine
                         {
                             audioSource.Stop();
                             audioSource.clip = null;
+
                             Destroy(this);
+
+                            yield break;
                         }
                     }
                     this.saveClass.startWait = 0f;
@@ -140,7 +145,10 @@ namespace Engine
                         {
                             audioSource.Stop();
                             audioSource.clip = null;
+
                             Destroy(this);
+
+                            yield break;
                         }
                     }
                 }

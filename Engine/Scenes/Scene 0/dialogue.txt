@@ -1,11 +1,12 @@
 spawnSprite_number=1:positionSprite=10,-12.5,0:sizeSprite=1,1,1:rotationSprite=0,0,45:nameSprite=cat;[mind=0]
-playAudio_number=0:countRepeatAudio=-1:pitchAudio=1.5:nameExtraAudio=PianoSolo;
+playAudio_number=0:countRepeatAudio=-1:pitchAudio=1.5:nameExtraAudio=PianoSolo:nameAudio=piano;
 {;Вася
 Привет, я Вася! И я хочу поговорить об огурцах.
 У меня нет друзей.
 Саня бот!
 }
-changeSprite_name=cat:sizeSprite=2,2,2:nameSprite=gay;
+waitSeconds_number=1:millisecondsWait=50;
+changeSprite_name=cat:sizeSprite=2,2,2:nameSprite+gay;
 changeFlag_name=school_scale_respect:newValue=6;
 [
 [mind>1000];Я гей;<health+1><mind-1><school_scale_respect=1>;changeScene_name=гей парад
@@ -13,6 +14,8 @@ changeFlag_name=school_scale_respect:newValue=6;
 ;Опа!;;
 ;Хопа!;;
 ]
+changeAudio_name=piano:volumeAudio=0.5;
+playAudio_number=0:countRepeatAudio=-1:nameExtraAudio=PianoSolo:nameAudio=111;
 changeFlag_name=health:newValue=12;
 changeFlag_name=health:newValue+-7;
 changeFlag_name=mind:newValue=3;
@@ -22,7 +25,6 @@ deleteSprite_name=gay;
 }
 changeBackground_number=2;
 changeBackground_number=0;
-changeSprite_number=2:location=2,3,1:size+-5,0,0;
 {;Петя
 Нет)
 }

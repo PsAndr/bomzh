@@ -71,6 +71,8 @@ namespace Engine
 
         [HideInInspector] public int indexPrint = 0;
 
+        [HideInInspector] public WaitSceneCommand waitSceneCommand;
+
         private void Awake()
         {
             if (Application.isEditor)
@@ -95,6 +97,8 @@ namespace Engine
             gameObject.AddComponent<TextPrintingClass>();
 
             handlerCommandScene = new HandlerCommandScene();
+
+            this.waitSceneCommand = gameObject.AddComponent<WaitSceneCommand>();
 
             foreach (Window window in FindObjectsOfType<Window>(true))
             {

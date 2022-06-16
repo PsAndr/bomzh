@@ -370,6 +370,35 @@ namespace Engine
 
             return true;
         }
+
+        /// <summary>
+        /// waitSeconds command
+        /// </summary>
+        /// <param name="global_Control"></param>
+        /// <param name="command"></param>
+        /// <returns>is maked</returns>
+        public static bool WaitSeconds(Global_control global_Control, Scene_class.Command command)
+        {
+            if (command.number_obj <= 0)
+            {
+                Debug.LogException(new Exception("Wrong time wait in seconds"));
+                return false;
+            }
+
+            float timeWait = command.number_obj;
+
+            if (command.dict_values.ContainsKey("millisecondsWait"))
+            {
+                if (command.dict_values["millisecondsWait"] != null && command.dict_values["millisecondsWait"].Length > 0)
+                {
+                    timeWait += (float)command.dict_values["millisecondsWait"][0] / 1000f;
+                }
+            }
+
+            global_Control.waitSceneCommand.StartWait(global_Control, timeWait);
+
+            return true;
+        }
     }
 }
 

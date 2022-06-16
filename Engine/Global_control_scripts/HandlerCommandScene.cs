@@ -15,11 +15,15 @@ namespace Engine
 
         public bool IsLookScene;
 
+        public bool isWaiting; 
+
         public HandlerCommandScene()
         {
             IsPrintingText = false;
             flag_check_choice = false;
             IsLookScene = true;
+
+            isWaiting = false;
         }
 
         public bool CanDoNextCommand()
@@ -29,6 +33,7 @@ namespace Engine
             flag = flag && !this.IsPrintingText;
             flag = flag && !this.flag_check_choice;
             flag = flag && this.IsLookScene;
+            flag = flag && !this.isWaiting;
 
             return flag;
         }
@@ -258,6 +263,7 @@ namespace Engine
                     case "changeSprite":
                         if (!MakersCommandScene.ChangeSprite(global_Control, command))
                         {
+                            Debug.LogWarning(command.name_command);
                             return;
                         }
                         break;
@@ -265,6 +271,7 @@ namespace Engine
                     case "deleteSprite":
                         if (!MakersCommandScene.DeleteSprite(global_Control, command))
                         {
+                            Debug.LogWarning(command.name_command);
                             return;
                         }
                         break;
@@ -272,6 +279,15 @@ namespace Engine
                     case "playAudio":
                         if (!MakersCommandScene.PlayAudio(global_Control, command))
                         {
+                            Debug.LogWarning(command.name_command);
+                            return;
+                        }
+                        break;
+
+                    case "changeAudio":
+                        if (!MakersCommandScene.ChangeAudio(global_Control, command))
+                        {
+                            Debug.LogWarning(command.name_command);
                             return;
                         }
                         break;
@@ -279,6 +295,15 @@ namespace Engine
                     case "deleteAudio":
                         if (!MakersCommandScene.DeleteAudio(global_Control, command))
                         {
+                            Debug.LogWarning(command.name_command);
+                            return;
+                        }
+                        break;
+
+                    case "waitSeconds":
+                        if (!MakersCommandScene.WaitSeconds(global_Control, command))
+                        {
+                            Debug.LogWarning(command.name_command);
                             return;
                         }
                         break;
