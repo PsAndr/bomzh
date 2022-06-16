@@ -146,7 +146,7 @@ namespace Engine
         /// </summary>
         /// <param name="global_Control"></param>
         /// <param name="command"></param>
-        /// <returns></returns>
+        /// <returns>is maked</returns>
         public static bool PlayAudio(Global_control global_Control, Scene_class.Command command)
         {
             if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
@@ -252,11 +252,112 @@ namespace Engine
         }
 
         /// <summary>
+        /// changeAudio command
+        /// </summary>
+        /// <param name="global_Control"></param>
+        /// <param name="command"></param>
+        /// <returns>is maked</returns>
+        public static bool ChangeAudio(Global_control global_Control, Scene_class.Command command)
+        {
+            if (string.IsNullOrEmpty(command.name_obj))
+            {
+                Debug.LogException(new Exception("Don`t get name audio"));
+                return false;
+            }
+
+            DynamicArray<AudioClip> audio = new();
+
+            string nameThisAudio = null;
+
+            float volume = -1000f;
+            float pitch = -1000f;
+            float panStereo = -1000f;
+            int countRepeat = 0;
+
+            float startWait = -1000f;
+            float betweenWait = -1000f;
+
+            if (command.dict_values.ContainsKey("volumeAudio"))
+            {
+                if (command.dict_values["volumeAudio"] != null && command.dict_values["volumeAudio"].Length > 0)
+                {
+                    volume = (float)command.dict_values["volumeAudio"][0];
+                }
+            }
+
+            if (command.dict_values.ContainsKey("startWaitAudio"))
+            {
+                if (command.dict_values["startWaitAudio"] != null && command.dict_values["startWaitAudio"].Length > 0)
+                {
+                    startWait = (float)command.dict_values["startWaitAudio"][0];
+                }
+            }
+
+            if (command.dict_values.ContainsKey("betweenWaitAudio"))
+            {
+                if (command.dict_values["betweenWaitAudio"] != null && command.dict_values["betweenWaitAudio"].Length > 0)
+                {
+                    betweenWait = (float)command.dict_values["betweenWaitAudio"][0];
+                }
+            }
+
+            if (command.dict_values.ContainsKey("pitchAudio"))
+            {
+                if (command.dict_values["pitchAudio"] != null && command.dict_values["pitchAudio"].Length > 0)
+                {
+                    pitch = (float)command.dict_values["pitchAudio"][0];
+                }
+            }
+
+            if (command.dict_values.ContainsKey("panStereoAudio"))
+            {
+                if (command.dict_values["panStereoAudio"] != null && command.dict_values["panStereoAudio"].Length > 0)
+                {
+                    panStereo = (float)command.dict_values["panStereoAudio"][0];
+                }
+            }
+
+            if (command.dict_values.ContainsKey("countRepeatAudio"))
+            {
+                if (command.dict_values["countRepeatAudio"] != null && command.dict_values["countRepeatAudio"].Length > 0)
+                {
+                    countRepeat = Convert.ToInt32(command.dict_values["countRepeatAudio"][0]);
+                }
+            }
+
+            if (command.dict_values_str.ContainsKey("namePlayAudio"))
+            {
+                if (command.dict_values_str["namePlayAudio"] != null && command.dict_values_str["namePlayAudio"].Length > 0)
+                {
+                    foreach (string nameAudio in command.dict_values_str["namePlayAudio"])
+                    {
+                        if (global_Control.audioLoader.audioSources.ContainsKey(nameAudio))
+                        {
+                            audio.Add(global_Control.audioLoader.audioSources[nameAudio]);
+                        }
+                    }
+                }
+            }
+
+            if (command.dict_values_str.ContainsKey("nameAudio"))
+            {
+                if (command.dict_values_str["nameAudio"] != null && command.dict_values_str["nameAudio"].Length > 0)
+                {
+                    nameThisAudio = command.dict_values_str["nameAudio"][0];
+                }
+            }
+
+            global_Control.audioHandler.ChangeClip(global_Control, command.name_obj, nameThisAudio, countRepeat, panStereo, volume, pitch, startWait, betweenWait, audio.ToArray());
+
+            return true;
+        }
+
+        /// <summary>
         /// deleteAudio command
         /// </summary>
         /// <param name="global_Control"></param>
         /// <param name="command"></param>
-        /// <returns></returns>
+        /// <returns>is maked</returns>
         public static bool DeleteAudio(Global_control global_Control, Scene_class.Command command)
         {
             if (string.IsNullOrEmpty(command.name_obj))
