@@ -8,7 +8,7 @@ namespace Engine
     /// <summary>
     /// Load window controller
     /// </summary>
-    [AddComponentMenu("Engine/Load/Window")]
+    [AddComponentMenu("Engine/Load/LoadWindow")]
     public class LoadWindow : MonoBehaviour
     {
         [SerializeField] private bool startScene;

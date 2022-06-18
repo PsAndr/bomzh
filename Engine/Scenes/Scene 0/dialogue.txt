@@ -6,7 +6,7 @@ playAudio_number=0:countRepeatAudio=-1:pitchAudio=1.5:nameExtraAudio=PianoSolo:n
 Саня бот!
 }
 waitSeconds_number=1:millisecondsWait=50;
-changeSprite_name=cat:sizeSprite=2,2,2:nameSprite+gay;
+changeSprite_name=cat:sizeSprite+1,0.5,0.5:nameSprite=gay;
 changeFlag_name=school_scale_respect:newValue=6;
 [
 [mind>1000];Я гей;<health+1><mind-1><school_scale_respect=1>;changeScene_name=гей парад
@@ -14,8 +14,7 @@ changeFlag_name=school_scale_respect:newValue=6;
 ;Опа!;;
 ;Хопа!;;
 ]
-changeAudio_name=piano:volumeAudio=0.5;
-playAudio_number=0:countRepeatAudio=-1:nameExtraAudio=PianoSolo:nameAudio=111;
+changeAudio_name=piano:volumeAudio+-0.5;
 changeFlag_name=health:newValue=12;
 changeFlag_name=health:newValue+-7;
 changeFlag_name=mind:newValue=3;

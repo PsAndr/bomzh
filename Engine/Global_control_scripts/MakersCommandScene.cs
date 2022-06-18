@@ -59,7 +59,17 @@ namespace Engine
 
                 if (values.Length >= 3)
                 {
-                    position = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
+                    switch (command.signs["positionSprite"])
+                    {
+                        case '=':
+                            position = new Vector3((float)values[0], (float)values[1], (float)values[2]);
+                            break;
+
+                        case '+':
+                            position += new Vector3((float)values[0], (float)values[1], (float)values[2]);
+                            break;
+                    }
+
                 }
             }
 
@@ -69,7 +79,16 @@ namespace Engine
 
                 if (values.Length >= 3)
                 {
-                    size = new Vector3((float)values[0], (float)values[1], (float)values[2]);
+                    switch (command.signs["sizeSprite"])
+                    {
+                        case '=':
+                            size = new Vector3((float)values[0], (float)values[1], (float)values[2]);
+                            break;
+
+                        case '+':
+                            size += new Vector3((float)values[0], (float)values[1], (float)values[2]);
+                            break;
+                    }
                 }
             }
 
@@ -79,7 +98,16 @@ namespace Engine
 
                 if (values.Length >= 2)
                 {
-                    sizeDelta = new Vector2((float)values[0], (float)values[1]);
+                    switch (command.signs["sizeDeltaSprite"])
+                    {
+                        case '=':
+                            sizeDelta = new Vector2((float)values[0], (float)values[1]);
+                            break;
+
+                        case '+':
+                            sizeDelta += new Vector2((float)values[0], (float)values[1]);
+                            break;
+                    }
                 }
             }
 
@@ -89,7 +117,16 @@ namespace Engine
 
                 if (values.Length >= 3)
                 {
-                    rotation = new Vector3((float)values[0], (float)values[1], (float)values[2]);
+                    switch (command.signs["rotationSprite"]) 
+                    {
+                        case '=':
+                            rotation = new Vector3((float)values[0], (float)values[1], (float)values[2]);
+                            break;
+
+                        case '+':
+                            rotation += new Vector3((float)values[0], (float)values[1], (float)values[2]);
+                            break;
+                    }
                 }
             }
 
@@ -265,23 +302,34 @@ namespace Engine
                 return false;
             }
 
+            AudioHelper.SaveClass audioHelperValues = global_Control.audioHandler.GetAudioHelper(command.name_obj).GetSave();
+
             DynamicArray<AudioClip> audio = new();
 
             string nameThisAudio = null;
 
-            float volume = -1000f;
-            float pitch = -1000f;
-            float panStereo = -1000f;
-            int countRepeat = 0;
+            float volume = audioHelperValues.volume;
+            float pitch = audioHelperValues.pitch;
+            float panStereo = audioHelperValues.panStereo;
+            int countRepeat = audioHelperValues.cnt;
 
-            float startWait = -1000f;
-            float betweenWait = -1000f;
+            float startWait = audioHelperValues.startWait;
+            float betweenWait = audioHelperValues.betweenWait;
 
             if (command.dict_values.ContainsKey("volumeAudio"))
             {
                 if (command.dict_values["volumeAudio"] != null && command.dict_values["volumeAudio"].Length > 0)
                 {
-                    volume = (float)command.dict_values["volumeAudio"][0];
+                    switch (command.signs["volumeAudio"])
+                    {
+                        case '=':
+                            volume = (float)command.dict_values["volumeAudio"][0];
+                            break;
+
+                        case '+':
+                            volume += (float)command.dict_values["volumeAudio"][0];
+                            break;
+                    }
                 }
             }
 
@@ -289,7 +337,16 @@ namespace Engine
             {
                 if (command.dict_values["startWaitAudio"] != null && command.dict_values["startWaitAudio"].Length > 0)
                 {
-                    startWait = (float)command.dict_values["startWaitAudio"][0];
+                    switch (command.signs["startWaitAudio"])
+                    {
+                        case '=':
+                            startWait = (float)command.dict_values["startWaitAudio"][0];
+                            break;
+
+                        case '+':
+                            startWait += (float)command.dict_values["startWaitAudio"][0];
+                            break;
+                    }
                 }
             }
 
@@ -297,7 +354,16 @@ namespace Engine
             {
                 if (command.dict_values["betweenWaitAudio"] != null && command.dict_values["betweenWaitAudio"].Length > 0)
                 {
-                    betweenWait = (float)command.dict_values["betweenWaitAudio"][0];
+                    switch (command.signs["betweenWaitAudio"])
+                    {
+                        case '=':
+                            betweenWait = (float)command.dict_values["betweenWaitAudio"][0];
+                            break;
+
+                        case '+':
+                            betweenWait = (float)command.dict_values["betweenWaitAudio"][0];
+                            break;
+                    }
                 }
             }
 
@@ -305,7 +371,15 @@ namespace Engine
             {
                 if (command.dict_values["pitchAudio"] != null && command.dict_values["pitchAudio"].Length > 0)
                 {
-                    pitch = (float)command.dict_values["pitchAudio"][0];
+                    switch (command.signs["pitchAudio"])
+                    {
+                        case '=':
+                            pitch = (float)command.dict_values["pitchAudio"][0];
+                            break;
+                        case '+':
+                            pitch += (float)command.dict_values["pitchAudio"][0];
+                            break;
+                    }
                 }
             }
 
@@ -313,7 +387,15 @@ namespace Engine
             {
                 if (command.dict_values["panStereoAudio"] != null && command.dict_values["panStereoAudio"].Length > 0)
                 {
-                    panStereo = (float)command.dict_values["panStereoAudio"][0];
+                    switch (command.signs["panStereoAudio"])
+                    {
+                        case '=':
+                            panStereo = (float)command.dict_values["panStereoAudio"][0];
+                            break;
+                        case '+':
+                            panStereo += (float)command.dict_values["panStereoAudio"][0];
+                            break;
+                    }
                 }
             }
 
@@ -321,7 +403,15 @@ namespace Engine
             {
                 if (command.dict_values["countRepeatAudio"] != null && command.dict_values["countRepeatAudio"].Length > 0)
                 {
-                    countRepeat = Convert.ToInt32(command.dict_values["countRepeatAudio"][0]);
+                    switch (command.signs["countRepeatAudio"])
+                    {
+                        case '=':
+                            countRepeat = Convert.ToInt32(command.dict_values["countRepeatAudio"][0]);
+                            break;
+                        case '+':
+                            countRepeat += Convert.ToInt32(command.dict_values["countRepeatAudio"][0]);
+                            break;
+                    }
                 }
             }
 
