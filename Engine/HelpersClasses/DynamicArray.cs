@@ -8,7 +8,7 @@ namespace Engine
     [System.Serializable]
     public class DynamicArray<T> : IEnumerable<T>
     {
-        private int Length;
+        public int Length { get; private set; }
         private T[] values;
 
         public T Get(int index)
@@ -152,6 +152,27 @@ namespace Engine
         public T[] ToArray()
         {
             return this.values;
+        }
+
+        public static implicit operator DynamicArray<T>(T[] values)
+        {
+            return new DynamicArray<T>(values);
+        }
+
+        public override string ToString()
+        {
+            string s = "[";
+
+            foreach (T value in this.values)
+            {
+                s += value.ToString() + ", ";
+            }
+
+            s = s[..^2];
+
+            s += "]";
+
+            return s;
         }
 
         public IEnumerator<T> GetEnumerator()

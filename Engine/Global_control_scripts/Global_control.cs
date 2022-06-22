@@ -43,6 +43,8 @@ namespace Engine
 
         [SerializeField] public SceneNow sceneNow;
 
+        [SerializeField] public Localization localization;
+
         private Scenes_loader scenes_Loader;
 
         //for control scenes
@@ -104,6 +106,8 @@ namespace Engine
             {
                 window.Init();
             }
+
+            localization.GetValuesFromSave();
         }
 
         public void SaveStartSceneValues()
@@ -286,7 +290,7 @@ namespace Engine
         {
             GameObject spawn_object = Instantiate(prefab, position, Quaternion.identity, parent);
 
-            spawn_object.transform.localPosition = position;
+            spawn_object.GetComponent<RectTransform>().localPosition = position;
 
             if (!string.IsNullOrEmpty(name))
             {

@@ -703,6 +703,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chooseWindow: {fileID: 1175961259560741249, guid: 98d68637ad3e87c4abe6fd31f76c35fa, type: 3}
+  valuesGetFrom: {fileID: 11400000, guid: ea0c8365dadcaff4db6a608f3121dfeb, type: 2}
+  nameWindow: "\u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u043B\u043E\u043A\u0430\u043B\u0438\u0437\u0430\u0446\u0438\u044E"
 --- !u!114 &175893681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2052,6 +2054,7 @@ MonoBehaviour:
   ObjectsStopLookScene:
   - {fileID: 1290417429}
   sceneNow: {fileID: 11400000, guid: e9a4326fa449be4418487ca0b8b03799, type: 2}
+  localization: {fileID: 11400000, guid: ea0c8365dadcaff4db6a608f3121dfeb, type: 2}
   sceneNumberStart: 0
   sceneNameStart: 
   sceneNumberCommandStart: 0
@@ -4081,6 +4084,7 @@ GameObject:
   - component: {fileID: 1466629275}
   - component: {fileID: 1466629274}
   - component: {fileID: 1466629277}
+  - component: {fileID: 1466629278}
   m_Layer: 5
   m_Name: close_button
   m_TagString: Untagged
@@ -4208,6 +4212,20 @@ MonoBehaviour:
   CloseThisWindow: 0
   SaveOpenedWindows: 1
   keyCodes: 1b000000
+--- !u!114 &1466629278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1466629272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6d38fffb333388468451a20a66c2a44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameLocalizedText: 
+  text: {fileID: 411680423}
 --- !u!1 &1500237982
 GameObject:
   m_ObjectHideFlags: 0
