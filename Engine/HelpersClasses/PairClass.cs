@@ -6,7 +6,7 @@ namespace Engine
 {
 
     [System.Serializable]
-    public sealed class Pair<TFirst, TSecond>
+    public class Pair<TFirst, TSecond>
     {
         public TFirst first { get; set; }
         public TSecond second { get; set; }
@@ -14,6 +14,12 @@ namespace Engine
         public Pair(TFirst first, TSecond second)
         {
             (this.first, this.second) = (first, second);
+        }
+
+        public Pair()
+        {
+            this.first = default(TFirst);
+            this.second = default(TSecond);
         }
 
         public void Deconstruct(out TFirst first, out TSecond second)

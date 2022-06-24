@@ -21,6 +21,8 @@ namespace Engine
                 EditorGUILayout.HelpBox($"Localization now: None", MessageType.None);
             }
 
+            ((Localization)target).UpdateSave();
+
             serializedObject.ApplyModifiedProperties();
         }
     }

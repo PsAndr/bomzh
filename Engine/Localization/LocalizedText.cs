@@ -12,7 +12,62 @@ namespace Engine
         [SerializeField] private string nameLocalizedText;
         [SerializeField] private GameObject text;
 
+        private Dictionary<string, string> localizations = new Dictionary<string, string>();
+
         private TypeLocalizedText m_TypeLocalizedText;
+
+        public LocalizedText()
+        {
+        }
+
+        public void UpdateLocalizationsNames(params string[] localizationNames)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+
+            foreach (string name in localizationNames)
+            {
+                string toAdd = "";
+
+                if (this.localizations.ContainsKey(name))
+                {
+                    toAdd = this.localizations[name];
+                }
+
+                result.Add(name, toAdd);
+            }
+
+            this.localizations = result;
+        }
+
+        public void UpdateTexts(Dictionary<string, string> namesAndTexts)
+        {
+            LocalizedTextsControl localizedTextsControl = FindObjectOfType<LocalizedTextsControl>();
+
+            foreach (KeyValuePair<string, string> kvp in namesAndTexts)
+            {
+                if (this.localizations.ContainsKey(kvp.Key))
+                {
+                    this.localizations[kvp.Key] = kvp.Value;
+                }
+            }
+
+            localizedTextsControl.UpdateFileSave();
+        }
+
+        public void UpdateTextLocalization()
+        {
+            UpdateTypeText();
+            switch (this.m_TypeLocalizedText)
+            {
+                case (TypeLocalizedText.Text):
+                    this.text.GetComponent<Text>().text = this.localizations[FindObjectOfType<Global_control>().localization.GetLocalization()];
+                    break;
+
+                case (TypeLocalizedText.TextMeshProUGUI):
+                    this.text.GetComponent<TextMeshProUGUI>().text = this.localizations[FindObjectOfType<Global_control>().localization.GetLocalization()];
+                    break;
+            }
+        }
 
         public enum TypeLocalizedText
         {
@@ -59,6 +114,30 @@ namespace Engine
                     m_TypeLocalizedText = TypeLocalizedText.Text;
                 }
             }
+        }
+
+        public string GetName()
+        {
+            return this.nameLocalizedText;
+        }
+
+        public Dictionary<string, string> GetLocalizationsTexts()
+        {
+            return this.localizations;
+        }
+
+        public void ChangeLocalizationText(string name, string newText)
+        {
+            if (!this.localizations.ContainsKey(name) || newText == null)
+            {
+                return;
+            }
+            this.localizations[name] = newText;
+        }
+
+        public void ChangeName(string newName)
+        {
+            this.nameLocalizedText = newName;
         }
     }
 }

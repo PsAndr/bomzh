@@ -92,6 +92,13 @@ namespace Engine
 
             FindObjectOfType<SaveWindow>(true).Init();
             FindObjectOfType<LoadWindow>(true).Init();
+            
+            LocalizedTextsControl localizedTextsControl = FindObjectOfType<LocalizedTextsControl>();
+
+            if (localizedTextsControl != null)
+            {
+                localizedTextsControl.CheckFileSave();
+            }
 
             Flags = new Dictionary<string, int>();
             this.canvasToScreenshot.gameObject.SetActive(false);
@@ -414,6 +421,11 @@ namespace Engine
         public Pair<int, int> GetSceneValues()
         {
             return new Pair<int, int>(this.scene_number, this.number_command_scene);
+        }
+
+        public T[] FindAllObjectsOfType<T>() where T : UnityEngine.Object
+        {
+            return FindObjectsOfType<T>(true);
         }
     }
 }

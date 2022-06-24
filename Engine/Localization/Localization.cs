@@ -101,7 +101,7 @@ namespace Engine
             }
         }
 
-        private void UpdateSave()
+        public void UpdateSave()
         {
             FileStream fs = new FileStream(Constants.pathSave, FileMode.Create);
             BinaryFormatter bf = new BinaryFormatter();
@@ -109,6 +109,18 @@ namespace Engine
             bf.Serialize(fs, new SaveClassLocalization(this));
 
             fs.Close();
+
+            LocalizedTextsControl localizedTextsControl = FindObjectOfType<LocalizedTextsControl>();
+            if (localizedTextsControl == null)
+            {
+                GameObject helperGameObject = new GameObject("___helperLocalizedTextsControl___", typeof(LocalizedTextsControl));
+                helperGameObject.GetComponent<LocalizedTextsControl>().Init();
+            }
+            else
+            {
+                localizedTextsControl.FindTexts();
+                localizedTextsControl.CheckFileSave();
+            }
         }
 
         public string GetLocalization()
