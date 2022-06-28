@@ -9,6 +9,11 @@ namespace Engine
 {
     public class TextPrintingClass : MonoBehaviour
     {
+        public static class Constants
+        {
+            public const float deltaTimeUpdate = 0.02f;
+        }
+        
         private TextMeshProUGUI text_print;
         private string text_to_print;
         private Global_control global_Control;
@@ -81,8 +86,6 @@ namespace Engine
 
         IEnumerator PrintingText(int indexStart)
         {
-            float speed = this.global_Control.speed_printing_text;
-
             int i = indexStart;
             this.indexPrint = i;
 
@@ -93,7 +96,12 @@ namespace Engine
                     yield return null;
                 }
 
-                this.letters_to_print += speed / (1f / 0.02f);
+                this.letters_to_print += this.global_Control.settings.SpeedTextPrinting / (1f / Constants.deltaTimeUpdate);
+
+                if (this.global_Control.settings.MaxSpeedPrintingText == this.global_Control.settings.SpeedTextPrinting)
+                {
+                    this.letters_to_print = this.text_to_print.Length + 1f;
+                }
 
                 while (this.letters_to_print >= 1f && i < this.text_to_print.Length)
                 {
@@ -108,7 +116,7 @@ namespace Engine
                 {
                     yield return null;
                 }
-                yield return new WaitForSeconds(0.02f);
+                yield return new WaitForSeconds(Constants.deltaTimeUpdate);
             }
             FinishPrinting();
 

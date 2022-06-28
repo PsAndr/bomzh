@@ -23,6 +23,7 @@ namespace Engine
         [SerializeField] public string[] spritesNames;
         [SerializeField] public string[] spritesObjectNames;
         [SerializeField] public RectTransformSaveValuesSerializable[] rectTransformsSprites;
+        [SerializeField] public SettingsGlobalControl settingsGlobalControl;
 
         public void SetDefault()
         {
@@ -66,6 +67,7 @@ namespace Engine
             this.spritesNames = saveClass.spritesNames;
             this.spritesObjectNames = saveClass.spritesObjectNames;
             this.rectTransformsSprites = saveClass.rectTransformsSprites;
+            this.settingsGlobalControl = saveClass.settingsGlobalControl;
         }
 
         public SceneEngine GetValue()
@@ -88,6 +90,7 @@ namespace Engine
                 spritesNames = this.spritesNames,
                 spritesObjectNames = this.spritesObjectNames,
                 rectTransformsSprites = this.rectTransformsSprites,
+                settingsGlobalControl = this.settingsGlobalControl.Clone() as SettingsGlobalControl,
             };
 
             return save_Class;

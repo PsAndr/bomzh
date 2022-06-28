@@ -64,7 +64,7 @@ namespace Engine
         [HideInInspector] public SpritesLoader spritesLoader;
         [HideInInspector] public AudioLoader audioLoader;
 
-        [SerializeField] public float speed_printing_text = 6f;
+        [SerializeField] public SettingsGlobalControl settings;
 
         [HideInInspector] public HandlerCommandScene handlerCommandScene;
         [HideInInspector] public ScreenshotSaverLoader screenshotSaverLoader;
@@ -251,6 +251,15 @@ namespace Engine
             this.scene_number = saveClass.scene_number;
             this.scene_name = null;
             this.number_command_scene = saveClass.number_command_scene;
+
+            if (saveClass.settingsGlobalControl != null)
+            {
+                this.settings = saveClass.settingsGlobalControl;
+            }
+            else
+            {
+
+            }
 
             this.SceneCommands();
 

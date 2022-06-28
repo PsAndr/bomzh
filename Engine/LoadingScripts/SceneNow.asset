@@ -27,3 +27,7 @@ MonoBehaviour:
   spritesNames: []
   spritesObjectNames: []
   rectTransformsSprites: []
+  settingsGlobalControl:
+    speedTextPrinting: 15
+    maxSpeedPrintingText: 300
+    minSpeedPrintingText: 15

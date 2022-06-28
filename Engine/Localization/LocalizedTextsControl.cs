@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using Engine.WorkWithJSON;
 
 namespace Engine
 {
@@ -9,8 +10,11 @@ namespace Engine
     {
         private static class Constants
         {
-            public static readonly string pathSave = Application.dataPath + "/Resources/Localize.txt";
-            public static readonly string pathSaveResources = "Localize";
+            public static readonly string pathSave = Application.dataPath + "/Resources/LocalizeSave/Localize.txt";
+            public static readonly string pathSavePathsFiles = Application.dataPath + "/Resources/LocalizeSave/LocalizePathsFiles.json";
+            public const string pathSaveResources = "LocalizeSave/Localize";
+
+            public static readonly System.Text.Encoding encoding = System.Text.Encoding.UTF8;
         }
 
         private LocalizedText[] texts;
@@ -31,21 +35,79 @@ namespace Engine
             }
         }
 
-        public void CheckFileSave()
+        public void UpdatePathsFiles()
         {
-            if (Application.isEditor)
+#if UNITY_EDITOR
+            MyDictionary<string, MyDictionary<string, string>> pathsFiles = new();
+
+            foreach (LocalizedText text in texts)
             {
-                if (!File.Exists(Constants.pathSave))
+                var item = text.GetFiles();
+                if (item == null)
                 {
-                    UpdateFileSave();
-                    return;
+                    item = new();
+                }
+                pathsFiles.Add(text.GetName(), (MyDictionary<string, string>)item.Clone());
+            }
+
+            if (!Directory.Exists(Constants.pathSavePathsFiles[..Constants.pathSavePathsFiles.LastIndexOf('/')]))
+            {
+                Directory.CreateDirectory(Constants.pathSavePathsFiles[..Constants.pathSavePathsFiles.LastIndexOf('/')]);
+            }
+            File.WriteAllText(Constants.pathSavePathsFiles, pathsFiles.ToJSON());
+#endif
+        }
+
+        public void CheckPathsFiles()
+        {
+#if UNITY_EDITOR
+            if (!Directory.Exists(Constants.pathSavePathsFiles[..Constants.pathSavePathsFiles.LastIndexOf('/')]))
+            {
+                Directory.CreateDirectory(Constants.pathSavePathsFiles[..Constants.pathSavePathsFiles.LastIndexOf('/')]);
+            }
+
+            if (!File.Exists(Constants.pathSavePathsFiles))
+            {
+                File.WriteAllText(Constants.pathSavePathsFiles, new MyDictionary<string, MyDictionary<string, string>>().ToJSON());
+            }
+
+            MyDictionary<string, MyDictionary<string, string>> paths = MyDictionary<string, MyDictionary<string, string>>.FromJSON(File.ReadAllText(Constants.pathSavePathsFiles));
+
+            foreach (LocalizedText text in texts)
+            {
+                if (paths.ContainsKey(text.GetName()))
+                {
+                    foreach ((string name, string path) in paths[text.GetName()].GetValues())
+                    {
+                        text.ChangePathFile(name, path);
+                    }
                 }
             }
+#endif
+        }
+
+        public void CheckFileSave()
+        {
+            #if UNITY_EDITOR
+            if (!Directory.Exists(Constants.pathSave[..Constants.pathSave.LastIndexOf('/')]))
+            {
+                Directory.CreateDirectory(Constants.pathSave[..Constants.pathSave.LastIndexOf('/')]);
+            }
+
+            if (!File.Exists(Constants.pathSave))
+            {
+                UpdateFileSave();
+                return;
+            }
+            #endif
 
             FindTexts();
 
+#if UNITY_EDITOR
+            Dictionary<string, Dictionary<string, string>> textFromSave = Localize.Convert.ConvertFrom(File.ReadAllText(Constants.pathSave, Constants.encoding));
+#else
             Dictionary<string, Dictionary<string, string>> textFromSave = Localize.Convert.ConvertFrom(Resources.Load<TextAsset>(Constants.pathSaveResources).text);
-
+#endif
             string[] names = new string[this.texts.Length];
 
             for (int i = 0; i < names.Length; i++)
@@ -75,7 +137,9 @@ namespace Engine
         public void UpdateFileSave()
         {
             FindTexts();
-            File.WriteAllText(Constants.pathSave, Localize.Convert.ConvertTo(texts));
+#if UNITY_EDITOR
+            File.WriteAllText(Constants.pathSave, Localize.Convert.ConvertTo(texts), Constants.encoding);
+#endif
         }
     }
 
@@ -96,7 +160,7 @@ namespace Engine
                     }
                     toReturn += $"}}\n";
                 }
-
+                Debug.Log(toReturn);
                 return toReturn;
             }
 
@@ -110,7 +174,7 @@ namespace Engine
             public static Dictionary<string, Dictionary<string, string>> ConvertFrom(string text)
             {
                 Dictionary<string, Dictionary<string, string>> toReturn = new Dictionary<string, Dictionary<string, string>>();
-
+                Debug.Log(text);
                 string[] textSplitLines = text.Split('\n');
 
                 TypeSaveTextNow typeSaveTextNow = TypeSaveTextNow.None;

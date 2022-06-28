@@ -2,27 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorkingButtons : Scene_class
+namespace Engine
 {
-    public float count;
-    public string[] names;
-    public ChangeFlag[][] changeFlag;
-    public Command[][] commands;
-    public WorkingButtons() { 
-    
-    }
-    public WorkingButtons(int count, string[] names, ChangeFlag[][] changeFlag, Command[][] commands)
+    public class WorkingButtons : Scene_class
     {
-        this.count = count;
-        this.names = names;
-        this.changeFlag = changeFlag;
-        this.commands = commands;
-    }
-    public WorkingButtons(int count_buttons)
-    {
-        this.names = new string[count_buttons];
-        this.changeFlag = new ChangeFlag[count_buttons][];
-        this.commands = new Command[count_buttons][];
-    }
+        public float count;
+        public string[] names;
+        public ChangeFlag[][] changeFlag;
+        public Command[][] commands;
+        public WorkingButtons()
+        {
 
+        }
+        public WorkingButtons(int count, string[] names, ChangeFlag[][] changeFlag, Command[][] commands)
+        {
+            this.count = count;
+            this.names = names;
+            this.changeFlag = changeFlag;
+            this.commands = commands;
+        }
+        public WorkingButtons(int count_buttons)
+        {
+            this.names = new string[count_buttons];
+            this.changeFlag = new ChangeFlag[count_buttons][];
+            this.commands = new Command[count_buttons][];
+        }
+
+    }
 }

@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 namespace Engine
 {
+    [AddComponentMenu("Engine/Choose Window/Open Button")]
     public class ChooseOpenButton : MonoBehaviour
     {
         [SerializeField] private ChooseWindow chooseWindow;
