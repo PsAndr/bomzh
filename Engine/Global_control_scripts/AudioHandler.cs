@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Engine
 {
     /// <summary>
-    /// Control and handle all audio on scene
+    /// Control and handle audio on scene
     /// </summary>
     public class AudioHandler : MonoBehaviour
     {
@@ -203,7 +203,7 @@ namespace Engine
             AudioSource source = null;
             foreach (AudioSource audioSource in gameObject.GetComponents<AudioSource>())
             {
-                if (!audioSource.isPlaying)
+                if (audioSource.clip == null)
                 {
                     source = audioSource;
                     break;

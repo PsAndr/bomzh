@@ -30,6 +30,7 @@ namespace Engine
         [SerializeField] public GameObject button_field;
 
         [SerializeField] public GameObject ToSpawnSprite;
+        [SerializeField] public Transform toSpawnVideos;
 
         [SerializeField] public Image background;
 
@@ -63,6 +64,7 @@ namespace Engine
         [HideInInspector] public BackgroundsLoader backgroundsLoader;
         [HideInInspector] public SpritesLoader spritesLoader;
         [HideInInspector] public AudioLoader audioLoader;
+        [HideInInspector] public VideoLoader videoLoader;
 
         [SerializeField] public SettingsGlobalControl settings;
 
@@ -128,6 +130,7 @@ namespace Engine
             this.scenes_Loader = new Scenes_loader();
             this.spritesLoader = new SpritesLoader();
             this.audioLoader = new AudioLoader();
+            this.videoLoader = new VideoLoader();
         }
 
         void Start()
@@ -135,6 +138,10 @@ namespace Engine
             this.ChangeScene(this.sceneNow.GetAllValues());
 
             this.cameraToScreenshot.gameObject.SetActive(false);
+
+            gameObject.AddComponent<VideoHandler>().PlayVideo("1", 1, 1f, 1f, 0f, 0f, 0f, this, 
+                new RectTransformSaveValuesSerializable(new Vector3(5, 5, 5), new Vector3(1, 1, 1), Quaternion.identity, new Vector2(1920, 1080), new Vector2(0.5f, 0.5f)),
+                videoLoader.videoSources.GetOnlyValues()[0]);
         }
 
         void Update()

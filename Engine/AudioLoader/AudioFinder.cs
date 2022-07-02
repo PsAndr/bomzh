@@ -36,6 +36,7 @@ namespace Engine
             {
                 string path = Constants.path;
 
+                WorkWithFiles.CheckPath(path);
                 WorkWithFiles.CheckFiles(path, Constants.types);
 
                 Pair<string, int>[] numsAndNames = WorkWithFiles.GetFilesNumsAndNames(path, Constants.types);

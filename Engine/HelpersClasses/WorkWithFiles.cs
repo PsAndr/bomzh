@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Engine
 {
@@ -9,6 +12,20 @@ namespace Engine
     {
         public class WorkWithFiles
         {
+            static public void CheckPath(string path)
+            {
+                string[] pathParts = path.Split('/');
+                string newPath = "";
+                for (int i = 0; i < pathParts.Length - 1; i++)
+                {
+                    newPath += pathParts[i] + '/';
+                    if (!Directory.Exists(newPath))
+                    {
+                        Directory.CreateDirectory(newPath);
+                    }
+                }
+            }
+
             static public void CheckFiles(string path, params string[] types)
             {
                 List<string> trash = new();
@@ -71,6 +88,10 @@ namespace Engine
                     usedNumbers.Add(num);
                     i++;
                 }
+
+#if UNITY_EDITOR
+                AssetDatabase.Refresh();
+#endif
             }
 
             static public Pair<string, int>[] GetFilesNumsAndNames(string path, params string[] types)
