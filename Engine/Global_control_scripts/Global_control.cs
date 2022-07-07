@@ -72,6 +72,7 @@ namespace Engine
         [HideInInspector] public ScreenshotSaverLoader screenshotSaverLoader;
 
         [HideInInspector] public AudioHandler audioHandler;
+        [HideInInspector] public VideoHandler videoHandler;
 
         [HideInInspector] public int indexPrint = 0;
 
@@ -87,6 +88,7 @@ namespace Engine
             UpdateFiles();
 
             this.audioHandler = gameObject.AddComponent<AudioHandler>();
+            this.videoHandler = gameObject.AddComponent<VideoHandler>();
 
             new Save_list_names(true);
 
@@ -138,10 +140,6 @@ namespace Engine
             this.ChangeScene(this.sceneNow.GetAllValues());
 
             this.cameraToScreenshot.gameObject.SetActive(false);
-
-            gameObject.AddComponent<VideoHandler>().PlayVideo("1", 1, 1f, 1f, 0f, 0f, 0f, this, 
-                new RectTransformSaveValuesSerializable(new Vector3(5, 5, 5), new Vector3(1, 1, 1), Quaternion.identity, new Vector2(1920, 1080), new Vector2(0.5f, 0.5f)),
-                videoLoader.videoSources.GetOnlyValues()[0]);
         }
 
         void Update()

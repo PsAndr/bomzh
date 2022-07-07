@@ -37,6 +37,7 @@ namespace Engine
         }
 
         private SaveClass saveClass;
+        private bool isEndPlay;
 
         public void Init(string nameHelper, string[] nameVideo, int cnt, float volume, float playbackSpeed, float panStereo, float time, float startWait, float betweenWait,
             int indexVideo, VideoHandler videoHandler, Transform toSpawnVideo, RectTransformSaveValuesSerializable rectTransformVideo, params VideoClip[] video)
@@ -55,6 +56,7 @@ namespace Engine
 
             this.saveClass.isPaused = false;
             this.saveClass.isDeleted = false;
+            this.isEndPlay = false;
 
             this.saveClass.rectTransformVideo = rectTransformVideo;
 
@@ -90,7 +92,7 @@ namespace Engine
 
                 if (this.saveClass.isDeleted)
                 {
-                    DestroyIt(videoSource, audioSource);
+                    DestroyIt(videoSource, audioSource, image);
                     yield break;
                 }
             }
@@ -100,6 +102,7 @@ namespace Engine
             {
                 for (int j = indexVideo; j < video.Length; j++)
                 {
+                    this.isEndPlay = false;
                     this.saveClass.indexVideo = j;
                     indexVideo = 0;
 
@@ -114,7 +117,7 @@ namespace Engine
 
                         if (this.saveClass.isDeleted)
                         {
-                            DestroyIt(videoSource, audioSource);
+                            DestroyIt(videoSource, audioSource, image);
                             yield break;
                         }
                     }
@@ -142,7 +145,9 @@ namespace Engine
 
                     time = 0f;
 
-                    while (true)
+                    videoSource.loopPointReached += this.End;
+
+                    while (!isEndPlay)
                     {
                         this.saveClass.time = (float)videoSource.time;
 
@@ -159,7 +164,7 @@ namespace Engine
 
                         if (this.saveClass.isDeleted)
                         {
-                            DestroyIt(videoSource, audioSource);
+                            DestroyIt(videoSource, audioSource, image);
                             yield break;
                         }
                     }
@@ -171,7 +176,7 @@ namespace Engine
                 }
             }
 
-            DestroyIt(videoSource, audioSource);
+            DestroyIt(videoSource, audioSource, image);
 
             yield break;
         }
@@ -196,13 +201,19 @@ namespace Engine
             return this.saveClass;
         }
 
-        private void DestroyIt(VideoPlayer videoPlayer, AudioSource audioSource)
+        private void DestroyIt(VideoPlayer videoPlayer, AudioSource audioSource, Image image)
         {
             videoPlayer.Stop();
             videoPlayer.clip = null;
 
             Destroy(this);
             Destroy(audioSource.gameObject);
+            Destroy(image.gameObject);
+        }
+
+        private void End(VideoPlayer videoPlayer)
+        {
+            isEndPlay = true;
         }
     }
 }

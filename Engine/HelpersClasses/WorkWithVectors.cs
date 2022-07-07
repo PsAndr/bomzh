@@ -71,6 +71,34 @@ namespace Engine
             return result;
         }
 
+        public static Vector3 ConvertArrayToVector3(double[] array)
+        {
+            Vector3 result;
+            result = Vector3.zero;
+
+            if (array == null || array.Length == 0)
+            {
+
+            }
+            else if (array.Length == 1)
+            {
+                result.x = (float)array[0];
+            }
+            else if (array.Length == 2)
+            {
+                result.x = (float)array[0];
+                result.y = (float)array[1];
+            }
+            else
+            {
+                result.x = (float)array[0];
+                result.y = (float)array[1];
+                result.z = (float)array[2];
+            }
+
+            return result;
+        }
+
         public static Vector2 ConvertArrayToVector2(float[] array)
         {
             Vector2 result;
@@ -88,6 +116,28 @@ namespace Engine
             {
                 result.x = array[0];
                 result.y = array[1];
+            }
+
+            return result;
+        }
+
+        public static Vector2 ConvertArrayToVector2(double[] array)
+        {
+            Vector2 result;
+            result = Vector2.zero;
+
+            if (array == null || array.Length == 0)
+            {
+
+            }
+            else if (array.Length == 1)
+            {
+                result.x = (float)array[0];
+            }
+            else
+            {
+                result.x = (float)array[0];
+                result.y = (float)array[1];
             }
 
             return result;

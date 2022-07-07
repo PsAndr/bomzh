@@ -49,6 +49,11 @@ namespace Engine
             {
                 audioHelper.Pause();
             }
+
+            foreach (VideoHelper videoHelper in global_Control.gameObject.GetComponents<VideoHelper>())
+            {
+                videoHelper.Pause();
+            }
         }
 
         public void StartLookScene(Global_control global_Control)
@@ -61,6 +66,11 @@ namespace Engine
             foreach (AudioHelper audioHelper in global_Control.gameObject.GetComponents<AudioHelper>())
             {
                 audioHelper.UnPause();
+            }
+
+            foreach (VideoHelper videoHelper in global_Control.gameObject.GetComponents<VideoHelper>())
+            {
+                videoHelper.UnPause();
             }
         }
 
@@ -302,6 +312,14 @@ namespace Engine
 
                     case "waitSeconds":
                         if (!MakersCommandScene.WaitSeconds(global_Control, command))
+                        {
+                            Debug.LogWarning(command.name_command);
+                            return;
+                        }
+                        break;
+
+                    case "playVideo":
+                        if (!MakersCommandScene.PlayVideo(global_Control, command))
                         {
                             Debug.LogWarning(command.name_command);
                             return;

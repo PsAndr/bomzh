@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
+using Engine.WorkWithRectTransform;
 
 namespace Engine
 { 
@@ -486,6 +488,154 @@ namespace Engine
             }
 
             global_Control.waitSceneCommand.StartWait(global_Control, timeWait);
+
+            return true;
+        }
+
+        /// <summary>
+        /// playVideo command
+        /// </summary>
+        /// <param name="global_Control"></param>
+        /// <param name="command"></param>
+        /// <returns>is maked</returns>
+        public static bool PlayVideo(Global_control global_Control, Scene_class.Command command)
+        {
+            if (string.IsNullOrEmpty(command.name_obj) && command.number_obj == -1)
+            {
+                Debug.LogException(new Exception("Don`t get number or name of video"));
+                return false;
+            }
+            else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.videoLoader.videoNames.ContainsKey(command.number_obj))
+            {
+                Debug.LogException(new Exception("Number of video is not valid!"));
+                return false;
+            }
+            else if (string.IsNullOrEmpty(command.name_obj))
+            {
+                command.name_obj = global_Control.videoLoader.videoNames[command.number_obj];
+            }
+
+            Vector2 sizeDelta = new Vector2(global_Control.videoLoader.videoSources[command.name_obj].width, global_Control.videoLoader.videoSources[command.name_obj].height);
+            Vector3 position = Vector3.zero;
+            Vector3 rotation = Vector3.zero;
+            Vector3 scale = Vector3.one;
+
+            float volume = 1f;
+            int cntRepeat = 1;
+            float playbackSpeed = 1f;
+            float panStereo = 0f;
+
+            float startWait = 0f;
+            float betweenWait = 0f;
+
+            string name = string.Empty;
+
+            List<VideoClip> videoClips = new();
+            videoClips.Add(global_Control.videoLoader.videoSources[command.name_obj]);
+
+            if (command.dict_values.ContainsKey("sizeDeltaVideo"))
+            {
+                if (command.dict_values["sizeDeltaVideo"] != null && command.dict_values["sizeDeltaVideo"].Length > 1)
+                {
+                    sizeDelta = WorkWithVectors.ConvertArrayToVector2(command.dict_values["sizeDeltaVideo"]);
+                }
+            }
+
+            if (command.dict_values.ContainsKey("positionVideo"))
+            {
+                if (command.dict_values["positionVideo"] != null && command.dict_values["positionVideo"].Length > 2)
+                {
+                    position = WorkWithVectors.ConvertArrayToVector3(command.dict_values["positionVideo"]);
+                }
+            }
+
+            if (command.dict_values.ContainsKey("sizeVideo"))
+            {
+                if (command.dict_values["sizeVideo"] != null && command.dict_values["sizeVideo"].Length > 2)
+                {
+                    scale = WorkWithVectors.ConvertArrayToVector3(command.dict_values["sizeVideo"]);
+                }
+            }
+
+            if (command.dict_values.ContainsKey("rotationVideo"))
+            {
+                if (command.dict_values["rotationVideo"] != null && command.dict_values["rotationVideo"].Length > 2)
+                {
+                    rotation = WorkWithVectors.ConvertArrayToVector3(command.dict_values["rotationVideo"]);
+                }
+            }
+
+            if (command.dict_values.ContainsKey("volumeVideo"))
+            {
+                if (command.dict_values["volumeVideo"] != null && command.dict_values["volumeVideo"].Length > 0)
+                {
+                    volume = (float)command.dict_values["volumeVideo"][0];
+                }
+            }
+
+            if (command.dict_values.ContainsKey("countRepeatVideo"))
+            {
+                if (command.dict_values["countRepeatVideo"] != null && command.dict_values["countRepeatVideo"].Length > 0)
+                {
+                    cntRepeat = Convert.ToInt32(command.dict_values["countRepeatVideo"][0]);
+                }
+            }
+
+            if (command.dict_values.ContainsKey("playbackSpeedVideo"))
+            {
+                if (command.dict_values["playbackSpeedVideo"] != null && command.dict_values["playbackSpeedVideo"].Length > 0)
+                {
+                    playbackSpeed = (float)command.dict_values["playbackSpeedVideo"][0];
+                }
+            }
+
+            if (command.dict_values.ContainsKey("panStereoVideo"))
+            {
+                if (command.dict_values["panStereoVideo"] != null && command.dict_values["panStereoVideo"].Length > 0)
+                {
+                    panStereo = (float)command.dict_values["panStereoVideo"][0];
+                }
+            }
+
+            if (command.dict_values.ContainsKey("startWaitVideo"))
+            {
+                if (command.dict_values["startWaitVideo"] != null && command.dict_values["startWaitVideo"].Length > 0)
+                {
+                    startWait = (float)command.dict_values["startWaitVideo"][0];
+                }
+            }
+
+            if (command.dict_values.ContainsKey("betweenWaitVideo"))
+            {
+                if (command.dict_values["betweenWaitVideo"] != null && command.dict_values["betweenWaitVideo"].Length > 0)
+                {
+                    startWait = (float)command.dict_values["betweenWaitVideo"][0];
+                }
+            }
+
+            if (command.dict_values_str.ContainsKey("nameVideo"))
+            {
+                if (command.dict_values_str["nameVideo"] != null && command.dict_values_str["nameVideo"].Length > 0)
+                {
+                    name = command.dict_values_str["nameVideo"][0];
+                }
+            }
+
+            if (command.dict_values_str.ContainsKey("nameExtraVideo"))
+            {
+                if (command.dict_values_str["nameExtraVideo"] != null && command.dict_values_str["nameExtraVideo"].Length > 0)
+                {
+                    foreach (string nameVideo in command.dict_values_str["nameExtraVideo"])
+                    {
+                        if (global_Control.videoLoader.videoSources.ContainsKey(nameVideo))
+                        {
+                            videoClips.Add(global_Control.videoLoader.videoSources[nameVideo]);
+                        }
+                    }
+                }
+            }
+            global_Control.videoHandler.PlayVideo(name, cntRepeat, volume, playbackSpeed, panStereo, startWait, betweenWait, global_Control.toSpawnVideos, 
+                new RectTransformSaveValuesSerializable(position, scale, rotation, sizeDelta, new Vector2(0.5f, 0.5f)), videoClips.ToArray());
 
             return true;
         }

@@ -12,7 +12,7 @@ namespace Engine
     public class VideoHandler : MonoBehaviour
     {
         public void PlayVideo(string name, int cnt, float volume, float playbackSpeed, float panStereo, float startWait, float betweenWait, 
-            Global_control globalControl, RectTransformSaveValuesSerializable rectTransformVideo, params VideoClip[] video)
+            Transform toSpawn, RectTransformSaveValuesSerializable rectTransformVideo, params VideoClip[] video)
         {
             string[] names = new string[video.Length];
             for (int i = 0; i < video.Length; i++)
@@ -21,7 +21,7 @@ namespace Engine
             }
 
             gameObject.AddComponent<VideoHelper>().Init(name, names, cnt, volume, playbackSpeed, panStereo, 0f, startWait, betweenWait, 0, this, 
-                globalControl.toSpawnVideos, rectTransformVideo, video);
+                toSpawn, rectTransformVideo, video);
         }
 
         public void PlayVideo(Global_control globalControl, VideoHelper.SaveClass videoHelper)
