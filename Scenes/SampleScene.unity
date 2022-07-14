@@ -282,7 +282,7 @@ Canvas:
   m_GameObject: {fileID: 11293357}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 519420031}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -1667,7 +1667,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: Back
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2005,10 +2005,8 @@ GameObject:
   - component: {fileID: 519420033}
   - component: {fileID: 519420035}
   - component: {fileID: 519420038}
-  - component: {fileID: 519420039}
   - component: {fileID: 519420040}
   - component: {fileID: 519420041}
-  - component: {fileID: 519420042}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2079,6 +2077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1da0ce73a712be74588b4bf6ff6ce6ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  typeGlobalControl: 0
   text_dialogue: {fileID: 1861947645}
   text_character: {fileID: 461007160}
   canvas: {fileID: 11293357}
@@ -2089,25 +2088,26 @@ MonoBehaviour:
   toSpawnVideos: {fileID: 734013140}
   background: {fileID: 1285983607}
   prefab_sprites: {fileID: 6079232665876035260, guid: f991a353c0b4e3e4ebebe767a1dfb190, type: 3}
-  canvasToScreenshot: {fileID: 1282688959}
-  cameraToScreenshot: {fileID: 257509588}
   RenderToScreenshot:
   - {fileID: 1285983605}
   - {fileID: 1113229205}
+  - {fileID: 734013139}
   - {fileID: 1861947643}
   - {fileID: 1982128109}
   ObjectsStopLookScene:
   - {fileID: 1290417429}
   sceneNow: {fileID: 11400000, guid: e9a4326fa449be4418487ca0b8b03799, type: 2}
   localization: {fileID: 11400000, guid: ea0c8365dadcaff4db6a608f3121dfeb, type: 2}
-  sceneNumberStart: 0
-  sceneNameStart: 
-  sceneNumberCommandStart: 0
+  sceneStart:
+    sceneNumber: 0
+    sceneName: 
+    numberCommandScene: 0
   settings:
     speedTextPrinting: 100
     maxSpeedPrintingText: 300
     minSpeedPrintingText: 15
   audioHandler: {fileID: 0}
+  videoHandler: {fileID: 0}
   indexPrint: 0
   waitSceneCommand: {fileID: 0}
 --- !u!114 &519420035
@@ -2158,102 +2158,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d509374ad544ae489ddc30e47e27854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!82 &519420039
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 0
-  m_Pitch: 3
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: -1
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &519420040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2307,41 +2211,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!328 &519420042
-VideoPlayer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 0ac0b3fef7defb2418a0a191cecc7df0, type: 3}
-  m_TargetCameraAlpha: 1
-  m_TargetCamera3DLayout: 0
-  m_TargetCamera: {fileID: 519420031}
-  m_TargetTexture: {fileID: 0}
-  m_TimeReference: 0
-  m_TargetMaterialRenderer: {fileID: 0}
-  m_TargetMaterialProperty: <noninit>
-  m_RenderMode: 2
-  m_AspectRatio: 2
-  m_DataSource: 0
-  m_PlaybackSpeed: 1
-  m_AudioOutputMode: 1
-  m_TargetAudioSources:
-  - {fileID: 0}
-  m_DirectAudioVolumes:
-  - 1
-  m_Url: 
-  m_EnabledAudioTracks: 01
-  m_DirectAudioMutes: 00
-  m_ControlledAudioTrackCount: 1
-  m_PlayOnAwake: 0
-  m_SkipOnDrop: 0
-  m_Looping: 0
-  m_WaitForFirstFrame: 1
-  m_FrameReadyEventEnabled: 0
-  m_VideoShaders: []
 --- !u!1 &547857566
 GameObject:
   m_ObjectHideFlags: 0
@@ -2761,19 +2630,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 649497559}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 649497561}
-        m_TargetAssemblyTypeName: ButtonsWindow, Assembly-CSharp
-        m_MethodName: OnClick
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &649497559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4115,8 +3972,8 @@ MonoBehaviour:
     localRotation: {x: -0, y: -0, z: -0, w: 1}
     sizeDelta: {x: 4555.855, y: 2112}
     pivot: {x: 0, y: 1}
-    anchorMax: {x: 0, y: 0}
-    anchorMin: {x: 0, y: 0}
+    anchorMax: {x: 0, y: 0.5}
+    anchorMin: {x: 0, y: 0.5}
 --- !u!114 &1194015194
 MonoBehaviour:
   m_ObjectHideFlags: 0

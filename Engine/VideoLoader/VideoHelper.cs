@@ -7,7 +7,6 @@ using Engine.WorkWithRectTransform;
 
 namespace Engine
 {
-    //дописать спавн картинки которая будет отображать видео
     public class VideoHelper : MonoBehaviour
     {
         [System.Serializable]
@@ -69,8 +68,11 @@ namespace Engine
             VideoPlayer videoSource = videoHandler.GetVideoPlayer();
             AudioSource audioSource = videoHandler.GetAudioSource();
 
-            Image image = new GameObject(saveClass.nameHelper).AddComponent<Image>();
+            videoSource.renderMode = VideoRenderMode.RenderTexture;
+
+            Image image = new GameObject(saveClass.nameHelper + "___video").AddComponent<Image>();
             image.gameObject.transform.SetParent(toSpawnVideo);
+
             rectTransformVideo.UpdateRectTransform(image.gameObject.GetComponent<RectTransform>());
 
             int k = 1;
@@ -124,6 +126,7 @@ namespace Engine
                     this.saveClass.startWait = 0f;
 
                     RenderTexture renderTexture = new RenderTexture((int)video[j].width, (int)video[j].height, 32);
+                    renderTexture.name = $"texture of video: {video[j].name}";
 
                     videoSource.playbackSpeed = playbackSpeed;
                     videoSource.SetTargetAudioSource(0, audioSource);
@@ -142,6 +145,7 @@ namespace Engine
                     image.material = new Material(image.material);
 
                     image.material.mainTexture = renderTexture;
+                    image.material.name = $"material of video: {video[j].name}";
 
                     time = 0f;
 

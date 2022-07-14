@@ -137,9 +137,10 @@ namespace Engine
 
         public void Load(string nameSave)
         {
-            Save_class saveLoad = new Save_class(nameSave);
+            Save_class saveLoad = Save_class.Load(nameSave);
             if (this.startScene)
             {
+                print(saveLoad.videoHelpers.Length);
                 this.global_Control.sceneNow.SetValues(saveLoad);
                 sceneUnityController.LoadNewScene(this.newSceneStart);
             }
@@ -166,7 +167,7 @@ namespace Engine
                 foreach (LoadModule loadModule in loadModules)
                 {
                     GameObject obj = loadModule.gameObject;
-                    this.global_Control.DestroyObject(obj);
+                    this.global_Control.MyDestroyObject(obj);
                 }
             }
         }

@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: SceneNow
   m_EditorClassIdentifier: 
   sceneEngine:
-    sceneNumber: 0
+    sceneNumber: 1
     sceneName: 
     numberCommandScene: 0
   backgroundName: 
   audioHelpers: []
+  videoHelpers: []
   flags:
     keys: []
     values: 
@@ -28,6 +29,6 @@ MonoBehaviour:
   spritesObjectNames: []
   rectTransformsSprites: []
   settingsGlobalControl:
-    speedTextPrinting: 15
+    speedTextPrinting: 100
     maxSpeedPrintingText: 300
     minSpeedPrintingText: 15

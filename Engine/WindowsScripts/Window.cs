@@ -47,6 +47,11 @@ namespace Engine
 
         public void UpdateDefaultOpenValues()
         {
+            if (this.setDefaultOpen == null)
+            {
+                this.setDefaultOpen = new RectTransform[0];
+            }
+
             this.saveDefaultOpenValues = new RectTransformSaveValues[this.setDefaultOpen.Length];
             for (int i = 0; i < this.saveDefaultOpenValues.Length; i++)
             {

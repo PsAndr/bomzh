@@ -13,12 +13,19 @@ using Engine.WorkWithRectTransform;
 
 namespace Engine
 {
-    [AddComponentMenu("Engine/Global control")]
+    [AddComponentMenu("Engine/Global Control/Global Control")]
     /// <summary>
     /// Controler all on a game scene
     /// </summary>
     public class Global_control : MonoBehaviour
     {
+        public enum TypeGlobalControl
+        {
+            Game,
+            StartScene
+        }
+        [SerializeField, HideInInspector] public TypeGlobalControl typeGlobalControl;
+
         [SerializeField] public TextMeshProUGUI text_dialogue;
         [SerializeField] public TextMeshProUGUI text_character;
 
@@ -36,8 +43,6 @@ namespace Engine
 
         [SerializeField] public GameObject prefab_sprites;
 
-        [SerializeField] private GameObject canvasToScreenshot;
-        [SerializeField] private Camera cameraToScreenshot;
         [SerializeField] private GameObject[] RenderToScreenshot;
 
         [SerializeField] public GameObject[] ObjectsStopLookScene;
@@ -49,9 +54,7 @@ namespace Engine
         private Scenes_loader scenes_Loader;
 
         //for control scenes
-        [SerializeField] private int sceneNumberStart = -1;
-        [SerializeField] private string sceneNameStart = null;
-        [SerializeField] private int sceneNumberCommandStart = 0;
+        [SerializeField] private SceneEngine sceneStart = new();
 
         private int scene_number;
         private string scene_name;
@@ -94,9 +97,18 @@ namespace Engine
 
             this.screenshotSaverLoader = new ScreenshotSaverLoader();
 
-            FindObjectOfType<SaveWindow>(true).Init();
-            FindObjectOfType<LoadWindow>(true).Init();
-            
+            try
+            {
+                FindObjectOfType<SaveWindow>(true).Init();
+            }
+            catch { }
+
+            try
+            {
+                FindObjectOfType<LoadWindow>(true).Init();
+            }
+            catch { }
+
             LocalizedTextsControl localizedTextsControl = FindObjectOfType<LocalizedTextsControl>();
 
             if (localizedTextsControl != null)
@@ -105,7 +117,6 @@ namespace Engine
             }
 
             Flags = new Dictionary<string, int>();
-            this.canvasToScreenshot.gameObject.SetActive(false);
 
             gameObject.AddComponent<TextPrintingClass>();
 
@@ -123,7 +134,12 @@ namespace Engine
 
         public void SaveStartSceneValues()
         {
-            SaveLoadStartScene.Save(this.sceneNumberStart, this.sceneNameStart, this.sceneNumberCommandStart);
+            SaveLoadStartScene.Save(this.sceneStart);
+        }
+
+        public void LoadStartSceneValues()
+        {
+            this.sceneStart = SaveLoadStartScene.Load();
         }
 
         public void UpdateFiles()
@@ -137,9 +153,10 @@ namespace Engine
 
         void Start()
         {
-            this.ChangeScene(this.sceneNow.GetAllValues());
-
-            this.cameraToScreenshot.gameObject.SetActive(false);
+            if (this.typeGlobalControl == TypeGlobalControl.Game)
+            {
+                this.ChangeScene(this.sceneNow.GetAllValues());
+            }
         }
 
         void Update()
@@ -228,6 +245,15 @@ namespace Engine
                 foreach (AudioHelper.SaveClass audioHelper in saveClass.audioHelpers)
                 {
                     this.audioHandler.PlayClip(this, audioHelper);
+                }
+            }
+
+            if (saveClass.videoHelpers != null)
+            {
+                this.videoHandler.StopAll();
+                foreach (VideoHelper.SaveClass videoHelper in saveClass.videoHelpers)
+                {
+                    this.videoHandler.PlayVideo(this, videoHelper);
                 }
             }
 
@@ -338,12 +364,12 @@ namespace Engine
             return spawn_object;
         }
 
-        public void DestroyObject(GameObject gameObject, float time_to_destroy = 0f)
+        public void MyDestroyObject(UnityEngine.Object gameObject, float time_to_destroy = 0f)
         {
             Destroy(gameObject, time_to_destroy);
         }
 
-        public void DestroyObject(Transform whereObjectIs, string name)
+        public void MyDestroyObject(Transform whereObjectIs, string name)
         {
             Destroy(whereObjectIs.Find(name).gameObject);
         }
@@ -358,35 +384,48 @@ namespace Engine
 
         public void MakeScreenshot(string path)
         {
-            this.cameraToScreenshot.gameObject.SetActive(true);
-            this.canvasToScreenshot.gameObject.SetActive(true);
+            Camera camera = new GameObject().AddComponent<Camera>();
+            Canvas canvas = new GameObject().AddComponent<Canvas>();
 
             foreach (GameObject to_spawn in this.RenderToScreenshot)
             {
-                this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", this.canvasToScreenshot.transform);
+                this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", canvas.transform);
             }
 
-            StartCoroutine(this.WaitScreenshot(path));
+            StartCoroutine(this.WaitScreenshot(path, camera, canvas));
+
+            MyDestroyObject(camera);
+            MyDestroyObject(canvas);
         }
 
         public void MakeScreenshot(string path, string nameSave)
         {
-            this.cameraToScreenshot.gameObject.SetActive(true);
-            this.canvasToScreenshot.gameObject.SetActive(true);
+            Camera camera = new GameObject().AddComponent<Camera>();
+            Canvas canvas = new GameObject().AddComponent<Canvas>();
 
             foreach (GameObject to_spawn in this.RenderToScreenshot)
             {
-                this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", this.canvasToScreenshot.transform);
+                this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", canvas.transform);
             }
 
-            StartCoroutine(this.WaitScreenshot(path, nameSave));
+            StartCoroutine(this.WaitScreenshot(path, nameSave, camera, canvas));
+
+            MyDestroyObject(camera);
+            MyDestroyObject(canvas);
         }
 
-        IEnumerator WaitScreenshot(string path)
+        public void SetSceneNowValuesToStartScene()
+        {
+            this.sceneNow.SetDefault();
+            this.sceneNow.settingsGlobalControl = this.settings;
+            this.sceneNow.SetValues(this.sceneStart.sceneNumber, this.sceneStart.sceneName, this.sceneStart.numberCommandScene);
+        }
+
+        IEnumerator WaitScreenshot(string path, Camera camera, Canvas canvas)
         {
             yield return null;
 
-            RenderTexture texture = this.cameraToScreenshot.targetTexture;
+            RenderTexture texture = camera.targetTexture;
 
             Texture2D texture2D = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
 
@@ -397,19 +436,19 @@ namespace Engine
 
             File.WriteAllBytes(path, texture2D.EncodeToJPG());
 
-            this.DestroyAllObjects(this.canvasToScreenshot.transform);
+            this.DestroyAllObjects(canvas.transform);
 
-            this.cameraToScreenshot.gameObject.SetActive(false);
-            this.canvasToScreenshot.gameObject.SetActive(false);
+            camera.gameObject.SetActive(false);
+            canvas.gameObject.SetActive(false);
 
             yield break;
         }
 
-        IEnumerator WaitScreenshot(string path, string nameSave)
+        IEnumerator WaitScreenshot(string path, string nameSave, Camera camera, Canvas canvas)
         {
             yield return null;
 
-            RenderTexture texture = this.cameraToScreenshot.targetTexture;
+            RenderTexture texture = camera.targetTexture;
 
             Texture2D texture2D = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
 
@@ -420,10 +459,10 @@ namespace Engine
 
             File.WriteAllBytes(path, texture2D.EncodeToJPG());
 
-            this.DestroyAllObjects(this.canvasToScreenshot.transform);
+            this.DestroyAllObjects(canvas.transform);
 
-            this.cameraToScreenshot.gameObject.SetActive(false);
-            this.canvasToScreenshot.gameObject.SetActive(false);
+            camera.gameObject.SetActive(false);
+            canvas.gameObject.SetActive(false);
 
             yield return null;
 

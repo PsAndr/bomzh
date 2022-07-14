@@ -89,5 +89,15 @@ namespace Engine
                 videoHelper.Delete();
             }
         }
+
+        public void StopAll()
+        {
+            VideoHelper[] videoHelpers = gameObject.GetComponents<VideoHelper>();
+
+            foreach (VideoHelper videoHelper in videoHelpers)
+            {
+                videoHelper.Delete();
+            }
+        }
     }
 }

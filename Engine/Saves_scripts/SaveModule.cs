@@ -136,34 +136,45 @@ namespace Engine
 
         private void OnClick()
         {
+            AudioHelper[] audioHelpers = this.global_Control.audioHandler.gameObject.GetComponents<AudioHelper>();
+            AudioHelper.SaveClass[] saveClasses = new AudioHelper.SaveClass[audioHelpers.Length];
+
+            for (int i = 0; i < audioHelpers.Length; i++)
+            {
+                saveClasses[i] = audioHelpers[i].GetSave();
+            }
+
+            VideoHelper[] videoHelpers = this.global_Control.videoHandler.gameObject.GetComponents<VideoHelper>();
+            VideoHelper.SaveClass[] saveClassesVideo = new VideoHelper.SaveClass[videoHelpers.Length];
+
+            for (int i = 0; i < videoHelpers.Length; i++)
+            {
+                saveClassesVideo[i] = videoHelpers[i].GetSave();
+            }
+
+            Image[] sprites = global_Control.ToSpawnSprite.GetComponentsInChildren<Image>();
+            List<string> spritesNames = new();
+            List<string> spritesNamesObjects = new();
+            List<RectTransformSaveValuesSerializable> rectTransformsSprites = new();
+
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                if (sprites[i].gameObject.name.Split("___").Length > 1 && sprites[i].gameObject.name.Split("___")[1] == "sprite")
+                {
+                    spritesNames.Add(sprites[i].sprite.name);
+                    spritesNamesObjects.Add(sprites[i].gameObject.name);
+                    rectTransformsSprites.Add(new RectTransformSaveValuesSerializable(sprites[i].gameObject.GetComponent<RectTransform>()));
+                }
+            }
+
+            TextPrintingClass textPrintingClass = global_Control.gameObject.GetComponent<TextPrintingClass>();
+
             if (this.IsNew)
             {
-                AudioHelper[] audioHelpers = this.global_Control.audioHandler.gameObject.GetComponents<AudioHelper>();
-                AudioHelper.SaveClass[] saveClasses = new AudioHelper.SaveClass[audioHelpers.Length];
-
-                for (int i = 0; i < audioHelpers.Length; i++)
-                {
-                    saveClasses[i] = audioHelpers[i].GetSave();
-                }
-
-                Image[] sprites = global_Control.ToSpawnSprite.GetComponentsInChildren<Image>();
-                string[] spritesNames = new string[sprites.Length]; 
-                string[] spritesNamesObjects = new string[sprites.Length]; 
-                RectTransformSaveValuesSerializable[] rectTransformsSprites = new RectTransformSaveValuesSerializable[sprites.Length]; 
-
-                for (int i = 0; i < sprites.Length; i++)
-                {
-                    spritesNames[i] = sprites[i].sprite.name;
-                    spritesNamesObjects[i] = sprites[i].gameObject.name;
-                    rectTransformsSprites[i] = new RectTransformSaveValuesSerializable(sprites[i].gameObject.GetComponent<RectTransform>());
-                }
-
-                TextPrintingClass textPrintingClass = global_Control.gameObject.GetComponent<TextPrintingClass>();
-
                 Save_class newSave = new Save_class(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second, 
                     this.global_Control.Flags, saveClasses, this.global_Control.background.sprite.name, 
                     textPrintingClass.GetProgress(), global_Control.text_dialogue.text, global_Control.text_character.text, 
-                    spritesNames, spritesNamesObjects, rectTransformsSprites, this.global_Control.settings);
+                    spritesNames.ToArray(), spritesNamesObjects.ToArray(), rectTransformsSprites.ToArray(), this.global_Control.settings, saveClassesVideo);
 
                 this.nameSave = newSave.name_save;
                 this.name_save.text = newSave.name_save;
@@ -189,32 +200,10 @@ namespace Engine
             }
             else
             {
-                AudioHelper[] audioHelpers = this.global_Control.audioHandler.gameObject.GetComponents<AudioHelper>();
-                AudioHelper.SaveClass[] saveClasses = new AudioHelper.SaveClass[audioHelpers.Length];
-
-                for (int i = 0; i < audioHelpers.Length; i++)
-                {
-                    saveClasses[i] = audioHelpers[i].GetSave();
-                }
-
-                Image[] sprites = global_Control.ToSpawnSprite.GetComponentsInChildren<Image>();
-                string[] spritesNames = new string[sprites.Length];
-                string[] spritesNamesObjects = new string[sprites.Length];
-                RectTransformSaveValuesSerializable[] rectTransformsSprites = new RectTransformSaveValuesSerializable[sprites.Length];
-
-                for (int i = 0; i < sprites.Length; i++)
-                {
-                    spritesNames[i] = sprites[i].sprite.name;
-                    spritesNamesObjects[i] = sprites[i].gameObject.name;
-                    rectTransformsSprites[i] = new RectTransformSaveValuesSerializable(sprites[i].gameObject.GetComponent<RectTransform>());
-                }
-
-                TextPrintingClass textPrintingClass = global_Control.gameObject.GetComponent<TextPrintingClass>();
-
-                new Save_class(this.nameSave).Change(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second,
+                Save_class.Load(this.nameSave).Change(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second,
                     this.global_Control.Flags, saveClasses, this.global_Control.background.sprite.name,
                     textPrintingClass.GetProgress(), global_Control.text_dialogue.text, global_Control.text_character.text, 
-                    spritesNames, spritesNamesObjects, rectTransformsSprites, this.global_Control.settings);
+                    spritesNames.ToArray(), spritesNamesObjects.ToArray(), rectTransformsSprites.ToArray(), this.global_Control.settings, saveClassesVideo);
 
                 Debug.Log(Application.persistentDataPath);
             }
@@ -225,7 +214,7 @@ namespace Engine
         private void Delete()
         {
             global_Control.screenshotSaverLoader.Delete(this.nameSave);
-            new Save_class(this.nameSave).Delete();
+            Save_class.Load(this.nameSave).Delete();
             this.saveWindow.StartWaitDeleteModule();
             Destroy(this.gameObject);
         }
@@ -253,7 +242,7 @@ namespace Engine
                 s = s.Replace(ch, '-');
             }
 
-            Save_class save_Class = new Save_class(this.nameSave);
+            Save_class save_Class = Save_class.Load(this.nameSave);
             save_Class.Change(s);
 
             s = save_Class.name_save;

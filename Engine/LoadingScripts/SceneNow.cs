@@ -14,6 +14,8 @@ namespace Engine
 
         [SerializeField] public string backgroundName;
         [SerializeField] public AudioHelper.SaveClass[] audioHelpers;
+        [SerializeField] public VideoHelper.SaveClass[] videoHelpers;   
+
         [SerializeField] public DictionaryToTwoArrays<string, int> flags;
         [SerializeField] public int indexPrint;
 
@@ -30,6 +32,17 @@ namespace Engine
             sceneEngine.numberCommandScene = -1;
             sceneEngine.sceneName = null;
             sceneEngine.numberCommandScene = 0;
+            backgroundName = null;
+            audioHelpers = null;
+            videoHelpers = null;
+            flags = null;
+            indexPrint = 0;
+            textOnSceneDialogue = null;
+            textOnSceneCharacter = null;
+            spritesNames = null;
+            spritesObjectNames = null;
+            rectTransformsSprites = null;
+            settingsGlobalControl = new SettingsGlobalControl();
         }
 
         public void SetValues(int sceneNumber, string sceneName, int numberCommandScene)
@@ -68,6 +81,7 @@ namespace Engine
             this.spritesObjectNames = saveClass.spritesObjectNames;
             this.rectTransformsSprites = saveClass.rectTransformsSprites;
             this.settingsGlobalControl = saveClass.settingsGlobalControl;
+            this.videoHelpers = saveClass.videoHelpers;
         }
 
         public SceneEngine GetValue()
@@ -91,6 +105,7 @@ namespace Engine
                 spritesObjectNames = this.spritesObjectNames,
                 rectTransformsSprites = this.rectTransformsSprites,
                 settingsGlobalControl = this.settingsGlobalControl.Clone() as SettingsGlobalControl,
+                videoHelpers = this.videoHelpers,
             };
 
             return save_Class;

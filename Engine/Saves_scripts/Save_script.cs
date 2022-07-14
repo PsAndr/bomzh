@@ -18,6 +18,8 @@ namespace Engine
         public int number_command_scene;
         public DictionaryToTwoArrays<string, int> flags;
         public AudioHelper.SaveClass[] audioHelpers;
+        public VideoHelper.SaveClass[] videoHelpers;
+
         public string nameBackground;
 
         public int indexPrint;
@@ -89,7 +91,7 @@ namespace Engine
 
         public Save_class(int scene_number, int number_command_scene, Dictionary<string, int> flags, AudioHelper.SaveClass[] audioHelpers, 
             string nameBackground, int indexPrint, string textOnSceneDialogue, string textOnSceneCharacter, string[] spritesNames, string[] spritesObjectNames,
-            RectTransformSaveValuesSerializable[] rectTransformsSprites, SettingsGlobalControl settingsGlobalControl)
+            RectTransformSaveValuesSerializable[] rectTransformsSprites, SettingsGlobalControl settingsGlobalControl, VideoHelper.SaveClass[] videoHelpers)
         {
             this.name_save = DateTime.Now.ToString();
             this.scene_number = scene_number;
@@ -103,7 +105,8 @@ namespace Engine
             this.spritesNames = spritesNames;
             this.rectTransformsSprites = rectTransformsSprites;
             this.spritesObjectNames = spritesObjectNames;
-            this.settingsGlobalControl = settingsGlobalControl; 
+            this.settingsGlobalControl = settingsGlobalControl;
+            this.videoHelpers = videoHelpers;
 
             this.WorkAfterInit();
         }
@@ -118,10 +121,12 @@ namespace Engine
             this.WorkAfterInit();
         }
 
-        public Save_class(string name_save)
+        public static Save_class Load(string name_save)
         {
-            this.name_save = name_save;
-            load();
+            Save_class toReturn = new Save_class();
+            toReturn.name_save = name_save;
+            toReturn.load();
+            return toReturn;
         }
 
         private void WorkAfterInit()
@@ -184,6 +189,7 @@ namespace Engine
             this.spritesObjectNames = save_Class.spritesObjectNames;
             this.rectTransformsSprites = save_Class.rectTransformsSprites;
             this.settingsGlobalControl = save_Class.settingsGlobalControl;
+            this.videoHelpers = save_Class.videoHelpers;
         }
 
         private void delete()
@@ -223,7 +229,7 @@ namespace Engine
 
         public void Change(int scene_number, int number_command_scene, Dictionary<string, int> flags, AudioHelper.SaveClass[] audioHelpers,
             string nameBackground, int indexPrint, string textOnSceneDialogue, string textOnSceneCharacter, string[] spritesNames, string[] spritesObjectNames,
-            RectTransformSaveValuesSerializable[] rectTransformsSprites, SettingsGlobalControl settingsGlobalControl)
+            RectTransformSaveValuesSerializable[] rectTransformsSprites, SettingsGlobalControl settingsGlobalControl, VideoHelper.SaveClass[] videoHelpers)
         {
             this.scene_number = scene_number;
             this.number_command_scene = number_command_scene;
@@ -237,6 +243,7 @@ namespace Engine
             this.spritesObjectNames = spritesObjectNames;
             this.rectTransformsSprites = rectTransformsSprites;
             this.settingsGlobalControl = settingsGlobalControl;
+            this.videoHelpers = videoHelpers;
 
             this.save();
         }

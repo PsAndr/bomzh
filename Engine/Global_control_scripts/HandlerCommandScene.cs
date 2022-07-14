@@ -195,79 +195,11 @@ namespace Engine
                         break;
 
                     case "spawnSprite":
-                        if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
+                        if (!MakersCommandScene.SpawnSprite(global_Control, command))
                         {
-                            Debug.LogException(new Exception("Don`t get name or number sprite to spawn"));
+                            Debug.LogWarning(command.name_command);
                             return;
                         }
-                        else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.spritesLoader.sprites_names.ContainsKey(command.number_obj))
-                        {
-                            Debug.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
-                            return;
-                        }
-                        else if (string.IsNullOrEmpty(command.name_obj))
-                        {
-                            command.name_obj = global_Control.spritesLoader.sprites_names[command.number_obj];
-                        }
-
-                        Sprite sprite = global_Control.spritesLoader.sprites[command.name_obj];
-
-                        Vector3 position = new Vector3(0, 0, 0);
-                        Vector3 rotation = new Vector3(0, 0, 0);
-                        Vector3 size = new Vector3(1, 1, 1);
-                        Vector2 sizeDelta = new Vector2(sprite.textureRect.width, sprite.textureRect.height);
-
-                        string name = null;
-
-                        if (command.dict_values_str.ContainsKey("nameSprite"))
-                        {
-                            name = command.dict_values_str["nameSprite"][0];
-                        }
-
-                        if (command.dict_values.ContainsKey("positionSprite"))
-                        {
-                            double[] values = command.dict_values["positionSprite"];
-
-                            if (values.Length >= 3)
-                            {
-                                position = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
-                            }
-                        }
-
-                        if (command.dict_values.ContainsKey("sizeSprite"))
-                        {
-                            double[] values = command.dict_values["sizeSprite"];
-
-                            if (values.Length >= 3)
-                            {
-                                size = new Vector3((float)values[0], (float)values[1], (float)values[2]);
-                            }
-                        }
-
-                        if (command.dict_values.ContainsKey("sizeDeltaSprite"))
-                        {
-                            double[] values = command.dict_values["sizeDeltaSprite"];
-
-                            if (values.Length >= 2)
-                            {
-                                sizeDelta = new Vector2((float)values[0], (float)values[1]);
-                            }
-                        }
-
-                        if (command.dict_values.ContainsKey("rotationSprite"))
-                        {
-                            double[] values = command.dict_values["rotationSprite"];
-
-                            if (values.Length >= 3)
-                            {
-                                rotation = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
-                            }
-                        }
-
-                        GameObject sprite_obj = global_Control.SpawnObject(global_Control.prefab_sprites, position, size, rotation, name, global_Control.ToSpawnSprite.transform);
-                        sprite_obj.GetComponent<Image>().sprite = sprite;
-                        sprite_obj.GetComponent<RectTransform>().sizeDelta = sizeDelta;
-
                         break;
 
                     case "changeSprite":
@@ -320,6 +252,14 @@ namespace Engine
 
                     case "playVideo":
                         if (!MakersCommandScene.PlayVideo(global_Control, command))
+                        {
+                            Debug.LogWarning(command.name_command);
+                            return;
+                        }
+                        break;
+
+                    case "deleteVideo":
+                        if (!MakersCommandScene.DeleteVideo(global_Control, command))
                         {
                             Debug.LogWarning(command.name_command);
                             return;

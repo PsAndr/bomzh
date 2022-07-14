@@ -11,6 +11,90 @@ namespace Engine
     public static class MakersCommandScene
     {
         /// <summary>
+        /// spawnSprite command
+        /// </summary>
+        /// <param name="global_Control"></param>
+        /// <param name="command"></param>
+        /// <returns>is maked</returns>
+        public static bool SpawnSprite(Global_control global_Control, Scene_class.Command command)
+        {
+            if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
+            {
+                Debug.LogException(new Exception("Don`t get name or number sprite to spawn"));
+                return false;
+            }
+            else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.spritesLoader.sprites_names.ContainsKey(command.number_obj))
+            {
+                Debug.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
+                return false;
+            }
+            else if (string.IsNullOrEmpty(command.name_obj))
+            {
+                command.name_obj = global_Control.spritesLoader.sprites_names[command.number_obj];
+            }
+
+            Sprite sprite = global_Control.spritesLoader.sprites[command.name_obj];
+
+            Vector3 position = new Vector3(0, 0, 0);
+            Vector3 rotation = new Vector3(0, 0, 0);
+            Vector3 size = new Vector3(1, 1, 1);
+            Vector2 sizeDelta = new Vector2(sprite.textureRect.width, sprite.textureRect.height);
+
+            string name = null;
+
+            if (command.dict_values_str.ContainsKey("nameSprite"))
+            {
+                name = command.dict_values_str["nameSprite"][0];
+            }
+
+            if (command.dict_values.ContainsKey("positionSprite"))
+            {
+                double[] values = command.dict_values["positionSprite"];
+
+                if (values.Length >= 3)
+                {
+                    position = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
+                }
+            }
+
+            if (command.dict_values.ContainsKey("sizeSprite"))
+            {
+                double[] values = command.dict_values["sizeSprite"];
+
+                if (values.Length >= 3)
+                {
+                    size = new Vector3((float)values[0], (float)values[1], (float)values[2]);
+                }
+            }
+
+            if (command.dict_values.ContainsKey("sizeDeltaSprite"))
+            {
+                double[] values = command.dict_values["sizeDeltaSprite"];
+
+                if (values.Length >= 2)
+                {
+                    sizeDelta = new Vector2((float)values[0], (float)values[1]);
+                }
+            }
+
+            if (command.dict_values.ContainsKey("rotationSprite"))
+            {
+                double[] values = command.dict_values["rotationSprite"];
+
+                if (values.Length >= 3)
+                {
+                    rotation = new Vector3(((float)values[0]), ((float)values[1]), ((float)values[2]));
+                }
+            }
+
+            GameObject sprite_obj = global_Control.SpawnObject(global_Control.prefab_sprites, position, size, rotation, name + "___sprite", global_Control.ToSpawnSprite.transform);
+            sprite_obj.GetComponent<Image>().sprite = sprite;
+            sprite_obj.GetComponent<RectTransform>().sizeDelta = sizeDelta;
+
+            return true;
+        }
+
+        /// <summary>
         /// changeSprite command
         /// </summary>
         /// <param name="global_Control"></param>
@@ -30,7 +114,7 @@ namespace Engine
             {
                 GameObject gameObject = global_Control.ToSpawnSprite.transform.GetChild(i).gameObject;
 
-                if (gameObject.GetComponent<Image>() != null && gameObject.name == command.name_obj)
+                if (gameObject.GetComponent<Image>() != null && gameObject.name.Split("___")[0] == command.name_obj)
                 {
                     sprite = gameObject;
                     break;
@@ -162,7 +246,7 @@ namespace Engine
             {
                 GameObject gameObject = global_Control.ToSpawnSprite.transform.GetChild(i).gameObject;
 
-                if (gameObject.GetComponent<Image>() != null && gameObject.name == command.name_obj)
+                if (gameObject.GetComponent<Image>() != null && gameObject.name.Split("___")[0] == command.name_obj)
                 {
                     sprite = gameObject;
                     break;
@@ -175,7 +259,7 @@ namespace Engine
                 return false;
             }
 
-            global_Control.DestroyObject(sprite);
+            global_Control.MyDestroyObject(sprite);
 
             return true;
         }
@@ -636,6 +720,25 @@ namespace Engine
             }
             global_Control.videoHandler.PlayVideo(name, cntRepeat, volume, playbackSpeed, panStereo, startWait, betweenWait, global_Control.toSpawnVideos, 
                 new RectTransformSaveValuesSerializable(position, scale, rotation, sizeDelta, new Vector2(0.5f, 0.5f)), videoClips.ToArray());
+
+            return true;
+        }
+
+        /// <summary>
+        /// deleteVideo command
+        /// </summary>
+        /// <param name="global_Control"></param>
+        /// <param name="command"></param>
+        /// <returns>is maked</returns>
+        public static bool DeleteVideo(Global_control global_Control, Scene_class.Command command)
+        {
+            if (string.IsNullOrEmpty(command.name_obj))
+            {
+                Debug.LogException(new Exception("Don`t get name of video to delete!"));
+                return false;
+            }
+
+            global_Control.videoHandler.DeleteVideo(command.name_obj);
 
             return true;
         }

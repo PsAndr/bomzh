@@ -14,6 +14,11 @@ namespace Engine
         public string sceneName;
         public int numberCommandScene;
 
+        public SceneEngine()
+        {
+            SetDefault();
+        }
+
         public void SetDefault()
         {
             sceneNumber = -1;

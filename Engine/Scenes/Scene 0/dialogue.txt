@@ -6,6 +6,7 @@ playAudio_number=0:countRepeatAudio=-1:pitchAudio=1.5:nameExtraAudio=PianoSolo:n
 У меня нет друзей.
 Саня бот!
 }
+deleteVideo_name=testVideo;
 waitSeconds_number=1:millisecondsWait=50;
 changeSprite_name=cat:sizeSprite+1,0.5,0.5:nameSprite=gay;
 changeFlag_name=school_scale_respect:newValue=6;
