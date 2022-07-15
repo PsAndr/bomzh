@@ -41,6 +41,7 @@ namespace Engine
             Vector2 sizeDelta = new Vector2(sprite.textureRect.width, sprite.textureRect.height);
 
             string name = null;
+            int hierarchyPosition = -1;
 
             if (command.dict_values_str.ContainsKey("nameSprite"))
             {
@@ -87,9 +88,22 @@ namespace Engine
                 }
             }
 
+            if (command.dict_values.ContainsKey("hierarchyPosition"))
+            {
+                if (command.dict_values["hierarchyPosition"] != null && command.dict_values["hierarchyPosition"].Length > 0)
+                {
+                    hierarchyPosition = Convert.ToInt32(command.dict_values["hierarchyPosition"][0]);
+                }
+            }
+
             GameObject sprite_obj = global_Control.SpawnObject(global_Control.prefab_sprites, position, size, rotation, name + "___sprite", global_Control.ToSpawnSprite.transform);
             sprite_obj.GetComponent<Image>().sprite = sprite;
             sprite_obj.GetComponent<RectTransform>().sizeDelta = sizeDelta;
+
+            if (hierarchyPosition >= 0)
+            {
+                sprite_obj.transform.SetSiblingIndex(hierarchyPosition);
+            }
 
             return true;
         }
@@ -132,7 +146,9 @@ namespace Engine
             Vector3 size = sprite.transform.localScale;
             Vector2 sizeDelta = sprite.GetComponent<RectTransform>().sizeDelta;
 
-            string name = sprite.name;
+            int hierarchyPosition = sprite.transform.GetSiblingIndex();
+
+            string name = sprite.name.Split("___")[0];
 
             if (command.dict_values_str.ContainsKey("nameSprite"))
             {
@@ -216,12 +232,31 @@ namespace Engine
                 }
             }
 
-            sprite.name = name;
+            if (command.dict_values.ContainsKey("hierarchyPosition"))
+            {
+                if (command.dict_values["hierarchyPosition"].Length > 0)
+                {
+                    switch (command.signs["hierarchyPosition"])
+                    {
+                        case '=':
+                            hierarchyPosition = Convert.ToInt32(command.dict_values["hierarchyPosition"][0]);
+                            break;
+
+                        case '+':
+                            hierarchyPosition += Convert.ToInt32(command.dict_values["hierarchyPosition"][0]);
+                            break;
+                    }
+                }
+            }
+
+            sprite.name = name + "___sprite";
 
             sprite.transform.localPosition = position;
             sprite.transform.localRotation = Quaternion.Euler(rotation);
             sprite.transform.localScale = size;
             sprite.GetComponent<RectTransform>().sizeDelta = sizeDelta;
+
+            sprite.transform.SetSiblingIndex(hierarchyPosition);
 
             return true;
         }

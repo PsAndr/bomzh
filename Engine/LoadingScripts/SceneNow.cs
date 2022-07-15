@@ -29,7 +29,7 @@ namespace Engine
 
         public void SetDefault()
         {
-            sceneEngine.numberCommandScene = -1;
+            sceneEngine.sceneNumber = -1;
             sceneEngine.sceneName = null;
             sceneEngine.numberCommandScene = 0;
             backgroundName = null;

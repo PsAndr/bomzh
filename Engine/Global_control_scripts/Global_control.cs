@@ -352,6 +352,20 @@ namespace Engine
             return spawn_object;
         }
 
+        public GameObject SpawnObject(GameObject prefab, RectTransform rectTransform, string name, Transform parent)
+        {
+            GameObject spawn_object = Instantiate(prefab, parent);
+
+            ((RectTransformSaveValuesSerializable)rectTransform).UpdateRectTransform(spawn_object.GetComponent<RectTransform>());
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                spawn_object.name = name;
+            }
+
+            return spawn_object;
+        }
+
         public GameObject SpawnObject(GameObject prefab, string name, Transform parent)
         {
             GameObject spawn_object = Instantiate(prefab, Vector3.zero, Quaternion.identity, parent);
@@ -384,34 +398,24 @@ namespace Engine
 
         public void MakeScreenshot(string path)
         {
-            Camera camera = new GameObject().AddComponent<Camera>();
-            Canvas canvas = new GameObject().AddComponent<Canvas>();
+            GameObject camera = new GameObject("camera___for___screenshot");
+            GameObject canvas = new GameObject("canvas___for___screenshot");
 
-            foreach (GameObject to_spawn in this.RenderToScreenshot)
-            {
-                this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", canvas.transform);
-            }
+            camera.SetActive(true);
+            canvas.SetActive(true);
 
             StartCoroutine(this.WaitScreenshot(path, camera, canvas));
-
-            MyDestroyObject(camera);
-            MyDestroyObject(canvas);
         }
 
         public void MakeScreenshot(string path, string nameSave)
         {
-            Camera camera = new GameObject().AddComponent<Camera>();
-            Canvas canvas = new GameObject().AddComponent<Canvas>();
+            GameObject camera = new GameObject("camera___for___screenshot");
+            GameObject canvas = new GameObject("canvas___for___screenshot");
 
-            foreach (GameObject to_spawn in this.RenderToScreenshot)
-            {
-                this.SpawnObject(to_spawn, to_spawn.transform.localPosition, to_spawn.transform.localScale, to_spawn.transform.localEulerAngles, "ToScreenshot", canvas.transform);
-            }
+            camera.SetActive(true);
+            canvas.SetActive(true);
 
             StartCoroutine(this.WaitScreenshot(path, nameSave, camera, canvas));
-
-            MyDestroyObject(camera);
-            MyDestroyObject(canvas);
         }
 
         public void SetSceneNowValuesToStartScene()
@@ -421,11 +425,44 @@ namespace Engine
             this.sceneNow.SetValues(this.sceneStart.sceneNumber, this.sceneStart.sceneName, this.sceneStart.numberCommandScene);
         }
 
-        IEnumerator WaitScreenshot(string path, Camera camera, Canvas canvas)
+        IEnumerator WaitScreenshot(string path, GameObject cameraObj, GameObject canvasObj)
         {
-            yield return null;
+            Camera camera = cameraObj.AddComponent<Camera>();
+            Canvas canvas = canvasObj.AddComponent<Canvas>();
 
-            RenderTexture texture = camera.targetTexture;
+            CanvasScaler canvasScaler = canvasObj.AddComponent<CanvasScaler>();
+            CanvasScaler canvasScalerDefault = this.canvas.GetComponent<CanvasScaler>();
+
+            canvasScaler.uiScaleMode = canvasScalerDefault.uiScaleMode;
+            canvasScaler.referencePixelsPerUnit = canvasScalerDefault.referencePixelsPerUnit;
+            canvasScaler.scaleFactor = canvasScalerDefault.scaleFactor;
+            canvasScaler.referenceResolution = canvasScalerDefault.referenceResolution;
+            canvasScaler.matchWidthOrHeight = canvasScalerDefault.matchWidthOrHeight;
+            canvasScaler.screenMatchMode = canvasScalerDefault.screenMatchMode;
+
+            camera.clearFlags = Camera.main.clearFlags;
+            camera.cameraType = Camera.main.cameraType;
+            camera.depth = Camera.main.depth;
+            camera.orthographic = Camera.main.orthographic;
+            camera.orthographicSize = Camera.main.orthographicSize;
+            camera.farClipPlane = Camera.main.farClipPlane;
+            camera.nearClipPlane = Camera.main.nearClipPlane;
+            camera.nearClipPlane = Camera.main.nearClipPlane;
+            camera.rect = Camera.main.rect;
+            camera.depth = Camera.main.depth;
+
+            RenderTexture texture = new RenderTexture(1920, 1080, 32);
+            camera.targetTexture = texture;
+
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = camera;
+
+            foreach (GameObject to_spawn in this.RenderToScreenshot)
+            {
+                this.SpawnObject(to_spawn, to_spawn.GetComponent<RectTransform>(), to_spawn.name, canvas.transform);
+            }
+
+            yield return null;
 
             Texture2D texture2D = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
 
@@ -435,20 +472,54 @@ namespace Engine
             texture2D.Apply();
 
             File.WriteAllBytes(path, texture2D.EncodeToJPG());
-
-            this.DestroyAllObjects(canvas.transform);
 
             camera.gameObject.SetActive(false);
             canvas.gameObject.SetActive(false);
 
+            MyDestroyObject(cameraObj);
+            MyDestroyObject(canvasObj);
+
             yield break;
         }
 
-        IEnumerator WaitScreenshot(string path, string nameSave, Camera camera, Canvas canvas)
+        IEnumerator WaitScreenshot(string path, string nameSave, GameObject cameraObj, GameObject canvasObj)
         {
-            yield return null;
+            Camera camera = cameraObj.AddComponent<Camera>();
+            Canvas canvas = canvasObj.AddComponent<Canvas>();
 
-            RenderTexture texture = camera.targetTexture;
+            CanvasScaler canvasScaler = canvasObj.AddComponent<CanvasScaler>();
+            CanvasScaler canvasScalerDefault = this.canvas.GetComponent<CanvasScaler>();
+
+            canvasScaler.uiScaleMode = canvasScalerDefault.uiScaleMode;
+            canvasScaler.referencePixelsPerUnit = canvasScalerDefault.referencePixelsPerUnit;
+            canvasScaler.scaleFactor = canvasScalerDefault.scaleFactor;
+            canvasScaler.referenceResolution = canvasScalerDefault.referenceResolution;
+            canvasScaler.matchWidthOrHeight = canvasScalerDefault.matchWidthOrHeight;
+            canvasScaler.screenMatchMode = canvasScalerDefault.screenMatchMode;
+
+            camera.clearFlags = Camera.main.clearFlags;
+            camera.cameraType = Camera.main.cameraType;
+            camera.depth = Camera.main.depth;
+            camera.orthographic = Camera.main.orthographic;
+            camera.orthographicSize = Camera.main.orthographicSize;
+            camera.farClipPlane = Camera.main.farClipPlane;
+            camera.nearClipPlane = Camera.main.nearClipPlane;
+            camera.nearClipPlane = Camera.main.nearClipPlane;
+            camera.rect = Camera.main.rect;
+            camera.depth = Camera.main.depth;
+
+            RenderTexture texture = new RenderTexture(1920, 1080, 32);
+            camera.targetTexture = texture;
+
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = camera;
+
+            foreach (GameObject to_spawn in this.RenderToScreenshot)
+            {
+                this.SpawnObject(to_spawn, to_spawn.GetComponent<RectTransform>(), to_spawn.name, canvas.transform);
+            }
+
+            yield return null;
 
             Texture2D texture2D = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
 
@@ -458,8 +529,6 @@ namespace Engine
             texture2D.Apply();
 
             File.WriteAllBytes(path, texture2D.EncodeToJPG());
-
-            this.DestroyAllObjects(canvas.transform);
 
             camera.gameObject.SetActive(false);
             canvas.gameObject.SetActive(false);
@@ -467,6 +536,9 @@ namespace Engine
             yield return null;
 
             this.screenshotSaverLoader.Update(nameSave);
+
+            MyDestroyObject(cameraObj);
+            MyDestroyObject(canvasObj);
 
             yield break;
         }

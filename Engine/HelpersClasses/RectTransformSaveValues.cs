@@ -16,6 +16,7 @@ namespace Engine
             public Vector2 pivot;
             public Vector2 anchorMax;
             public Vector2 anchorMin;
+            public Vector2 anchoredPosition; 
 
             public RectTransformSaveValues(RectTransform rectTransform)
             {
@@ -26,6 +27,7 @@ namespace Engine
                 this.pivot = rectTransform.pivot;
                 this.anchorMax = rectTransform.anchorMax;
                 this.anchorMin = rectTransform.anchorMin;
+                this.anchoredPosition = rectTransform.anchoredPosition;
             }
 
             public void UpdateRectTransform(RectTransform rectTransform)
@@ -37,6 +39,7 @@ namespace Engine
                 rectTransform.pivot = this.pivot;
                 rectTransform.anchorMax = this.anchorMax;
                 rectTransform.anchorMin = this.anchorMin;
+                rectTransform.anchoredPosition = this.anchoredPosition;
             }
         }
 
@@ -50,8 +53,9 @@ namespace Engine
             public float[] pivot;
             public float[] anchorMax;
             public float[] anchorMin;
+            public float[] anchoredPosition;
 
-            public RectTransformSaveValuesSerializable(float[] localPosition, float[] localScale, float[] localRotation, float[] sizeDelta, float[] pivot, float[] anchorMax, float[] anchorMin)
+            public RectTransformSaveValuesSerializable(float[] localPosition, float[] localScale, float[] localRotation, float[] sizeDelta, float[] pivot, float[] anchorMax, float[] anchorMin, float[] anchoredPosition)
             {
                 this.localPosition = localPosition;
                 this.localScale = localScale;
@@ -60,6 +64,7 @@ namespace Engine
                 this.pivot = pivot;
                 this.anchorMax = anchorMax;
                 this.anchorMin = anchorMin;
+                this.anchoredPosition = anchoredPosition;
             }
 
             public RectTransformSaveValuesSerializable(RectTransform rectTransform)
@@ -71,9 +76,10 @@ namespace Engine
                 this.pivot = WorkWithVectors.ConvertToArrayVector(rectTransform.pivot);
                 this.anchorMax = WorkWithVectors.ConvertToArrayVector(rectTransform.anchorMax);
                 this.anchorMin = WorkWithVectors.ConvertToArrayVector(rectTransform.anchorMin);
+                this.anchoredPosition = WorkWithVectors.ConvertToArrayVector(rectTransform.anchoredPosition);
             }
 
-            public RectTransformSaveValuesSerializable(Vector3 localPosition, Vector3 localScale, Quaternion localRotationQ, Vector2 sizeDelta, Vector2 pivot)
+            public RectTransformSaveValuesSerializable(Vector3 localPosition, Vector3 localScale, Quaternion localRotationQ, Vector2 sizeDelta, Vector2 pivot, Vector2 anchoredPosition)
             {
                 Vector3 localRotation = localRotationQ.eulerAngles;
                 this.localPosition = WorkWithVectors.ConvertToArrayVector(localPosition);
@@ -83,7 +89,7 @@ namespace Engine
                 this.pivot = WorkWithVectors.ConvertToArrayVector(pivot);
                 this.anchorMax = WorkWithVectors.ConvertToArrayVector(new Vector2(0.5f, 0.5f));
                 this.anchorMin = WorkWithVectors.ConvertToArrayVector(new Vector2(0.5f, 0.5f));
-
+                this.anchoredPosition = WorkWithVectors.ConvertToArrayVector(anchoredPosition);
             }
 
             public RectTransformSaveValuesSerializable(Vector3 localPosition, Vector3 localScale, Vector3 localRotation, Vector2 sizeDelta, Vector2 pivot)
@@ -106,6 +112,7 @@ namespace Engine
                 this.pivot = WorkWithVectors.ConvertToArrayVector(rectTransformSaveValues.pivot);
                 this.anchorMax = WorkWithVectors.ConvertToArrayVector(rectTransformSaveValues.anchorMax);
                 this.anchorMin = WorkWithVectors.ConvertToArrayVector(rectTransformSaveValues.anchorMin);
+                this.anchoredPosition = WorkWithVectors.ConvertToArrayVector(rectTransformSaveValues.anchoredPosition);
             }
 
             public void UpdateRectTransform(RectTransform rectTransform)
@@ -117,6 +124,7 @@ namespace Engine
                 rectTransform.pivot = WorkWithVectors.ConvertArrayToVector2(this.pivot);
                 rectTransform.anchorMin = WorkWithVectors.ConvertArrayToVector2(this.anchorMin);
                 rectTransform.anchorMax = WorkWithVectors.ConvertArrayToVector2(this.anchorMax);
+                rectTransform.anchoredPosition = WorkWithVectors.ConvertArrayToVector2(this.anchoredPosition);
             }
 
             public static implicit operator RectTransformSaveValuesSerializable(RectTransform rectTransform)
