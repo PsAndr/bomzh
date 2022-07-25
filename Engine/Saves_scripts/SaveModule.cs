@@ -18,6 +18,8 @@ namespace Engine
 
         [SerializeField] private TMP_InputField name_save;
 
+        [SerializeField] private GameObject[] hideIfNew;
+
         [SerializeField] private SaveOverMouse[] overMouse;
 
         [SerializeField] private Button button;
@@ -76,6 +78,11 @@ namespace Engine
             else
             {
                 this.screenshotImage.enabled = false;
+            }
+
+            foreach (GameObject obj in this.hideIfNew)
+            {
+                obj.SetActive(!this.IsNew);
             }
         }
 
@@ -152,6 +159,8 @@ namespace Engine
                 saveClassesVideo[i] = videoHelpers[i].GetSave();
             }
 
+            Array.Sort(saveClassesVideo);
+
             Image[] sprites = global_Control.ToSpawnSprite.GetComponentsInChildren<Image>();
             List<string> spritesNames = new();
             List<string> spritesNamesObjects = new();
@@ -209,6 +218,11 @@ namespace Engine
             }
             global_Control.screenshotSaverLoader.MakeScreenshot(this.nameSave, this.global_Control);
             StartCoroutine(this.WaitScreenshot());
+
+            foreach (GameObject obj in this.hideIfNew)
+            {
+                obj.SetActive(!this.IsNew);
+            }
         }
 
         private void Delete()

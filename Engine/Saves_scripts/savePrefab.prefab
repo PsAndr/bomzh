@@ -129,6 +129,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   global_Control: {fileID: 0}
   name_save: {fileID: 5435139031633982478}
+  hideIfNew:
+  - {fileID: 7562501797075989393}
   overMouse:
   - coveringMouseImage_new: {fileID: 5435139033214809929}
     coveringMouseImage_change: {fileID: 5435139032548266603}

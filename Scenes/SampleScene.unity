@@ -664,7 +664,7 @@ GameObject:
   - component: {fileID: 175893681}
   - component: {fileID: 175893680}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Localization
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1547,7 +1547,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &397642754
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1602,13 +1602,14 @@ MonoBehaviour:
   setDefaultOpen:
   - {fileID: 517247541}
   saveDefaultOpenValues:
-  - localPosition: {x: 0, y: 0, z: 0}
+  - localPosition: {x: 0, y: 0.00012207031, z: 0}
     localScale: {x: 1, y: 1, z: 1}
     localRotation: {x: -0, y: -0, z: -0, w: 1}
     sizeDelta: {x: 4555.855, y: 2112}
     pivot: {x: 0, y: 1}
-    anchorMax: {x: 0, y: 0}
-    anchorMin: {x: 0, y: 0}
+    anchorMax: {x: 0, y: 0.5}
+    anchorMin: {x: 0, y: 0.5}
+    anchoredPosition: {x: 0, y: 1056}
 --- !u!1 &411680423
 GameObject:
   m_ObjectHideFlags: 0
@@ -2085,7 +2086,7 @@ MonoBehaviour:
   button: {fileID: 195698350}
   button_field: {fileID: 1982128109}
   ToSpawnSprite: {fileID: 1113229205}
-  toSpawnVideos: {fileID: 734013140}
+  toSpawnVideos: {fileID: 1113229206}
   background: {fileID: 1285983607}
   prefab_sprites: {fileID: 6079232665876035260, guid: f991a353c0b4e3e4ebebe767a1dfb190, type: 3}
   RenderToScreenshot:
@@ -2697,6 +2698,7 @@ GameObject:
   - component: {fileID: 664074602}
   - component: {fileID: 664074604}
   - component: {fileID: 664074603}
+  - component: {fileID: 664074605}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2744,7 +2746,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Localization
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2771,12 +2773,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
+  m_fontSize: 124.45
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 300
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -2821,6 +2823,77 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 664074601}
   m_CullTransparentMesh: 1
+--- !u!114 &664074605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664074601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6d38fffb333388468451a20a66c2a44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameLocalizedText: Localization Setting Button(Game Scene)(Localization)
+  text: {fileID: 664074601}
+  typeGetingTexts:
+    values:
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: EN-EN
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: RU-RU
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    count: 2
+    countWithDelete: 2
+  m_TypeLocalizedText: 2
+  fileLoadTexts:
+    values:
+    - Key: 
+      Value: 
+      isDeleted: 0
+    - Key: 
+      Value: 
+      isDeleted: 0
+    - Key: 
+      Value: 
+      isDeleted: 0
+    - Key: 
+      Value: 
+      isDeleted: 0
+    - Key: 
+      Value: 
+      isDeleted: 0
+    - Key: 
+      Value: 
+      isDeleted: 0
+    - Key: 
+      Value: 
+      isDeleted: 0
+    - Key: 
+      Value: 
+      isDeleted: 0
+    count: 0
+    countWithDelete: 0
 --- !u!1 &734013139
 GameObject:
   m_ObjectHideFlags: 0
@@ -3198,10 +3271,10 @@ RectTransform:
   m_Father: {fileID: 1290417430}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 1920, y: 0}
-  m_SizeDelta: {x: 1660, y: 0}
+  m_SizeDelta: {x: 2750, y: 2160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &831876425
 MonoBehaviour:
@@ -3227,8 +3300,9 @@ MonoBehaviour:
     localRotation: {x: -0, y: -0, z: -0, w: 1}
     sizeDelta: {x: 4555.855, y: 2112}
     pivot: {x: 0, y: 1}
-    anchorMax: {x: 0, y: 0}
-    anchorMin: {x: 0, y: 0}
+    anchorMax: {x: 0, y: 0.5}
+    anchorMin: {x: 0, y: 0.5}
+    anchoredPosition: {x: 0, y: 1056}
 --- !u!114 &831876426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3943,10 +4017,10 @@ RectTransform:
   m_Father: {fileID: 1290417430}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 1920, y: 0}
-  m_SizeDelta: {x: 1660, y: 0}
+  m_SizeDelta: {x: 2750, y: 2160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1194015193
 MonoBehaviour:
@@ -3974,6 +4048,7 @@ MonoBehaviour:
     pivot: {x: 0, y: 1}
     anchorMax: {x: 0, y: 0.5}
     anchorMin: {x: 0, y: 0.5}
+    anchoredPosition: {x: 0, y: 1056}
 --- !u!114 &1194015194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4071,7 +4146,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.60361886, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4306,7 +4381,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1290417430
 RectTransform:
   m_ObjectHideFlags: 0

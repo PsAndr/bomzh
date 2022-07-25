@@ -1,4 +1,12 @@
-﻿{OpenSaveWindowButton(Save)
+﻿{Localization Setting Button(Game Scene)(Localization)
+[RU-RU
+Локализация
+]
+[EN-EN
+Localization
+]
+}
+{OpenSaveWindowButton(Save)
 [RU-RU
 Сохранить
 ]

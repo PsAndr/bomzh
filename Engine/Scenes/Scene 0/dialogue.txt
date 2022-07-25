@@ -1,6 +1,7 @@
-playVideo_number=0:positionVideo=5,12,231:sizeVideo=1.5,1,1:rotationVideo=0,0,25:nameVideo=testVideo:panStereoVideo=-0.8;
 spawnSprite_number=1:positionSprite=10,-12.5,0:sizeSprite=1,1,1:rotationSprite=0,0,45:nameSprite=cat;[mind=0]
-spawnSprite_number=1:positionSprite=10,-12.5,0:sizeSprite=1,1,1:rotationSprite=0,0,45:nameSprite=cat2:hierarchyPosition=0;[mind=0]
+spawnSprite_number=1:positionSprite=10,-12.5,0:sizeSprite=1,1,1:rotationSprite=0,0,45:nameSprite=cat2:hierarchyPositionSprite=0;[mind=0]
+playVideo_number=0:positionVideo=5,12,231:sizeVideo=1.5,1,1:rotationVideo=0,0,25:nameVideo=testVideo:panStereoVideo=-0.8:hierarchyPositionVideo=0;
+playVideo_number=0:positionVideo=10,12,231:sizeVideo=0.5,0.5,0.5:rotationVideo=0,0,-25:nameVideo=testVideo2:panStereoVideo=-0.8:hierarchyPositionVideo=3;
 playAudio_number=0:countRepeatAudio=-1:pitchAudio=1.5:nameExtraAudio=PianoSolo:nameAudio=piano;
 {;Вася
 Привет, я Вася! И я хочу поговорить об огурцах.
@@ -9,8 +10,8 @@ playAudio_number=0:countRepeatAudio=-1:pitchAudio=1.5:nameExtraAudio=PianoSolo:n
 }
 deleteVideo_name=testVideo;
 waitSeconds_number=1:millisecondsWait=50;
-changeSprite_name=cat:sizeSprite+1,0.5,0.5:nameSprite=gay:hierarchyPosition=0;
-spawnSprite_number=1:positionSprite=10,-12.5,0:sizeSprite=1,1,1:rotationSprite=0,0,45:nameSprite=cat3:hierarchyPosition=1;[mind=0]
+changeSprite_name=cat:sizeSprite+1,0.5,0.5:nameSprite=gay:hierarchyPositionSprite=0;
+spawnSprite_number=1:positionSprite=10,-12.5,0:sizeSprite=1,1,1:rotationSprite=0,0,45:nameSprite=cat3:hierarchyPositionSprite=1;[mind=0]
 changeFlag_name=school_scale_respect:newValue=6;
 [
 [mind>1000];Я гей;<health+1><mind-1><school_scale_respect=1>;changeScene_name=гей парад

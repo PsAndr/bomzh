@@ -248,15 +248,6 @@ namespace Engine
                 }
             }
 
-            if (saveClass.videoHelpers != null)
-            {
-                this.videoHandler.StopAll();
-                foreach (VideoHelper.SaveClass videoHelper in saveClass.videoHelpers)
-                {
-                    this.videoHandler.PlayVideo(this, videoHelper);
-                }
-            }
-
             if (saveClass.spritesNames != null && saveClass.spritesObjectNames != null && saveClass.rectTransformsSprites != null)
             {
                 int length = Mathf.Min(saveClass.spritesNames.Length, saveClass.spritesObjectNames.Length, saveClass.rectTransformsSprites.Length);
@@ -268,6 +259,15 @@ namespace Engine
                     GameObject newSprite = this.SpawnObject(this.prefab_sprites, saveClass.spritesObjectNames[i], this.ToSpawnSprite.transform);
                     saveClass.rectTransformsSprites[i].UpdateRectTransform(newSprite.GetComponent<RectTransform>());
                     newSprite.GetComponent<Image>().sprite = this.spritesLoader.sprites[saveClass.spritesNames[i].Split(' ')[0]]; 
+                }
+            }
+
+            if (saveClass.videoHelpers != null)
+            {
+                this.videoHandler.StopAll();
+                foreach (VideoHelper.SaveClass videoHelper in saveClass.videoHelpers)
+                {
+                    this.videoHandler.PlayVideo(this, videoHelper);
                 }
             }
 

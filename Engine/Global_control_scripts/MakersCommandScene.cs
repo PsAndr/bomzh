@@ -88,11 +88,11 @@ namespace Engine
                 }
             }
 
-            if (command.dict_values.ContainsKey("hierarchyPosition"))
+            if (command.dict_values.ContainsKey("hierarchyPositionSprite"))
             {
-                if (command.dict_values["hierarchyPosition"] != null && command.dict_values["hierarchyPosition"].Length > 0)
+                if (command.dict_values["hierarchyPositionSprite"] != null && command.dict_values["hierarchyPositionSprite"].Length > 0)
                 {
-                    hierarchyPosition = Convert.ToInt32(command.dict_values["hierarchyPosition"][0]);
+                    hierarchyPosition = Convert.ToInt32(command.dict_values["hierarchyPositionSprite"][0]);
                 }
             }
 
@@ -232,18 +232,18 @@ namespace Engine
                 }
             }
 
-            if (command.dict_values.ContainsKey("hierarchyPosition"))
+            if (command.dict_values.ContainsKey("hierarchyPositionSprite"))
             {
-                if (command.dict_values["hierarchyPosition"].Length > 0)
+                if (command.dict_values["hierarchyPositionSprite"].Length > 0)
                 {
-                    switch (command.signs["hierarchyPosition"])
+                    switch (command.signs["hierarchyPositionSprite"])
                     {
                         case '=':
-                            hierarchyPosition = Convert.ToInt32(command.dict_values["hierarchyPosition"][0]);
+                            hierarchyPosition = Convert.ToInt32(command.dict_values["hierarchyPositionSprite"][0]);
                             break;
 
                         case '+':
-                            hierarchyPosition += Convert.ToInt32(command.dict_values["hierarchyPosition"][0]);
+                            hierarchyPosition += Convert.ToInt32(command.dict_values["hierarchyPositionSprite"][0]);
                             break;
                     }
                 }
@@ -647,6 +647,8 @@ namespace Engine
             float startWait = 0f;
             float betweenWait = 0f;
 
+            int hierarchyPosition = global_Control.toSpawnVideos.transform.childCount + 1;
+
             string name = string.Empty;
 
             List<VideoClip> videoClips = new();
@@ -753,8 +755,17 @@ namespace Engine
                     }
                 }
             }
+
+            if (command.dict_values.ContainsKey("hierarchyPositionVideo"))
+            {
+                if (command.dict_values["hierarchyPositionVideo"] != null && command.dict_values["hierarchyPositionVideo"].Length > 0)
+                {
+                    hierarchyPosition = Convert.ToInt32(command.dict_values["hierarchyPositionVideo"][0]);
+                }
+            }
+
             global_Control.videoHandler.PlayVideo(name, cntRepeat, volume, playbackSpeed, panStereo, startWait, betweenWait, global_Control.toSpawnVideos, 
-                new RectTransformSaveValuesSerializable(position, scale, rotation, sizeDelta, new Vector2(0.5f, 0.5f)), videoClips.ToArray());
+                new RectTransformSaveValuesSerializable(position, scale, rotation, sizeDelta, new Vector2(0.5f, 0.5f)), hierarchyPosition, videoClips.ToArray());
 
             return true;
         }

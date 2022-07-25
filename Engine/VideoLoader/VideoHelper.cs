@@ -4,13 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using Engine.WorkWithRectTransform;
+using System;
 
 namespace Engine
 {
     public class VideoHelper : MonoBehaviour
     {
         [System.Serializable]
-        public class SaveClass
+        public class SaveClass : IComparable
         {
             [HideInInspector] public string nameHelper;
             [HideInInspector] public string[] nameVideos;
@@ -32,14 +33,49 @@ namespace Engine
             [HideInInspector] public float startWait;
             [HideInInspector] public float betweenWait;
 
+            [HideInInspector] public int hierarchyPosition;
+
             [HideInInspector] public RectTransformSaveValuesSerializable rectTransformVideo;
+
+            public int CompareTo(object x)
+            {
+                object y = this;
+
+                if (x == null || y == null)
+                {
+                    throw new Exception("Compare VideoHelper.SaveClass with null");
+                }
+                if (((SaveClass)x).hierarchyPosition < ((SaveClass)y).hierarchyPosition)
+                {
+                    return 1;
+                }
+                else if (((SaveClass)x).hierarchyPosition > ((SaveClass)y).hierarchyPosition)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
+            public override string ToString()
+            {
+                string toReturn = string.Empty;
+
+                toReturn += '(' + nameHelper.ToString() + ", " + cnt.ToString() + ", " + indexVideo.ToString() + ", " + volume.ToString()
+                    + ", " + playbackSpeed.ToString() + ", " + panStereo.ToString() + ", " + time.ToString() + ", " + isPaused.ToString()
+                    + ", " + isDeleted.ToString() + ", " + startWait.ToString() + ", " + betweenWait.ToString() + ", " + hierarchyPosition.ToString() + ')';
+
+                return toReturn;
+            }
         }
 
         private SaveClass saveClass;
         private bool isEndPlay;
 
         public void Init(string nameHelper, string[] nameVideo, int cnt, float volume, float playbackSpeed, float panStereo, float time, float startWait, float betweenWait,
-            int indexVideo, VideoHandler videoHandler, Transform toSpawnVideo, RectTransformSaveValuesSerializable rectTransformVideo, params VideoClip[] video)
+            int indexVideo, VideoHandler videoHandler, Transform toSpawnVideo, RectTransformSaveValuesSerializable rectTransformVideo, int hierarchyPosition, params VideoClip[] video)
         {
             this.saveClass = new SaveClass();
             this.saveClass.nameHelper = nameHelper;
@@ -53,17 +89,19 @@ namespace Engine
             this.saveClass.startWait = startWait;
             this.saveClass.indexVideo = indexVideo;
 
+            this.saveClass.hierarchyPosition = hierarchyPosition;
+
             this.saveClass.isPaused = false;
             this.saveClass.isDeleted = false;
             this.isEndPlay = false;
 
             this.saveClass.rectTransformVideo = rectTransformVideo;
 
-            StartCoroutine(this.PlayClipCoroutine(cnt, video, panStereo, volume, playbackSpeed, time, startWait, betweenWait, indexVideo, videoHandler, toSpawnVideo, rectTransformVideo));
+            StartCoroutine(this.PlayClipCoroutine(cnt, video, panStereo, volume, playbackSpeed, time, startWait, betweenWait, indexVideo, videoHandler, toSpawnVideo, rectTransformVideo, hierarchyPosition));
         }
 
         IEnumerator PlayClipCoroutine(int cnt, VideoClip[] video, float panStereo, float volume, float playbackSpeed, float time, float startWait, float betweenWait,
-            int indexVideo, VideoHandler videoHandler, Transform toSpawnVideo, RectTransformSaveValuesSerializable rectTransformVideo)
+            int indexVideo, VideoHandler videoHandler, Transform toSpawnVideo, RectTransformSaveValuesSerializable rectTransformVideo, int hierarchyPosition)
         {
             VideoPlayer videoSource = videoHandler.GetVideoPlayer();
             AudioSource audioSource = videoHandler.GetAudioSource();
@@ -72,6 +110,8 @@ namespace Engine
 
             Image image = new GameObject(saveClass.nameHelper + "___video").AddComponent<Image>();
             image.gameObject.transform.SetParent(toSpawnVideo);
+
+            image.transform.SetSiblingIndex(hierarchyPosition);
 
             rectTransformVideo.UpdateRectTransform(image.gameObject.GetComponent<RectTransform>());
 
@@ -89,6 +129,9 @@ namespace Engine
                 if (!this.saveClass.isPaused)
                 {
                     this.saveClass.startWait -= 0.05f;
+
+                    this.saveClass.hierarchyPosition = image.transform.GetSiblingIndex();
+
                     yield return new WaitForSeconds(0.05f);
                 }
 
@@ -114,6 +157,9 @@ namespace Engine
                         if (!this.saveClass.isPaused)
                         {
                             this.saveClass.startWait -= 0.05f;
+
+                            this.saveClass.hierarchyPosition = image.transform.GetSiblingIndex();
+
                             yield return new WaitForSeconds(0.05f);
                         }
 
@@ -149,11 +195,14 @@ namespace Engine
 
                     time = 0f;
 
+                    videoSource.loopPointReached -= this.End;
                     videoSource.loopPointReached += this.End;
 
                     while (!isEndPlay)
                     {
                         this.saveClass.time = (float)videoSource.time;
+
+                        this.saveClass.hierarchyPosition = image.transform.GetSiblingIndex();
 
                         yield return new WaitForSeconds(0.08f);
 
