@@ -26,6 +26,11 @@ namespace WorkWithDictionary
             }
         }
 
+        public static implicit operator Dictionary<TKey, TValue>(DictionaryToTwoArrays<TKey, TValue> dictionaryToTwoArrays)
+        {
+            return dictionaryToTwoArrays.ConvertToDictionary();
+        }
+
         public Dictionary<TKey, TValue> ConvertToDictionary()
         {
             Dictionary<TKey, TValue> result = new Dictionary<TKey, TValue>();

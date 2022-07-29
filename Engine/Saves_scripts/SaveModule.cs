@@ -223,6 +223,8 @@ namespace Engine
             {
                 obj.SetActive(!this.IsNew);
             }
+
+            global_Control.SaveCommandIsShow();
         }
 
         private void Delete()

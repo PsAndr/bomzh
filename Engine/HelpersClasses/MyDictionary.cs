@@ -91,7 +91,7 @@ namespace Engine
             return myDictionary;
         }
 
-        public static explicit operator Dictionary<TKey, TValue>(MyDictionary<TKey, TValue> myDictionary)
+        public static implicit operator Dictionary<TKey, TValue>(MyDictionary<TKey, TValue> myDictionary)
         {
             Dictionary<TKey, TValue> dictionary = new();
 

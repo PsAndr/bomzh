@@ -74,6 +74,13 @@ namespace Engine
                 global_Control.SetSceneNowValuesToStartScene();
             }
 
+            EditorGUILayout.Space(2);
+
+            if (GUILayout.Button("Set default is command show"))
+            {
+                global_Control.ChangeToDefaultIsCommandShow();
+            }
+
             serializedObject.ApplyModifiedProperties();
         }
     }

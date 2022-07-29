@@ -61,7 +61,7 @@ namespace Engine
 
         private int number_command_scene;
 
-        [HideInInspector] public Dictionary<string, int> Flags;
+        [HideInInspector] public MyDictionary<string, int> Flags;
         //
 
         [HideInInspector] public BackgroundsLoader backgroundsLoader;
@@ -80,6 +80,13 @@ namespace Engine
         [HideInInspector] public int indexPrint = 0;
 
         [HideInInspector] public WaitSceneCommand waitSceneCommand;
+
+        [HideInInspector] private MyDictionary<int, bool[]> isCommandShow; 
+        [HideInInspector] public MyDictionary<int, bool[]> IsCommandShow
+        {
+            get
+            { return isCommandShow; }
+        }
 
         private void Awake()
         {
@@ -116,7 +123,7 @@ namespace Engine
                 localizedTextsControl.CheckFileSave();
             }
 
-            Flags = new Dictionary<string, int>();
+            Flags = new MyDictionary<string, int>();
 
             gameObject.AddComponent<TextPrintingClass>();
 
@@ -142,6 +149,16 @@ namespace Engine
             this.sceneStart = SaveLoadStartScene.Load();
         }
 
+        public void SaveCommandIsShow()
+        {
+            IsCommandShowSaverLoader.Save(this.isCommandShow);
+        }
+
+        public void LoadCommandIsShow()
+        {
+            this.isCommandShow = IsCommandShowSaverLoader.Load(this.scenes_Loader.Scenes_dict);
+        }
+
         public void UpdateFiles()
         {
             this.backgroundsLoader = new BackgroundsLoader();
@@ -149,6 +166,8 @@ namespace Engine
             this.spritesLoader = new SpritesLoader();
             this.audioLoader = new AudioLoader();
             this.videoLoader = new VideoLoader();
+            
+            this.LoadCommandIsShow();
         }
 
         void Start()
@@ -329,6 +348,8 @@ namespace Engine
             }
 
             Scene_class.DialogueOrChoiceOrCommand command = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene];
+
+            this.isCommandShow[this.scene_number][this.number_command_scene] = true;
 
             handlerCommandScene.SetCommand(this, command);
         }
@@ -541,6 +562,11 @@ namespace Engine
             MyDestroyObject(canvasObj);
 
             yield break;
+        }
+
+        public void ChangeToDefaultIsCommandShow()
+        {
+            IsCommandShowSaverLoader.DeleteSave();
         }
 
         public Pair<int, int> GetSceneValues()
