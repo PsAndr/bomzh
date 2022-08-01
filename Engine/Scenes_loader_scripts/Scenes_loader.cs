@@ -12,8 +12,8 @@ namespace Engine
     {
         public string[] list_scenes_paths;
         public string[] list_scenes_names;
-        public Dictionary<int, Scene_class> Scenes_dict;
-        public Dictionary<string, int> Scenes_names_dict;
+        public MyDictionary<int, Scene_class> Scenes_dict;
+        public MyDictionary<string, int> Scenes_names_dict;
 
         public Scenes_loader()
         {
@@ -80,26 +80,20 @@ namespace Engine
 
                 int index = 0;
 
-                foreach (KeyValuePair<int, Scene_class> kvp in this.Scenes_dict)
+                foreach (Pair<int, Scene_class> kvp in this.Scenes_dict.GetValues())
                 {
-                    mass_nums_scenes[index] = kvp.Key;
-                    mass_scenes[index] = kvp.Value;
-                    mass_names_scenes[index] = kvp.Value.name;
+                    mass_nums_scenes[index] = kvp.first;
+                    mass_scenes[index] = kvp.second;
+                    mass_names_scenes[index] = kvp.second.name;
 
                     index++;
                 }
 
-                string scenes = new WorkWithJSON_mass<Scene_class>(mass_scenes).SaveToString();
-                string nums_scenes = new WorkWithJSON_mass<int>(mass_nums_scenes).SaveToString();
-                string names_scenes = new WorkWithJSON_mass<string>(mass_names_scenes).SaveToString();
+                string scenes = Scenes_dict.ToJSON();
+                string names_scenes = Scenes_names_dict.ToJSON();
 
-                BinaryFormatter bf = new BinaryFormatter();
-                FileStream fs = new FileStream(Application.dataPath + @"\Resources\Scenes_nums.save", FileMode.Create);
-
-                bf.Serialize(fs, mass_nums_scenes);   //save numbers of scenes     
-
-                fs.Close();
-                File.WriteAllText(Application.dataPath + @"\Resources\Scenes_nums.json", nums_scenes);
+                BinaryFormatter bf = null;
+                FileStream fs = null;
 
                 bf = new BinaryFormatter();
                 fs = new FileStream(Application.dataPath + @"\Resources\Scenes_names.save", FileMode.Create);
@@ -119,30 +113,14 @@ namespace Engine
             }
             else if (Application.platform == RuntimePlatform.WindowsPlayer)
             {
-                Debug.Log("Start");
+                DebugEngine.Log("Start load scenes");
                 string json_names_scenes = Resources.Load<TextAsset>("Scenes_names").text;
-                string[] names_scenes = WorkWithJSON_mass<string>.FromJSON(json_names_scenes);
+                this.Scenes_names_dict = MyDictionary<string, int>.FromJSON(json_names_scenes);
 
                 string json_scenes = Resources.Load<TextAsset>("Scenes").text;
-                Scene_class[] scenes = WorkWithJSON_mass<Scene_class>.FromJSON(json_scenes);
+                this.Scenes_dict = MyDictionary<int, Scene_class>.FromJSON(json_scenes);
 
-                string json_nums_scenes = Resources.Load<TextAsset>("Scenes_nums").text;
-                int[] nums_scenes = WorkWithJSON_mass<int>.FromJSON(json_nums_scenes);
-
-                foreach (Scene_class scene in scenes)
-                {
-                    scene.UpdateAfterLoadingJSON();
-                }
-
-                for (int i = 0; i < scenes.Length; i++)
-                {
-                    Scenes_dict.Add(nums_scenes[i], scenes[i]);
-                }
-
-                for (int i = 0; i < scenes.Length; i++)
-                {
-                    Scenes_names_dict.Add(names_scenes[i], nums_scenes[i]);
-                }
+                DebugEngine.Log("End load scenes");
             }
         }
     }

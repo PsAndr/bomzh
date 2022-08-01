@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Engine
 {
@@ -19,25 +20,21 @@ namespace Engine
             this.selectionOptions = selectionOptions;
         }
 
-        public static explicit operator ChooseHelperClass(Localization localization) 
+        public static implicit operator ChooseHelperClass(Localization localization) 
         { 
             return new ChooseHelperClass(localization.GetIndex(), localization.GetLocalizations()); 
         }
 
-        public static implicit operator Localization(ChooseHelperClass chooseHelperClass)
+        public static implicit operator ChooseHelperClass(Enum @enum)
         {
-            Localization localization = ScriptableObject.CreateInstance<Localization>();
-
-            localization.Change(chooseHelperClass.index);
-            localization.ChangeLocalizations(chooseHelperClass.selectionOptions);
-
-            return localization;
+            return new ChooseHelperClass(Convert.ToInt32(@enum), Enum.GetNames(@enum.GetType()));
         }
 
-        public void PasteValues(ref Object obj)
+        public void PasteValues(ref UnityEngine.Object obj)
         {
             if (obj.GetType() == typeof(Localization))
             {
+                DebugEngine.Log("PasteValues");
                 ((Localization)obj).Change(this.index);
                 ((Localization)obj).ChangeLocalizations(this.selectionOptions);
             }

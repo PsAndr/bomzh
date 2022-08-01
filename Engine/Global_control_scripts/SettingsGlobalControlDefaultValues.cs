@@ -15,6 +15,9 @@ namespace Engine
         [SerializeField] private float speedTextPrinting;
         [SerializeField] private float minSpeedPrintingText;
         [SerializeField] private float maxSpeedPrintingText;
+
+        [SerializeField] private TypesSkiping typeSkiping;
+
         public void UpdateValues()
         {
             if (global_Control == null)
@@ -30,6 +33,8 @@ namespace Engine
             global_Control.settings.MinSpeedPrintingText = minSpeedPrintingText;
             global_Control.settings.MaxSpeedPrintingText = maxSpeedPrintingText;
             global_Control.settings.SpeedTextPrinting = speedTextPrinting;
+
+            global_Control.settings.TypeSkiping = typeSkiping;
         }
     }
 
@@ -51,10 +56,12 @@ namespace Engine
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+            serializedObject.Update();
             if (!Application.isPlaying)
             {
                 settings.UpdateValues();
             }
+            serializedObject.ApplyModifiedProperties();
         }
     }
 #endif

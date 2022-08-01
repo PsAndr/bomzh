@@ -2,24 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Engine.WorkWithJSON;
+using System;
 
 namespace Engine 
 {
-    [System.Serializable]
-    public class MyDictionary<TKey, TValue> : System.ICloneable
+    [Serializable]
+    public class MyDictionary<TKey, TValue> : ICloneable
     {
-        [System.NonSerialized]
+        [NonSerialized]
         private const int defaultSize = 8;
-        [System.NonSerialized]
+        [NonSerialized]
         private const double percentToResize = 0.75;
-        [System.NonSerialized]
+        [NonSerialized]
         private const double percentToRehash = 0.5;
-        [System.NonSerialized]
+        [NonSerialized]
         private const int sizeMultiply = 2;
 
         [SerializeField] private ValueClass[] values;
 
-        [System.Serializable]
+        [Serializable]
         private class ValueClass
         {
             public TKey Key;
@@ -174,7 +175,7 @@ namespace Engine
             int hash = key.GetHashCode();
             Pair<int, int> hashes = GetHashFromHashCode(hash);
 
-            int index = hashes.first;
+            int index = hashes.first % values.Length;
 
             int firstDeleted = -1;
 
@@ -182,7 +183,7 @@ namespace Engine
 
             while (values[index] != null && i < values.Length)
             {
-                if (values[index].Key.Equals(key) && !values[index].isDeleted)
+                if (values[index].Key != null && values[index].Key.Equals(key) && !values[index].isDeleted)
                 {
                     return false;
                 }
@@ -404,8 +405,8 @@ namespace Engine
 
         public static MyDictionary<TKey, TValue> FromJSON(string json)
         {
-            var result = WorkWithJSON_mass<Pair<TKey, TValue>>.FromJSON(json);
-            return new MyDictionary<TKey, TValue>(result);
+            var result = JsonUtility.FromJson<MyDictionary<TKey, TValue>>(json);
+            return result;
         }
     }
 }

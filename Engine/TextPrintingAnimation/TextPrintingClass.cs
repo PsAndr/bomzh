@@ -19,12 +19,14 @@ namespace Engine
         private Global_control global_Control;
         private float letters_to_print;
 
+        private float speedPrinting;
+
         private bool IsPause = false;
         public bool IsInit = false;
 
         private int indexPrint = 0;
 
-        public void Init(Global_control global_Control, TextMeshProUGUI text_print, string text_to_print, int indexStart = 0)
+        public void Init(Global_control global_Control, TextMeshProUGUI text_print, string text_to_print, float speedPrinting, int indexStart = 0)
         {
             StopAllCoroutines();
 
@@ -33,6 +35,8 @@ namespace Engine
             this.text_to_print = text_to_print;
             this.letters_to_print = 0f;
             this.text_print.text = text_to_print;
+
+            this.speedPrinting = speedPrinting;
 
             this.IsPause = false;
             this.IsInit = true;
@@ -96,9 +100,9 @@ namespace Engine
                     yield return null;
                 }
 
-                this.letters_to_print += this.global_Control.settings.SpeedTextPrinting / (1f / Constants.deltaTimeUpdate);
+                this.letters_to_print += this.speedPrinting / (1f / Constants.deltaTimeUpdate);
 
-                if (this.global_Control.settings.MaxSpeedPrintingText == this.global_Control.settings.SpeedTextPrinting)
+                if (this.global_Control.settings.MaxSpeedPrintingText <= this.speedPrinting)
                 {
                     this.letters_to_print = this.text_to_print.Length + 1f;
                 }

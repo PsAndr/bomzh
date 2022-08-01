@@ -25,7 +25,6 @@ namespace Engine
         [SerializeField] public string[] spritesNames;
         [SerializeField] public string[] spritesObjectNames;
         [SerializeField] public RectTransformSaveValuesSerializable[] rectTransformsSprites;
-        [SerializeField] public SettingsGlobalControl settingsGlobalControl;
 
         public void SetDefault()
         {
@@ -42,7 +41,6 @@ namespace Engine
             spritesNames = null;
             spritesObjectNames = null;
             rectTransformsSprites = null;
-            settingsGlobalControl = new SettingsGlobalControl();
         }
 
         public void SetValues(int sceneNumber, string sceneName, int numberCommandScene)
@@ -80,7 +78,6 @@ namespace Engine
             this.spritesNames = saveClass.spritesNames;
             this.spritesObjectNames = saveClass.spritesObjectNames;
             this.rectTransformsSprites = saveClass.rectTransformsSprites;
-            this.settingsGlobalControl = saveClass.settingsGlobalControl;
             this.videoHelpers = saveClass.videoHelpers;
         }
 
@@ -104,7 +101,6 @@ namespace Engine
                 spritesNames = this.spritesNames,
                 spritesObjectNames = this.spritesObjectNames,
                 rectTransformsSprites = this.rectTransformsSprites,
-                settingsGlobalControl = this.settingsGlobalControl.Clone() as SettingsGlobalControl,
                 videoHelpers = this.videoHelpers,
             };
 

@@ -1,4 +1,12 @@
-﻿{Localization Setting Button(Game Scene)(Localization)
+﻿{ChooseLocalizationWindowName(Choose localization)
+[RU-RU
+Выберите локализацию
+]
+[EN-EN
+Choose localization
+]
+}
+{Localization Setting Button(Game Scene)(Localization)
 [RU-RU
 Локализация
 ]

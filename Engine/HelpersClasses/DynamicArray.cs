@@ -168,7 +168,10 @@ namespace Engine
                 s += value.ToString() + ", ";
             }
 
-            s = s[..^2];
+            if (s.Length > 1)
+            {
+                s = s[..^2];
+            }
 
             s += "]";
 

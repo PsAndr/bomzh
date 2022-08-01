@@ -24,6 +24,7 @@ namespace Engine
             Game,
             StartScene
         }
+
         [SerializeField, HideInInspector] public TypeGlobalControl typeGlobalControl;
 
         [SerializeField] public TextMeshProUGUI text_dialogue;
@@ -69,7 +70,7 @@ namespace Engine
         [HideInInspector] public AudioLoader audioLoader;
         [HideInInspector] public VideoLoader videoLoader;
 
-        [SerializeField] public SettingsGlobalControl settings;
+        [SerializeField, HideInInspector] public SettingsGlobalControl settings;
 
         [HideInInspector] public HandlerCommandScene handlerCommandScene;
         [HideInInspector] public ScreenshotSaverLoader screenshotSaverLoader;
@@ -88,8 +89,13 @@ namespace Engine
             { return isCommandShow; }
         }
 
+        [HideInInspector] public bool isSkiping;
+
         private void Awake()
         {
+            DebugEngine.Clear();
+            DebugEngine.Log("Start");
+
             if (Application.isEditor)
             {
                 SaveStartSceneValues();
@@ -137,6 +143,12 @@ namespace Engine
             }
 
             localization.GetValuesFromSave();
+            settings.LoadFromSave();
+
+            DebugEngine.Log("End start");
+            DebugEngine.Log(this.typeGlobalControl.ToString());
+            DebugEngine.Log(scene_number.ToString());
+            DebugEngine.Log(number_command_scene.ToString());
         }
 
         public void SaveStartSceneValues()
@@ -208,9 +220,9 @@ namespace Engine
             {
                 if (string.IsNullOrEmpty(name))
                 {
-                    foreach (KeyValuePair<int, Scene_class> kvp in this.scenes_Loader.Scenes_dict)
+                    foreach (Pair<int, Scene_class> kvp in this.scenes_Loader.Scenes_dict.GetValues())
                     {
-                        number = kvp.Key;
+                        number = kvp.first;
                         break;
                     }
                 }
@@ -235,11 +247,12 @@ namespace Engine
 
         public void ChangeScene(Save_class saveClass)
         {
+            DebugEngine.Log($"Change scene:\nNumber: {saveClass.scene_number}\nCommand number: {saveClass.number_command_scene}");
             if (saveClass.scene_number == -1)
             {
-                foreach (KeyValuePair<int, Scene_class> kvp in this.scenes_Loader.Scenes_dict)
+                foreach (Pair<int, Scene_class> kvp in this.scenes_Loader.Scenes_dict.GetValues())
                 {
-                    saveClass.scene_number = kvp.Key;
+                    saveClass.scene_number = kvp.first;
                     break;
                 }
             }
@@ -302,15 +315,6 @@ namespace Engine
             this.scene_name = null;
             this.number_command_scene = saveClass.number_command_scene;
 
-            if (saveClass.settingsGlobalControl != null)
-            {
-                this.settings = saveClass.settingsGlobalControl;
-            }
-            else
-            {
-
-            }
-
             this.SceneCommands();
 
             if (!this.handlerCommandScene.IsLookScene)
@@ -321,7 +325,6 @@ namespace Engine
 
         public void NewCommandScene()
         {
-
             if (this.handlerCommandScene.CanDoNextCommand())
             {
                 if (gameObject.GetComponent<TextPrintingClass>().IsInit)
@@ -340,18 +343,26 @@ namespace Engine
 
         private void SceneCommands()
         {
+            DebugEngine.Log($"Make command number: {number_command_scene}");
+            try { Debug.Log(this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length); }
+            catch { DebugEngine.Log("Error to find command"); }
+
             if (number_command_scene >= this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length)
             {
                 number_command_scene = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length;
                 Debug.LogWarning("The end");
+                DebugEngine.Log($"The end");
                 return;
             }
+            DebugEngine.Log("Find command");
 
             Scene_class.DialogueOrChoiceOrCommand command = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene];
 
-            this.isCommandShow[this.scene_number][this.number_command_scene] = true;
-
+            DebugEngine.Log("Start command");
             handlerCommandScene.SetCommand(this, command);
+            DebugEngine.Log("End command");
+
+            this.isCommandShow[this.scene_number][this.number_command_scene] = true;
         }
 
         public GameObject SpawnObject(GameObject prefab, Vector3 position, Vector3 size, Vector3 rotation, string name, Transform parent)
@@ -442,7 +453,6 @@ namespace Engine
         public void SetSceneNowValuesToStartScene()
         {
             this.sceneNow.SetDefault();
-            this.sceneNow.settingsGlobalControl = this.settings;
             this.sceneNow.SetValues(this.sceneStart.sceneNumber, this.sceneStart.sceneName, this.sceneStart.numberCommandScene);
         }
 

@@ -16,7 +16,7 @@ namespace Engine
 
         [SerializeField] private string[] localizations = new string[0];
 
-        private int index;
+        [SerializeField, HideInInspector] private int index;
 
         public Localization(int index, params string[] localizations)
         {

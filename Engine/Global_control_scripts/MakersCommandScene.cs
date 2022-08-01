@@ -20,18 +20,19 @@ namespace Engine
         {
             if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
             {
-                Debug.LogException(new Exception("Don`t get name or number sprite to spawn"));
+                DebugEngine.LogException(new Exception("Don`t get name or number sprite to spawn"));
                 return false;
             }
             else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.spritesLoader.sprites_names.ContainsKey(command.number_obj))
             {
-                Debug.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
+                DebugEngine.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
                 return false;
             }
             else if (string.IsNullOrEmpty(command.name_obj))
             {
                 command.name_obj = global_Control.spritesLoader.sprites_names[command.number_obj];
             }
+
 
             Sprite sprite = global_Control.spritesLoader.sprites[command.name_obj];
 
@@ -95,6 +96,7 @@ namespace Engine
                     hierarchyPosition = Convert.ToInt32(command.dict_values["hierarchyPositionSprite"][0]);
                 }
             }
+            DebugEngine.Log(command.name_obj);
 
             GameObject sprite_obj = global_Control.SpawnObject(global_Control.prefab_sprites, position, size, rotation, name + "___sprite", global_Control.ToSpawnSprite.transform);
             sprite_obj.GetComponent<Image>().sprite = sprite;

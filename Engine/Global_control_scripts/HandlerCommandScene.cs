@@ -17,6 +17,11 @@ namespace Engine
 
         public bool isWaiting; 
 
+        private static class Constants
+        {
+            public static readonly float secondsToWaitInSkiping = 0.2f;
+        }
+
         public HandlerCommandScene()
         {
             IsPrintingText = false;
@@ -114,12 +119,13 @@ namespace Engine
         {
             if (CompareFlags(global_Control, command.needFlags))
             {
+                DebugEngine.Log(command.name_command);
                 switch (command.name_command)
                 {
                     case "changeScene":
                         if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
                         {
-                            Debug.LogException(new Exception("Don`t get name or number scene to change"));
+                            DebugEngine.LogException(new Exception("Don`t get name or number scene to change"));
                             return;
                         }
 
@@ -140,7 +146,7 @@ namespace Engine
                     case "changeFlag":
                         if (string.IsNullOrEmpty(command.name_obj))
                         {
-                            Debug.LogException(new Exception("Don`t get name of flag to change"));
+                            DebugEngine.LogException(new Exception("Don`t get name of flag to change"));
                             return;
                         }
 
@@ -153,7 +159,7 @@ namespace Engine
                         {
                             if (command.dict_values["newValue"].Length == 0 || command.dict_values["newValue"] == null)
                             {
-                                Debug.LogException(new Exception("Don`t get new value to flag"));
+                                DebugEngine.LogException(new Exception("Don`t get new value to flag"));
                                 return;
                             }
                             switch (command.signs["newValue"])
@@ -172,12 +178,12 @@ namespace Engine
                     case "changeBackground":
                         if (command.number_obj == -1 && string.IsNullOrEmpty(command.name_obj))
                         {
-                            Debug.LogException(new Exception("Don`t get name or number background to change"));
+                            DebugEngine.LogException(new Exception("Don`t get name or number background to change"));
                             return;
                         }
                         else if (string.IsNullOrEmpty(command.name_obj) && !global_Control.backgroundsLoader.backgrounds_names.ContainsKey(command.number_obj))
                         {
-                            Debug.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
+                            DebugEngine.LogException(new Exception("Haven`t name background of this number: " + command.number_obj.ToString() + "!"));
                             return;
                         }
                         else if (string.IsNullOrEmpty(command.name_obj))
@@ -187,7 +193,7 @@ namespace Engine
 
                         if (!global_Control.backgroundsLoader.backgrounds.ContainsKey(command.name_obj))
                         {
-                            Debug.LogException(new Exception("Haven`t background of this name: " + command.name_obj + "!"));
+                            DebugEngine.LogException(new Exception("Haven`t background of this name: " + command.name_obj + "!"));
                             return;
                         }
 
@@ -195,17 +201,19 @@ namespace Engine
                         break;
 
                     case "spawnSprite":
+                        DebugEngine.Log("Start spawn sprite");
                         if (!MakersCommandScene.SpawnSprite(global_Control, command))
                         {
-                            Debug.LogWarning(command.name_command);
+                            DebugEngine.LogWarning(command.name_command);
                             return;
                         }
+                        DebugEngine.Log("End spawn sprite");
                         break;
 
                     case "changeSprite":
                         if (!MakersCommandScene.ChangeSprite(global_Control, command))
                         {
-                            Debug.LogWarning(command.name_command);
+                            DebugEngine.LogWarning(command.name_command);
                             return;
                         }
                         break;
@@ -213,7 +221,7 @@ namespace Engine
                     case "deleteSprite":
                         if (!MakersCommandScene.DeleteSprite(global_Control, command))
                         {
-                            Debug.LogWarning(command.name_command);
+                            DebugEngine.LogWarning(command.name_command);
                             return;
                         }
                         break;
@@ -221,7 +229,7 @@ namespace Engine
                     case "playAudio":
                         if (!MakersCommandScene.PlayAudio(global_Control, command))
                         {
-                            Debug.LogWarning(command.name_command);
+                            DebugEngine.LogWarning(command.name_command);
                             return;
                         }
                         break;
@@ -229,7 +237,7 @@ namespace Engine
                     case "changeAudio":
                         if (!MakersCommandScene.ChangeAudio(global_Control, command))
                         {
-                            Debug.LogWarning(command.name_command);
+                            DebugEngine.LogWarning(command.name_command);
                             return;
                         }
                         break;
@@ -237,7 +245,7 @@ namespace Engine
                     case "deleteAudio":
                         if (!MakersCommandScene.DeleteAudio(global_Control, command))
                         {
-                            Debug.LogWarning(command.name_command);
+                            DebugEngine.LogWarning(command.name_command);
                             return;
                         }
                         break;
@@ -245,7 +253,7 @@ namespace Engine
                     case "waitSeconds":
                         if (!MakersCommandScene.WaitSeconds(global_Control, command))
                         {
-                            Debug.LogWarning(command.name_command);
+                            DebugEngine.LogWarning(command.name_command);
                             return;
                         }
                         break;
@@ -253,7 +261,7 @@ namespace Engine
                     case "playVideo":
                         if (!MakersCommandScene.PlayVideo(global_Control, command))
                         {
-                            Debug.LogWarning(command.name_command);
+                            DebugEngine.LogWarning(command.name_command);
                             return;
                         }
                         break;
@@ -261,15 +269,27 @@ namespace Engine
                     case "deleteVideo":
                         if (!MakersCommandScene.DeleteVideo(global_Control, command))
                         {
-                            Debug.LogWarning(command.name_command);
+                            DebugEngine.LogWarning(command.name_command);
                             return;
                         }
                         break;
 
                     default:
-                        Debug.LogException(new Exception("Don`t know this command: " + command.name_command));
+                        DebugEngine.LogException(new Exception("Don`t know this command: " + command.name_command));
                         break;
 
+                }
+            }
+
+            Type[] types = TypesCommandsSkiped.GetTypes(global_Control.settings.TypeSkiping);
+
+            if (global_Control.isSkiping && FindInArray.Find(typeof(Scene_class.Command), ref types) != -1)
+            {
+                bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
+
+                if (!IsStartedFromScene || !TypesCommandsSkiped.GetIsShowedSkip(global_Control.settings.TypeSkiping) || isCommandShow)
+                {
+                    global_Control.waitSceneCommand.StopWait(global_Control);
                 }
             }
 
@@ -281,12 +301,10 @@ namespace Engine
 
         private void HandleDialogue(Global_control global_Control, Scene_class.DialogueText dialogueText)
         {
-            bool flag_to_show = true;
+            DebugEngine.Log("Dialogue start");
+            Type[] types = TypesCommandsSkiped.GetTypes(global_Control.settings.TypeSkiping);
 
-            foreach (Scene_class.NeedFlag needFlag in dialogueText.needFlags)
-            {
-                flag_to_show = flag_to_show && CompareFlag(global_Control, needFlag);
-            }
+            bool flag_to_show = CompareFlags(global_Control, dialogueText.needFlags);
 
             if (!flag_to_show)
             {
@@ -294,8 +312,8 @@ namespace Engine
                 return;
             }
 
-            global_Control.gameObject.GetComponent<TextPrintingClass>().Init(global_Control, global_Control.text_dialogue, 
-                dialogueText.text, global_Control.indexPrint);
+            global_Control.gameObject.GetComponent<TextPrintingClass>().Init(global_Control, global_Control.text_dialogue,
+            dialogueText.text, global_Control.settings.SpeedTextPrinting, global_Control.indexPrint);
 
             global_Control.indexPrint = 0;
 
@@ -303,6 +321,17 @@ namespace Engine
 
             float width_character_text = global_Control.text_dialogue.transform.GetComponent<RectTransform>().sizeDelta.x;
             global_Control.text_character.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(width_character_text, global_Control.text_character.preferredHeight);
+
+            if (global_Control.isSkiping && FindInArray.Find(typeof(Scene_class.DialogueText), ref types) != -1)
+            {
+                bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
+
+                if (!TypesCommandsSkiped.GetIsShowedSkip(global_Control.settings.TypeSkiping) || isCommandShow)
+                {
+                    global_Control.gameObject.GetComponent<TextPrintingClass>().FinishPrinting();
+                    global_Control.waitSceneCommand.StartWait(global_Control, Constants.secondsToWaitInSkiping);
+                }
+            }
         }
 
         private void HandleChoice(Global_control global_Control, Scene_class.ChoiceText choiceText)
@@ -311,13 +340,9 @@ namespace Engine
             int flag_index = 0;
             int index_of_button = 0;
 
-            while (choiceText.needFlags.Length != flag_index)
+            while (choiceText.partsChoice.Length != flag_index)
             {
-                bool flag_to_show = true;
-                foreach (Scene_class.NeedFlag needFlag in choiceText.needFlags[flag_index])
-                {
-                    flag_to_show = flag_to_show && CompareFlag(global_Control, needFlag);
-                }
+                bool flag_to_show = CompareFlags(global_Control, choiceText.partsChoice[flag_index].needFlags);
                 if (flag_to_show)
                 {
                     index_of_button++;
@@ -329,18 +354,15 @@ namespace Engine
             flag_index = 0;
             index_of_button = 0;
 
-            while (choiceText.needFlags.Length != flag_index)
+            while (choiceText.partsChoice.Length != flag_index)
             {
-                bool flag_to_show = true;
-                foreach (Scene_class.NeedFlag needFlag in choiceText.needFlags[flag_index])
-                {
-                    flag_to_show = flag_to_show && CompareFlag(global_Control, needFlag);
-                }
+                bool flag_to_show = CompareFlags(global_Control, choiceText.partsChoice[flag_index].needFlags);
+
                 if (flag_to_show)
                 {
-                    workingButtons.names[index_of_button] = choiceText.choices[flag_index];
-                    workingButtons.changeFlag[index_of_button] = choiceText.changeFlags[flag_index];
-                    workingButtons.commands[index_of_button] = choiceText.commands[flag_index];
+                    workingButtons.names[index_of_button] = choiceText.partsChoice[flag_index].text_choice;
+                    workingButtons.changeFlag[index_of_button] = choiceText.partsChoice[flag_index].changeFlags;
+                    workingButtons.commands[index_of_button] = choiceText.partsChoice[flag_index].commands;
                     index_of_button++;
                 }
                 flag_index++;
@@ -357,6 +379,22 @@ namespace Engine
             }
 
             save_work_choices = workingButtons;
+
+            Type[] types = TypesCommandsSkiped.GetTypes(global_Control.settings.TypeSkiping);
+
+            if (global_Control.isSkiping && FindInArray.Find(typeof(Scene_class.ChoiceText), ref types) != -1)
+            {
+                bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
+
+                if (!TypesCommandsSkiped.GetIsShowedSkip(global_Control.settings.TypeSkiping) || isCommandShow)
+                {
+                    int randomChoice = UnityEngine.Random.Range(0, choiceText.partsChoice.Length - 1);
+
+                    global_Control.waitSceneCommand.StartWait(global_Control, Constants.secondsToWaitInSkiping);
+
+                    On_Click_Choices(global_Control, randomChoice.ToString());
+                }
+            }
         }
         public void On_Click_Choices(Global_control global_Control, string s)
         {

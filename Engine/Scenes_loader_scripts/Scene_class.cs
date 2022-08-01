@@ -31,27 +31,6 @@ namespace Engine
             this.parts_scene = parts_scene;
         }
 
-        public void UpdateAfterLoadingJSON()
-        {
-            foreach (DialogueOrChoiceOrCommand dialogueOrChoiceOrCommand in parts_scene)
-            {
-                switch (dialogueOrChoiceOrCommand.type)
-                {
-                    case 0:
-                        dialogueOrChoiceOrCommand.dialogue.UpdateAfterLoadingJSON();
-                        break;
-
-                    case 1:
-                        dialogueOrChoiceOrCommand.choice.UpdateAfterLoadingJSON();
-                        break;
-
-                    case 2:
-                        dialogueOrChoiceOrCommand.command.UpdateAfterLoadingJSON();
-                        break;
-                }
-            }
-        }
-
         public string SaveToString()
         {
             return JsonUtility.ToJson(this);
@@ -151,23 +130,10 @@ namespace Engine
         [System.Serializable]
         public class ChoiceText // выборы и необходимы значения + команды
         {
-            public NeedFlag[][] needFlags;
-
-            public string[] choices;
-
-            public ChangeFlag[][] changeFlags;
-
-            public Command[][] commands;
-
             public PartChoice[] partsChoice;
 
             public ChoiceText(NeedFlag[][] needFlags, string[] choices, ChangeFlag[][] changeFlags, Command[][] commands)
             {
-                this.needFlags = needFlags;
-                this.choices = choices;
-                this.changeFlags = changeFlags;
-                this.commands = commands;
-
                 this.partsChoice = new PartChoice[choices.Length];
 
                 for (int i = 0; i < choices.Length; i++)
@@ -176,20 +142,9 @@ namespace Engine
                 }
             }
 
-            public void UpdateAfterLoadingJSON()
+            public ChoiceText(PartChoice[] partsChoice)
             {
-                this.needFlags = new NeedFlag[this.partsChoice.Length][];
-                this.choices = new string[this.partsChoice.Length];
-                this.changeFlags = new ChangeFlag[this.partsChoice.Length][];
-                this.commands = new Command[this.partsChoice.Length][];
-
-                for (int i = 0; i < this.partsChoice.Length; i++)
-                {
-                    this.needFlags[i] = this.partsChoice[i].needFlags;
-                    this.choices[i] = this.partsChoice[i].text_choice;
-                    this.changeFlags[i] = this.partsChoice[i].changeFlags;
-                    this.commands[i] = this.partsChoice[i].commands;
-                }
+                this.partsChoice = partsChoice;
             }
         }
 
@@ -248,18 +203,14 @@ namespace Engine
             public string name_obj;
             public int number_obj;
 
-            public Dictionary<string, double[]> dict_values;
-            public Dictionary<string, string[]> dict_values_str;
+            public MyDictionary<string, double[]> dict_values;
+            public MyDictionary<string, string[]> dict_values_str;
 
-            public Dictionary<string, char> signs;
-
-            public DictionaryToTwoArrays<string, WorkWithJSON_mass<double>> values_arrays;
-            public DictionaryToTwoArrays<string, WorkWithJSON_mass<string>> values_str_arrays;
-            public DictionaryToTwoArrays<string, char> signs_arrays;
+            public MyDictionary<string, char> signs;
 
             public NeedFlag[] needFlags;
 
-            public Command(string name_command, string name_obj, int number_obj, Dictionary<string, double[]> dict_values, Dictionary<string, string[]> dict_values_str,
+            public Command(string name_command, string name_obj, int number_obj, MyDictionary<string, double[]> dict_values, MyDictionary<string, string[]> dict_values_str,
                 Dictionary<string, char> signs, NeedFlag[] needFlags)
             {
                 this.name_command = name_command;
@@ -269,73 +220,7 @@ namespace Engine
                 this.dict_values_str = dict_values_str;
                 this.signs = signs;
 
-                Dictionary<string, WorkWithJSON_mass<double>> dict_valuesJSON = new Dictionary<string, WorkWithJSON_mass<double>>();
-                Dictionary<string, WorkWithJSON_mass<string>> dict_values_strJSON = new Dictionary<string, WorkWithJSON_mass<string>>();
-
-                foreach (KeyValuePair<string, double[]> kvp in dict_values)
-                {
-                    dict_valuesJSON.Add(kvp.Key, new WorkWithJSON_mass<double>(kvp.Value));
-                }
-                foreach (KeyValuePair<string, string[]> kvp in dict_values_str)
-                {
-                    dict_values_strJSON.Add(kvp.Key, new WorkWithJSON_mass<string>(kvp.Value));
-                }
-
-                this.values_arrays = new DictionaryToTwoArrays<string, WorkWithJSON_mass<double>>(dict_valuesJSON);
-                this.values_str_arrays = new DictionaryToTwoArrays<string, WorkWithJSON_mass<string>>(dict_values_strJSON);
-                this.signs_arrays = new DictionaryToTwoArrays<string, char>(signs);
                 this.needFlags = needFlags;
-            }
-
-            public Command(string name_command, string name_obj, int number_obj, DictionaryToTwoArrays<string, WorkWithJSON_mass<double>> values_arrays,
-                DictionaryToTwoArrays<string, WorkWithJSON_mass<string>> values_str_arrays, DictionaryToTwoArrays<string, char> signs_arrays,
-                NeedFlag[] needFlags)
-            {
-                this.name_command = name_command;
-                this.name_obj = name_obj;
-                this.number_obj = number_obj;
-
-                Dictionary<string, WorkWithJSON_mass<double>> dict_values = values_arrays.ConvertToDictionary();
-                Dictionary<string, WorkWithJSON_mass<string>> dict_values_str = values_str_arrays.ConvertToDictionary();
-
-                this.dict_values = new Dictionary<string, double[]>();
-                this.dict_values_str = new Dictionary<string, string[]>();
-
-                foreach (KeyValuePair<string, WorkWithJSON_mass<double>> kvp in dict_values)
-                {
-                    this.dict_values.Add(kvp.Key, kvp.Value.GetItem());
-                }
-                foreach (KeyValuePair<string, WorkWithJSON_mass<string>> kvp in dict_values_str)
-                {
-                    this.dict_values_str.Add(kvp.Key, kvp.Value.GetItem());
-                }
-
-                this.signs = signs_arrays.ConvertToDictionary();
-
-                this.values_arrays = values_arrays;
-                this.values_str_arrays = values_str_arrays;
-                this.signs_arrays = signs_arrays;
-                this.needFlags = needFlags;
-            }
-
-            public void UpdateAfterLoadingJSON()
-            {
-                Dictionary<string, WorkWithJSON_mass<double>> dict_values = this.values_arrays.ConvertToDictionary();
-                Dictionary<string, WorkWithJSON_mass<string>> dict_values_str = this.values_str_arrays.ConvertToDictionary();
-
-                this.dict_values = new Dictionary<string, double[]>();
-                this.dict_values_str = new Dictionary<string, string[]>();
-
-                foreach (KeyValuePair<string, WorkWithJSON_mass<double>> kvp in dict_values)
-                {
-                    this.dict_values.Add(kvp.Key, kvp.Value.GetItem());
-                }
-                foreach (KeyValuePair<string, WorkWithJSON_mass<string>> kvp in dict_values_str)
-                {
-                    this.dict_values_str.Add(kvp.Key, kvp.Value.GetItem());
-                }
-
-                this.signs = signs_arrays.ConvertToDictionary();
             }
         }
     }

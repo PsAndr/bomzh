@@ -183,7 +183,7 @@ namespace Engine
                 Save_class newSave = new Save_class(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second, 
                     this.global_Control.Flags, saveClasses, this.global_Control.background.sprite.name, 
                     textPrintingClass.GetProgress(), global_Control.text_dialogue.text, global_Control.text_character.text, 
-                    spritesNames.ToArray(), spritesNamesObjects.ToArray(), rectTransformsSprites.ToArray(), this.global_Control.settings, saveClassesVideo);
+                    spritesNames.ToArray(), spritesNamesObjects.ToArray(), rectTransformsSprites.ToArray(), saveClassesVideo);
 
                 this.nameSave = newSave.name_save;
                 this.name_save.text = newSave.name_save;
@@ -212,7 +212,7 @@ namespace Engine
                 Save_class.Load(this.nameSave).Change(this.global_Control.GetSceneValues().first, this.global_Control.GetSceneValues().second,
                     this.global_Control.Flags, saveClasses, this.global_Control.background.sprite.name,
                     textPrintingClass.GetProgress(), global_Control.text_dialogue.text, global_Control.text_character.text, 
-                    spritesNames.ToArray(), spritesNamesObjects.ToArray(), rectTransformsSprites.ToArray(), this.global_Control.settings, saveClassesVideo);
+                    spritesNames.ToArray(), spritesNamesObjects.ToArray(), rectTransformsSprites.ToArray(), saveClassesVideo);
 
                 Debug.Log(Application.persistentDataPath);
             }
