@@ -14,6 +14,8 @@ namespace Engine
         private void OnEnable()
         {
             valuesGetFrom = serializedObject.FindProperty("valuesGetFrom");
+
+            CheckButton();
         }
 
         public override void OnInspectorGUI()
@@ -29,7 +31,16 @@ namespace Engine
                 EditorGUILayout.PropertyField(valuesGetFrom);
             }
 
+            CheckButton();
+
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void CheckButton()
+        {
+            ChooseOpenButton script = (ChooseOpenButton)target;
+
+            script.CheckButton();
         }
     }
 }

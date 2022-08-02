@@ -19,11 +19,19 @@ namespace Engine
 
         [SerializeField] private ChooseWindow chooseWindow;
         
+        [SerializeField] public Button button;
+        
         [SerializeField, HideInInspector] private Object valuesGetFrom;
 
         [SerializeField] private TextMeshProUGUI nameWindow;
 
         [SerializeField] public TypeChooseOpenButton typeChooseOpenButton;
+
+        private void Awake()
+        {
+            CheckButton();
+            button.onClick.AddListener(OpenChooseWindow);
+        }
 
         public void OpenChooseWindow()
         {
@@ -69,6 +77,29 @@ namespace Engine
 
                 default:
                     return;
+            }
+        }
+
+        public void CheckButton()
+        {
+            if (this.button == null)
+            {
+                this.button = GetComponent<Button>();
+            }
+
+            if (this.button == null)
+            {
+                this.button = GetComponentInChildren<Button>();
+            }
+
+            if (this.button == null)
+            {
+                this.button = GetComponentInParent<Button>();
+            }
+
+            if (this.button == null)
+            {
+                this.button = FindObjectOfType<Button>();
             }
         }
     }

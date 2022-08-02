@@ -283,7 +283,7 @@ namespace Engine
 
             Type[] types = TypesCommandsSkiped.GetTypes(global_Control.settings.TypeSkiping);
 
-            if (global_Control.isSkiping && FindInArray.Find(typeof(Scene_class.Command), ref types) != -1)
+            if (global_Control.IsSkiping && FindInArray.Find(typeof(Scene_class.Command), ref types) != -1)
             {
                 bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
 
@@ -322,7 +322,7 @@ namespace Engine
             float width_character_text = global_Control.text_dialogue.transform.GetComponent<RectTransform>().sizeDelta.x;
             global_Control.text_character.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(width_character_text, global_Control.text_character.preferredHeight);
 
-            if (global_Control.isSkiping && FindInArray.Find(typeof(Scene_class.DialogueText), ref types) != -1)
+            if (global_Control.IsSkiping && FindInArray.Find(typeof(Scene_class.DialogueText), ref types) != -1)
             {
                 bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
 
@@ -382,7 +382,7 @@ namespace Engine
 
             Type[] types = TypesCommandsSkiped.GetTypes(global_Control.settings.TypeSkiping);
 
-            if (global_Control.isSkiping && FindInArray.Find(typeof(Scene_class.ChoiceText), ref types) != -1)
+            if (global_Control.IsSkiping && FindInArray.Find(typeof(Scene_class.ChoiceText), ref types) != -1)
             {
                 bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
 

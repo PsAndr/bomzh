@@ -89,7 +89,19 @@ namespace Engine
             { return isCommandShow; }
         }
 
-        [HideInInspector] public bool isSkiping;
+        [HideInInspector] private bool isSkiping;
+        public bool IsSkiping 
+        {
+            get { return isSkiping; }
+            set 
+            { 
+                isSkiping = value;
+                if (value)
+                {
+                    NewCommandScene();
+                }
+            }
+        }
 
         private void Awake()
         {

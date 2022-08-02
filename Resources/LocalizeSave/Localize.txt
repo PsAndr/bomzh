@@ -1,9 +1,9 @@
-﻿{ChooseLocalizationWindowName(Choose localization)
+﻿{SkipTextTypeChangeButton(Skip text)
 [RU-RU
-Выберите локализацию
+Пропуск текста
 ]
 [EN-EN
-Choose localization
+Skip text
 ]
 }
 {Localization Setting Button(Game Scene)(Localization)
@@ -20,6 +20,14 @@ Localization
 ]
 [EN-EN
 Save
+]
+}
+{ChooseLocalizationWindowName(Choose localization)
+[RU-RU
+Выберите локализацию
+]
+[EN-EN
+Choose localization
 ]
 }
 {SettingMenuButton(Setting)
