@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Engine.WorkWithRectTransform;
-using WorkWithDictionary;
 
 namespace Engine
 {
@@ -16,7 +15,7 @@ namespace Engine
         [SerializeField] public AudioHelper.SaveClass[] audioHelpers;
         [SerializeField] public VideoHelper.SaveClass[] videoHelpers;   
 
-        [SerializeField] public DictionaryToTwoArrays<string, int> flags;
+        [SerializeField] public MyDictionary<string, int> flags;
         [SerializeField] public int indexPrint;
 
         [SerializeField] public string textOnSceneDialogue;

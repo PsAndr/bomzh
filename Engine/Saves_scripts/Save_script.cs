@@ -4,19 +4,27 @@ using UnityEngine;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System;
-using WorkWithDictionary;
+using Engine.WorkWithDictionary;
 using Engine.WorkWithRectTransform;
+using UnityEngine.UI;
+using Engine.Files;
 
 namespace Engine
 {
     [System.Serializable]
     public class Save_class
     {
+        private static class Constants
+        {
+            public static readonly string pathSave = Application.persistentDataPath + "/Saves/";
+            public static readonly string pathAutoSave = Application.persistentDataPath + "/AutoSaves/";
+        }
+
         public string name_save;
 
         public int scene_number;
         public int number_command_scene;
-        public DictionaryToTwoArrays<string, int> flags;
+        public MyDictionary<string, int> flags;
         public AudioHelper.SaveClass[] audioHelpers;
         public VideoHelper.SaveClass[] videoHelpers;
 
@@ -35,86 +43,60 @@ namespace Engine
         
         }
 
-        public Save_class(string name_save, int scene_number, int number_command_scene, DictionaryToTwoArrays<string, int> flags)
+        private void PasteValuesFromGlobalControl(Global_control global_Control)
         {
-            this.name_save = name_save;
-            this.scene_number = scene_number;
-            this.number_command_scene = number_command_scene;
-            this.flags = flags;
+            AudioHelper[] audioHelpers = global_Control.audioHandler.gameObject.GetComponents<AudioHelper>();
+            AudioHelper.SaveClass[] saveClasses = new AudioHelper.SaveClass[audioHelpers.Length];
 
-            this.WorkAfterInit();
+            for (int i = 0; i < audioHelpers.Length; i++)
+            {
+                saveClasses[i] = audioHelpers[i].GetSave();
+            }
+
+            VideoHelper[] videoHelpers = global_Control.videoHandler.gameObject.GetComponents<VideoHelper>();
+            VideoHelper.SaveClass[] saveClassesVideo = new VideoHelper.SaveClass[videoHelpers.Length];
+
+            for (int i = 0; i < videoHelpers.Length; i++)
+            {
+                saveClassesVideo[i] = videoHelpers[i].GetSave();
+            }
+
+            Array.Sort(saveClassesVideo);
+
+            Image[] sprites = global_Control.ToSpawnSprite.GetComponentsInChildren<Image>();
+            List<string> spritesNames = new();
+            List<string> spritesNamesObjects = new();
+            List<RectTransformSaveValuesSerializable> rectTransformsSprites = new();
+
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                if (sprites[i].gameObject.name.Split("___").Length > 1 && sprites[i].gameObject.name.Split("___")[1] == "sprite")
+                {
+                    spritesNames.Add(sprites[i].sprite.name);
+                    spritesNamesObjects.Add(sprites[i].gameObject.name);
+                    rectTransformsSprites.Add(new RectTransformSaveValuesSerializable(sprites[i].gameObject.GetComponent<RectTransform>()));
+                }
+            }
+
+            TextPrintingClass textPrintingClass = global_Control.gameObject.GetComponent<TextPrintingClass>();
+
+            this.scene_number = global_Control.GetSceneValues().first;
+            this.number_command_scene = global_Control.GetSceneValues().second;
+            this.flags = global_Control.Flags;
+            this.audioHelpers = saveClasses;
+            this.nameBackground = global_Control.background.sprite.name;
+            this.indexPrint = textPrintingClass.GetProgress();
+            this.textOnSceneDialogue = global_Control.text_dialogue.text;
+            this.textOnSceneCharacter = global_Control.text_character.text;
+            this.spritesNames = spritesNames.ToArray();
+            this.spritesObjectNames = spritesNamesObjects.ToArray();
+            this.rectTransformsSprites = rectTransformsSprites.ToArray();
+            this.videoHelpers = saveClassesVideo;
         }
 
-        public Save_class(string name_save, int scene_number, int number_command_scene, Dictionary<string, int> flags)
+        public Save_class(Global_control global_Control)
         {
-            this.name_save = name_save;
-            this.scene_number = scene_number;
-            this.number_command_scene = number_command_scene;
-            this.flags = new DictionaryToTwoArrays<string, int>(flags);
-
-            this.WorkAfterInit();
-        }
-
-        public Save_class(int scene_number, int number_command_scene, Dictionary<string, int> flags)
-        {
-            this.name_save = DateTime.Now.ToString();
-            this.scene_number = scene_number;
-            this.number_command_scene = number_command_scene;
-            this.flags = new DictionaryToTwoArrays<string, int>(flags);
-
-            this.WorkAfterInit();
-        }
-
-        public Save_class(int scene_number, int number_command_scene, Dictionary<string, int> flags, AudioHelper.SaveClass[] audioHelpers)
-        {
-            this.name_save = DateTime.Now.ToString();
-            this.scene_number = scene_number;
-            this.number_command_scene = number_command_scene;
-            this.flags = new DictionaryToTwoArrays<string, int>(flags);
-            this.audioHelpers = audioHelpers;
-
-            this.WorkAfterInit();
-        }
-
-        /*public Save_class(int scene_number, int number_command_scene, Dictionary<string, int> flags, AudioHelper.SaveClass[] audioHelpers, string nameBackground)
-        {
-            this.name_save = DateTime.Now.ToString();
-            this.scene_number = scene_number;
-            this.number_command_scene = number_command_scene;
-            this.flags = new DictionaryToTwoArrays<string, int>(flags);
-            this.audioHelpers = audioHelpers;
-            this.nameBackground = nameBackground;
-
-            this.WorkAfterInit();
-        }*/
-
-        public Save_class(int scene_number, int number_command_scene, Dictionary<string, int> flags, AudioHelper.SaveClass[] audioHelpers, 
-            string nameBackground, int indexPrint, string textOnSceneDialogue, string textOnSceneCharacter, string[] spritesNames, string[] spritesObjectNames,
-            RectTransformSaveValuesSerializable[] rectTransformsSprites, VideoHelper.SaveClass[] videoHelpers)
-        {
-            this.name_save = DateTime.Now.ToString();
-            this.scene_number = scene_number;
-            this.number_command_scene = number_command_scene;
-            this.flags = new DictionaryToTwoArrays<string, int>(flags);
-            this.audioHelpers = audioHelpers;
-            this.nameBackground = nameBackground;
-            this.indexPrint = indexPrint;
-            this.textOnSceneDialogue = textOnSceneDialogue;
-            this.textOnSceneCharacter = textOnSceneCharacter;
-            this.spritesNames = spritesNames;
-            this.rectTransformsSprites = rectTransformsSprites;
-            this.spritesObjectNames = spritesObjectNames;
-            this.videoHelpers = videoHelpers;
-
-            this.WorkAfterInit();
-        }
-
-        public Save_class(int scene_number, int number_command_scene, DictionaryToTwoArrays<string, int> flags)
-        {
-            this.name_save = DateTime.Now.ToString();
-            this.scene_number = scene_number;
-            this.number_command_scene = number_command_scene;
-            this.flags = flags;
+            this.PasteValuesFromGlobalControl(global_Control);
 
             this.WorkAfterInit();
         }
@@ -154,7 +136,8 @@ namespace Engine
 
         private void save()
         {
-            string path = Application.persistentDataPath + "/Saves/" + this.name_save + ".save";
+            WorkWithFiles.CheckDirectory(Constants.pathSave);
+            string path = Constants.pathSave + this.name_save + ".save";
 
             BinaryFormatter bf = new BinaryFormatter();
             FileStream fs = new FileStream(path, FileMode.Create);
@@ -167,7 +150,8 @@ namespace Engine
 
         private void load()
         {
-            string path = Application.persistentDataPath + "/Saves/" + this.name_save + ".save";
+            WorkWithFiles.CheckDirectory(Constants.pathSave);
+            string path = Constants.pathSave + this.name_save + ".save";
 
             BinaryFormatter bf = new BinaryFormatter();
             FileStream fs = new FileStream(path, FileMode.Open);
@@ -191,55 +175,33 @@ namespace Engine
 
         private void delete()
         {
-            File.Delete(Application.persistentDataPath + "/Saves/" + this.name_save + ".save");
+            File.Delete(Constants.pathSave + this.name_save + ".save");
         }
 
-        public void Change(int scene_number, int number_command_scene, Dictionary<string, int> flags)
+        private void AutoSave()
         {
-            this.scene_number = scene_number;
-            this.number_command_scene = number_command_scene;
-            this.flags = new DictionaryToTwoArrays<string, int>(flags);
+            WorkWithFiles.CheckDirectory(Constants.pathAutoSave);
+            string path = Constants.pathAutoSave + this.name_save + ".save";
 
-            this.save();
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream fs = new FileStream(path, FileMode.Create);
+            bf.Serialize(fs, this);
+            fs.Close();
         }
 
-        public void Change(int scene_number, int number_command_scene, Dictionary<string, int> flags, AudioHelper.SaveClass[] audioHelpers)
+        public static void MakeAutoSave(Global_control global_Control, string nameAutoSave = "AutoSave")
         {
-            this.scene_number = scene_number;
-            this.number_command_scene = number_command_scene;
-            this.flags = new DictionaryToTwoArrays<string, int>(flags);
-            this.audioHelpers = audioHelpers;
+            Save_class autoSave = new();
 
-            this.save();
+            autoSave.PasteValuesFromGlobalControl(global_Control);
+            autoSave.name_save = nameAutoSave;
+
+            autoSave.AutoSave();
         }
 
-        /*public void Change(int scene_number, int number_command_scene, Dictionary<string, int> flags, AudioHelper.SaveClass[] audioHelpers, string nameBackground)
+        public void Change(Global_control global_Control)
         {
-            this.scene_number = scene_number;
-            this.number_command_scene = number_command_scene;
-            this.flags = new DictionaryToTwoArrays<string, int>(flags);
-            this.audioHelpers = audioHelpers;
-            this.nameBackground = nameBackground;
-
-            this.save();
-        }*/
-
-        public void Change(int scene_number, int number_command_scene, Dictionary<string, int> flags, AudioHelper.SaveClass[] audioHelpers,
-            string nameBackground, int indexPrint, string textOnSceneDialogue, string textOnSceneCharacter, string[] spritesNames, string[] spritesObjectNames,
-            RectTransformSaveValuesSerializable[] rectTransformsSprites, VideoHelper.SaveClass[] videoHelpers)
-        {
-            this.scene_number = scene_number;
-            this.number_command_scene = number_command_scene;
-            this.flags = new DictionaryToTwoArrays<string, int>(flags);
-            this.audioHelpers = audioHelpers;
-            this.nameBackground = nameBackground;
-            this.indexPrint = indexPrint;
-            this.textOnSceneDialogue = textOnSceneDialogue;
-            this.textOnSceneCharacter = textOnSceneCharacter;
-            this.spritesNames = spritesNames;
-            this.spritesObjectNames = spritesObjectNames;
-            this.rectTransformsSprites = rectTransformsSprites;
-            this.videoHelpers = videoHelpers;
+            this.PasteValuesFromGlobalControl(global_Control);
 
             this.save();
         }
@@ -260,16 +222,24 @@ namespace Engine
             delete();
             new Save_list_names().RemoveName(this.name_save);
         }
+
+        public void Save()
+        {
+            WorkAfterInit();
+        }
     }
 
     public class Save_list_names
     {
         public string[] list_names;
 
-        private string path = Application.persistentDataPath + "/list_names_saves.save";
+        private static readonly string path = Application.persistentDataPath + "/list_names_saves.save";
 
         public Save_list_names(bool firstInit = false)
         {
+            WorkWithFiles.CheckDirectory(path);
+            WorkWithFiles.CheckDirectory(Application.persistentDataPath + "/Saves");
+
             if (!File.Exists(path))
             {
                 list_names = new string[0];
@@ -388,6 +358,8 @@ namespace Engine
 
         public ScreenshotSaverLoader()
         {
+            WorkWithFiles.CheckDirectory(path);
+
             screenshots = new Dictionary<string, Sprite>();
             Save_list_names save_List_Names = new Save_list_names();
             foreach (string name in save_List_Names.list_names)

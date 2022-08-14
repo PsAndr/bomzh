@@ -25,6 +25,12 @@ namespace Engine
             StartScene
         }
 
+        private static class Constants
+        {
+            public static readonly float deltaSecondsAutoSave = 5 * 60f;
+            public const int countCommandsPerSecond = 5;
+        }
+
         [SerializeField, HideInInspector] public TypeGlobalControl typeGlobalControl;
 
         [SerializeField] public TextMeshProUGUI text_dialogue;
@@ -103,6 +109,8 @@ namespace Engine
             }
         }
 
+        [HideInInspector] private int bufferChangeCommand = 0;
+
         private void Awake()
         {
             DebugEngine.Clear();
@@ -157,6 +165,8 @@ namespace Engine
             localization.GetValuesFromSave();
             settings.LoadFromSave();
 
+            this.bufferChangeCommand = 0;
+
             DebugEngine.Log("End start");
             DebugEngine.Log(this.typeGlobalControl.ToString());
             DebugEngine.Log(scene_number.ToString());
@@ -180,6 +190,7 @@ namespace Engine
 
         public void LoadCommandIsShow()
         {
+            print(this.scenes_Loader.Scenes_dict.ToString());
             this.isCommandShow = IsCommandShowSaverLoader.Load(this.scenes_Loader.Scenes_dict);
         }
 
@@ -199,12 +210,18 @@ namespace Engine
             if (this.typeGlobalControl == TypeGlobalControl.Game)
             {
                 this.ChangeScene(this.sceneNow.GetAllValues());
+                StartCoroutine(this.AutoSave());
             }
         }
 
         void Update()
         {
             this.CheckObjectsStopLookScene();
+
+            for (int i = 0; i < Constants.countCommandsPerSecond; i++)
+            {
+                this.PlayNewCommandScene();
+            }
         }
 
         private void CheckObjectsStopLookScene()
@@ -271,7 +288,7 @@ namespace Engine
 
             if (saveClass.flags != null)
             {
-                this.Flags = saveClass.flags.ConvertToDictionary();
+                this.Flags = saveClass.flags;
             }
             else
             {
@@ -337,6 +354,16 @@ namespace Engine
 
         public void NewCommandScene()
         {
+            this.bufferChangeCommand++;
+        }
+
+        private void PlayNewCommandScene()
+        {
+            if (this.bufferChangeCommand < 1)
+            {
+                return;
+            }
+
             if (this.handlerCommandScene.CanDoNextCommand())
             {
                 if (gameObject.GetComponent<TextPrintingClass>().IsInit)
@@ -351,6 +378,7 @@ namespace Engine
             {
                 gameObject.GetComponent<TextPrintingClass>().FinishPrinting();
             }
+            this.bufferChangeCommand--;
         }
 
         private void SceneCommands()
@@ -442,8 +470,8 @@ namespace Engine
 
         public void MakeScreenshot(string path)
         {
-            GameObject camera = new GameObject("camera___for___screenshot");
-            GameObject canvas = new GameObject("canvas___for___screenshot");
+            GameObject camera = new GameObject("___camera___for___screenshot___");
+            GameObject canvas = new GameObject("___canvas___for___screenshot___");
 
             camera.SetActive(true);
             canvas.SetActive(true);
@@ -453,8 +481,8 @@ namespace Engine
 
         public void MakeScreenshot(string path, string nameSave)
         {
-            GameObject camera = new GameObject("camera___for___screenshot");
-            GameObject canvas = new GameObject("canvas___for___screenshot");
+            GameObject camera = new GameObject("___camera___for___screenshot___");
+            GameObject canvas = new GameObject("___canvas___for___screenshot___");
 
             camera.SetActive(true);
             canvas.SetActive(true);
@@ -599,6 +627,17 @@ namespace Engine
         public T[] FindAllObjectsOfType<T>() where T : UnityEngine.Object
         {
             return FindObjectsOfType<T>(true);
+        }
+
+        private IEnumerator AutoSave()
+        {
+            while (true) 
+            {
+                this.SaveCommandIsShow();
+                Save_class.MakeAutoSave(this);
+                DebugEngine.Log("Auto save comlete!");
+                yield return new WaitForSeconds(Constants.deltaSecondsAutoSave);
+            }
         }
     }
 }

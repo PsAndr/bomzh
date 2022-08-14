@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Engine.WorkWithJSON;
+using Engine.WorkWithDictionary;
 using System;
 
 namespace Engine 
@@ -69,6 +70,17 @@ namespace Engine
             }
         }
 
+        public MyDictionary(DictionaryToTwoArrays<TKey, TValue> dictionaryToTwoArrays)
+        {
+            values = new ValueClass[defaultSize];
+            count = 0;
+            countWithDelete = 0;
+            for (int i = 0; i < dictionaryToTwoArrays.keys.Length; i++)
+            {
+                this.Add(dictionaryToTwoArrays.keys[i], dictionaryToTwoArrays.values[i]);
+            }
+        }
+
         public MyDictionary(params Pair<TKey, TValue>[] items)
         {
             values = new ValueClass[defaultSize];
@@ -104,8 +116,18 @@ namespace Engine
             return dictionary;
         }
 
+        public static implicit operator DictionaryToTwoArrays<TKey, TValue>(MyDictionary<TKey, TValue> myDictionary)
+        {
+            return new DictionaryToTwoArrays<TKey, TValue>(myDictionary);
+        }
+
         private Pair<int, int> GetHashFromHashCode(int hash)
         {
+            if (values == null || values.Length == 0)
+            {
+                values = new ValueClass[defaultSize];
+            }
+
             int toReturn = 0;
             int toReturn2 = 0;
 
@@ -366,7 +388,7 @@ namespace Engine
             List<Pair<TKey, TValue>> toReturn = new();
             foreach (ValueClass valueClass in values)
             {
-                if (valueClass != null && !valueClass.isDeleted && valueClass.Key != null)
+                if (valueClass != null && !valueClass.isDeleted && valueClass.Key != null && valueClass.Value != null)
                 {
                     toReturn.Add((valueClass.Key, valueClass.Value));
                 }
@@ -379,7 +401,7 @@ namespace Engine
             List<TValue> toReturn = new();
             foreach (ValueClass valueClass in values)
             {
-                if (valueClass != null && !valueClass.isDeleted)
+                if (valueClass != null && !valueClass.isDeleted && valueClass.Key != null && valueClass.Value != null)
                 {
                     toReturn.Add(valueClass.Value);
                 }

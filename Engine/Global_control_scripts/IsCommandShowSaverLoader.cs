@@ -36,7 +36,30 @@ namespace Engine
                 FileStream fs = new FileStream(Constants.path, FileMode.Open);
                 BinaryFormatter bf = new BinaryFormatter();
 
-                MyDictionary<int, bool[]> toReturn = (MyDictionary<int, bool[]>)bf.Deserialize(fs);
+                MyDictionary<int, bool[]> toReturnWithoutUpdate = (MyDictionary<int, bool[]>)bf.Deserialize(fs);
+                MyDictionary<int, bool[]> toReturn = new();
+
+                fs.Close();
+
+                foreach (var kvp in scenes.GetValues())
+                {
+                    toReturn[kvp.first] = new bool[kvp.second.parts_scene.Length];
+
+                    for (int i = 0; i < kvp.second.parts_scene.Length; i++)
+                    {
+                        toReturn[kvp.first][i] = false;
+                    }
+
+                    if (toReturnWithoutUpdate.ContainsKey(kvp.first))
+                    {
+                        for (int i = 0; i < Mathf.Min(toReturn[kvp.first].Length, toReturnWithoutUpdate[kvp.first].Length); i++)
+                        {
+                            toReturn[kvp.first][i] = toReturnWithoutUpdate[kvp.first][i];
+                        }
+                    }
+                }
+
+                Save(toReturn);
 
                 return toReturn;
             }
