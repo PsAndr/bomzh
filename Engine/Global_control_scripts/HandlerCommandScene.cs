@@ -35,7 +35,6 @@ namespace Engine
         {
             bool flag = true;
 
-            flag = flag && !this.IsPrintingText;
             flag = flag && !this.flag_check_choice;
             flag = flag && this.IsLookScene;
             flag = flag && !this.isWaiting;
@@ -343,6 +342,7 @@ namespace Engine
             while (choiceText.partsChoice.Length != flag_index)
             {
                 bool flag_to_show = CompareFlags(global_Control, choiceText.partsChoice[flag_index].needFlags);
+
                 if (flag_to_show)
                 {
                     index_of_button++;
@@ -396,6 +396,7 @@ namespace Engine
                 }
             }
         }
+
         public void On_Click_Choices(Global_control global_Control, string s)
         {
             int num_of_but = Convert.ToInt32(s);
@@ -465,6 +466,8 @@ namespace Engine
             {
                 global_Control.Flags.Add(flag.name, 0);
             }
+            Debug.Log(global_Control.Flags[flag.name]);
+            Debug.Log(flag.ToString());
 
             switch (flag.compare_sign)
             {
@@ -488,29 +491,7 @@ namespace Engine
 
             foreach (Scene_class.NeedFlag flag in flags)
             {
-                if (!global_Control.Flags.ContainsKey(flag.name))
-                {
-                    global_Control.Flags.Add(flag.name, 0);
-                }
-
-                switch (flag.compare_sign)
-                {
-                    case '=':
-                        isCompare = isCompare && global_Control.Flags[flag.name] == flag.value;
-                        break;
-
-                    case '>':
-                        isCompare = isCompare && global_Control.Flags[flag.name] > flag.value;
-                        break;
-
-                    case '<':
-                        isCompare = isCompare && global_Control.Flags[flag.name] < flag.value;
-                        break;
-
-                    default:
-                        isCompare = isCompare && false;
-                        break;
-                }
+                isCompare = isCompare && CompareFlag(global_Control, flag);
             }
 
             return isCompare;

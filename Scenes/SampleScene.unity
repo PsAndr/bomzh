@@ -1026,9 +1026,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 519420033}
-        m_TargetAssemblyTypeName: Global_control, Assembly-CSharp
+        m_TargetAssemblyTypeName: Engine.Global_control, Assembly-CSharp
         m_MethodName: NewCommandScene
-        m_Mode: 1
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

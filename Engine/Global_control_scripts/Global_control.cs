@@ -288,11 +288,11 @@ namespace Engine
 
             if (saveClass.flags != null)
             {
-                this.Flags = saveClass.flags;
+                this.Flags = (MyDictionary<string, int>)saveClass.flags.Clone();
             }
             else
             {
-                this.Flags = new Dictionary<string, int>();
+                this.Flags = new MyDictionary<string, int>();
             }
 
             if (!string.IsNullOrEmpty(saveClass.nameBackground))
@@ -352,9 +352,12 @@ namespace Engine
             }
         }
 
-        public void NewCommandScene()
+        public void NewCommandScene(bool ignoreOtherCommands = true)
         {
-            this.bufferChangeCommand++;
+            if (ignoreOtherCommands || this.handlerCommandScene.CanDoNextCommand())
+            {
+                this.bufferChangeCommand++;
+            }
         }
 
         private void PlayNewCommandScene()
@@ -366,19 +369,24 @@ namespace Engine
 
             if (this.handlerCommandScene.CanDoNextCommand())
             {
-                if (gameObject.GetComponent<TextPrintingClass>().IsInit)
+                if (this.handlerCommandScene.IsPrintingText)
                 {
-                    gameObject.GetComponent<TextPrintingClass>().StopPrinting();
+                    gameObject.GetComponent<TextPrintingClass>().FinishPrinting();
+                }
+                else
+                {
+
+                    if (gameObject.GetComponent<TextPrintingClass>().IsInit)
+                    {
+                        gameObject.GetComponent<TextPrintingClass>().StopPrinting();
+                    }
+
+                    this.number_command_scene++;
+                    this.SceneCommands();
                 }
 
-                this.number_command_scene++;
-                this.SceneCommands();
+                this.bufferChangeCommand--;
             }
-            else if (this.handlerCommandScene.IsPrintingText)
-            {
-                gameObject.GetComponent<TextPrintingClass>().FinishPrinting();
-            }
-            this.bufferChangeCommand--;
         }
 
         private void SceneCommands()

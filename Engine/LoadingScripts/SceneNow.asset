@@ -20,8 +20,33 @@ MonoBehaviour:
   audioHelpers: []
   videoHelpers: []
   flags:
-    keys: []
-    values: 
+    values:
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    - Key: 
+      Value: 0
+      isDeleted: 0
+    count: 0
+    countWithDelete: 0
   indexPrint: 0
   textOnSceneDialogue: 
   textOnSceneCharacter: 

@@ -175,6 +175,11 @@ namespace Engine
                 this.name = name;
                 this.compare_sign = compare_sign;
             }
+
+            public override string ToString()
+            {
+                return name + compare_sign + value.ToString();
+            }
         }
 
         [System.Serializable]

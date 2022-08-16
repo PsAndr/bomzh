@@ -22,12 +22,14 @@ namespace Engine
         [SerializeField] private ValueClass[] values;
 
         [Serializable]
-        private class ValueClass
+        private class ValueClass : ICloneable
         {
             public TKey Key;
             public TValue Value;
 
             public bool isDeleted;
+
+            public ValueClass() { }
 
             public ValueClass(TKey key, TValue value)
             {
@@ -35,12 +37,32 @@ namespace Engine
                 this.Value = value;
                 this.isDeleted = false;
             }
+
+            public object Clone()
+            {
+                return new ValueClass
+                {
+                    Key = this.Key,
+                    Value = this.Value,
+                    isDeleted = this.isDeleted,
+                };
+            }
         }
 
         [SerializeField] private int count;
         [SerializeField] private int countWithDelete; 
 
         public int Count { get { return count; } }
+
+        public object Clone()
+        {
+            return new MyDictionary<TKey, TValue>
+            {
+                count = this.count,
+                values = (ValueClass[])this.values.Clone(),
+                countWithDelete = this.countWithDelete,
+            };
+        }
 
         public MyDictionary()
         {
@@ -412,10 +434,6 @@ namespace Engine
         public override string ToString()
         {
             return ((DynamicArray<Pair<TKey, TValue>>)GetValues()).ToString();
-        }
-        public object Clone()
-        {
-            return new MyDictionary<TKey, TValue>(this);
         }
 
         public string ToJSON()
