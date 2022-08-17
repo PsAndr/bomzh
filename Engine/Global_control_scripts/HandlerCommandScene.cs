@@ -282,13 +282,24 @@ namespace Engine
 
             Type[] types = TypesCommandsSkiped.GetTypes(global_Control.settings.TypeSkiping);
 
-            if (global_Control.IsSkiping && FindInArray.Find(typeof(Scene_class.Command), ref types) != -1)
+            if (global_Control.IsSkiping)
             {
-                bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
-
-                if (!IsStartedFromScene || !TypesCommandsSkiped.GetIsShowedSkip(global_Control.settings.TypeSkiping) || isCommandShow)
+                if (FindInArray.Find(typeof(Scene_class.Command), ref types) != -1)
                 {
-                    global_Control.waitSceneCommand.StopWait(global_Control);
+                    bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
+
+                    if (!IsStartedFromScene || !TypesCommandsSkiped.GetIsShowedSkip(global_Control.settings.TypeSkiping) || isCommandShow)
+                    {
+                        global_Control.waitSceneCommand.StopWait(global_Control);
+                    }
+                    else
+                    {
+                        global_Control.IsSkiping = false;
+                    }
+                }
+                else
+                {
+                    global_Control.IsSkiping = false;
                 }
             }
 
@@ -321,14 +332,26 @@ namespace Engine
             float width_character_text = global_Control.text_dialogue.transform.GetComponent<RectTransform>().sizeDelta.x;
             global_Control.text_character.transform.GetComponent<RectTransform>().sizeDelta = new Vector2(width_character_text, global_Control.text_character.preferredHeight);
 
-            if (global_Control.IsSkiping && FindInArray.Find(typeof(Scene_class.DialogueText), ref types) != -1)
+            if (global_Control.IsSkiping)
             {
-                bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
-
-                if (!TypesCommandsSkiped.GetIsShowedSkip(global_Control.settings.TypeSkiping) || isCommandShow)
+                if (FindInArray.Find(typeof(Scene_class.DialogueText), ref types) != -1)
                 {
-                    global_Control.gameObject.GetComponent<TextPrintingClass>().FinishPrinting();
-                    global_Control.waitSceneCommand.StartWait(global_Control, Constants.secondsToWaitInSkiping);
+                    bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
+
+                    if (!TypesCommandsSkiped.GetIsShowedSkip(global_Control.settings.TypeSkiping) || isCommandShow)
+                    {
+                        DebugEngine.Log("Skiping dialogue...");
+                        global_Control.gameObject.GetComponent<TextPrintingClass>().FinishPrinting();
+                        global_Control.waitSceneCommand.StartWait(global_Control, Constants.secondsToWaitInSkiping);
+                    }
+                    else
+                    {
+                        global_Control.IsSkiping = false;
+                    }
+                }
+                else
+                {
+                    global_Control.IsSkiping = false;
                 }
             }
         }
@@ -382,17 +405,28 @@ namespace Engine
 
             Type[] types = TypesCommandsSkiped.GetTypes(global_Control.settings.TypeSkiping);
 
-            if (global_Control.IsSkiping && FindInArray.Find(typeof(Scene_class.ChoiceText), ref types) != -1)
+            if (global_Control.IsSkiping)
             {
-                bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
-
-                if (!TypesCommandsSkiped.GetIsShowedSkip(global_Control.settings.TypeSkiping) || isCommandShow)
+                if (FindInArray.Find(typeof(Scene_class.ChoiceText), ref types) != -1)
                 {
-                    int randomChoice = UnityEngine.Random.Range(0, choiceText.partsChoice.Length - 1);
+                    bool isCommandShow = global_Control.IsCommandShow[global_Control.GetSceneValues().first][global_Control.GetSceneValues().second];
 
-                    global_Control.waitSceneCommand.StartWait(global_Control, Constants.secondsToWaitInSkiping);
+                    if (!TypesCommandsSkiped.GetIsShowedSkip(global_Control.settings.TypeSkiping) || isCommandShow)
+                    {
+                        int randomChoice = UnityEngine.Random.Range(0, choiceText.partsChoice.Length - 1);
 
-                    On_Click_Choices(global_Control, randomChoice.ToString());
+                        global_Control.waitSceneCommand.StartWait(global_Control, Constants.secondsToWaitInSkiping);
+
+                        On_Click_Choices(global_Control, randomChoice.ToString());
+                    }
+                    else
+                    {
+                        global_Control.IsSkiping = false;
+                    }
+                }
+                else
+                {
+                    global_Control.IsSkiping = false;
                 }
             }
         }
@@ -466,8 +500,6 @@ namespace Engine
             {
                 global_Control.Flags.Add(flag.name, 0);
             }
-            Debug.Log(global_Control.Flags[flag.name]);
-            Debug.Log(flag.ToString());
 
             switch (flag.compare_sign)
             {

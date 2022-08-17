@@ -28,6 +28,7 @@ namespace Engine
             public TValue Value;
 
             public bool isDeleted;
+            public bool isInit;
 
             public ValueClass() { }
 
@@ -36,6 +37,7 @@ namespace Engine
                 this.Key = key;
                 this.Value = value;
                 this.isDeleted = false;
+                this.isInit = true;
             }
 
             public object Clone()
@@ -410,7 +412,7 @@ namespace Engine
             List<Pair<TKey, TValue>> toReturn = new();
             foreach (ValueClass valueClass in values)
             {
-                if (valueClass != null && !valueClass.isDeleted && valueClass.Key != null && valueClass.Value != null)
+                if (valueClass != null && !valueClass.isDeleted && valueClass.Key != null && valueClass.Value != null && valueClass.isInit)
                 {
                     toReturn.Add((valueClass.Key, valueClass.Value));
                 }

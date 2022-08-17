@@ -8,8 +8,8 @@ namespace Engine
     [System.Serializable]
     public class DynamicArray<T> : IEnumerable<T>
     {
-        public int Length { get; private set; }
-        private T[] values;
+        public int Length { get { return values.Length; } }
+        [SerializeField] private T[] values;
 
         public T Get(int index)
         {
@@ -26,6 +26,19 @@ namespace Engine
             }
 
             return values[index];
+        }
+
+        public bool Contains(T value)
+        {
+            return FindInArray.Find(value, ref values) != -1;
+        }
+
+        public bool Remove(T value)
+        {
+            List<T> list = new(values);
+            bool toReturn = list.Remove(value);
+            values = list.ToArray();
+            return toReturn;
         }
 
         public void Change(int index, T value)
@@ -66,25 +79,21 @@ namespace Engine
         public DynamicArray(T[] values)
         {
             this.values = (T[])values.Clone();
-            Length = values.Length;
         }
 
         public DynamicArray()
         {
             this.values = new T[0];
-            Length = 0;
         }
 
         public DynamicArray(T value)
         {
             this.values = new T[] { value };
-            Length = 1;
         }
 
         public DynamicArray(int Length)
         {
             this.values = new T[Length];
-            this.Length = Length;
         }
 
         public void Resize(int Length)
@@ -97,7 +106,6 @@ namespace Engine
             }
 
             this.values = newValues;
-            this.Length = Length;
         }
 
         public void Sort()

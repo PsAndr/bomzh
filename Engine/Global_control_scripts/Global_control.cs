@@ -102,9 +102,43 @@ namespace Engine
             set 
             { 
                 isSkiping = value;
-                if (value)
+                
+                Type[] types = TypesCommandsSkiped.GetTypes(this.settings.TypeSkiping);
+
+                try
                 {
-                    NewCommandScene();
+                    if (value)
+                    {
+                        if (FindInArray.Find(this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene].GetTypePart(), ref types) != -1)
+                        {
+                            DebugEngine.LogWarning(this.isCommandShow[scene_number]);
+                            DebugEngine.LogWarning(this.isCommandShow[scene_number].Length);
+                            DebugEngine.LogWarning(scene_number);
+                            DebugEngine.LogWarning(number_command_scene);
+
+                            bool isCommandShow = this.isCommandShow[scene_number][number_command_scene];
+
+                            if (!TypesCommandsSkiped.GetIsShowedSkip(this.settings.TypeSkiping) || isCommandShow)
+                            {
+                                this.gameObject.GetComponent<TextPrintingClass>().FinishPrinting();
+                                NewCommandScene();
+                                DebugEngine.Log("Start skiping!");
+                            }
+                            else
+                            {
+                                isSkiping = false;
+                            }
+                        }
+                        else
+                        {
+                            isSkiping = false;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DebugEngine.LogException(ex);
+                    isSkiping = false;
                 }
             }
         }
@@ -115,6 +149,8 @@ namespace Engine
         {
             DebugEngine.Clear();
             DebugEngine.Log("Start");
+
+            isSkiping = false;
 
             if (Application.isEditor)
             {
@@ -168,6 +204,7 @@ namespace Engine
             this.bufferChangeCommand = 0;
 
             DebugEngine.Log("End start");
+            DebugEngine.Log(bufferChangeCommand);
             DebugEngine.Log(this.typeGlobalControl.ToString());
             DebugEngine.Log(scene_number.ToString());
             DebugEngine.Log(number_command_scene.ToString());
@@ -190,8 +227,8 @@ namespace Engine
 
         public void LoadCommandIsShow()
         {
-            print(this.scenes_Loader.Scenes_dict.ToString());
             this.isCommandShow = IsCommandShowSaverLoader.Load(this.scenes_Loader.Scenes_dict);
+            DebugEngine.LogWarning(isCommandShow.ToString());
         }
 
         public void UpdateFiles()
@@ -357,6 +394,7 @@ namespace Engine
             if (ignoreOtherCommands || this.handlerCommandScene.CanDoNextCommand())
             {
                 this.bufferChangeCommand++;
+                DebugEngine.Log("New command!");
             }
         }
 
@@ -369,6 +407,8 @@ namespace Engine
 
             if (this.handlerCommandScene.CanDoNextCommand())
             {
+                this.bufferChangeCommand--;
+
                 if (this.handlerCommandScene.IsPrintingText)
                 {
                     gameObject.GetComponent<TextPrintingClass>().FinishPrinting();
@@ -382,10 +422,11 @@ namespace Engine
                     }
 
                     this.number_command_scene++;
+                    DebugEngine.Log("Play new command!");
                     this.SceneCommands();
                 }
 
-                this.bufferChangeCommand--;
+                DebugEngine.Log("End command make!");
             }
         }
 
@@ -393,11 +434,15 @@ namespace Engine
         {
             DebugEngine.Log($"Make command number: {number_command_scene}");
             try { Debug.Log(this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length); }
-            catch { DebugEngine.Log("Error to find command"); }
+            catch { DebugEngine.LogException(new Exception("Error to find command")); }
+            DebugEngine.Log($"Buffer command: {bufferChangeCommand}");
 
             if (number_command_scene >= this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length)
             {
                 number_command_scene = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene.Length;
+
+                this.IsSkiping = false;
+
                 Debug.LogWarning("The end");
                 DebugEngine.Log($"The end");
                 return;
@@ -407,8 +452,15 @@ namespace Engine
             Scene_class.DialogueOrChoiceOrCommand command = this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene];
 
             DebugEngine.Log("Start command");
-            handlerCommandScene.SetCommand(this, command);
-            DebugEngine.Log("End command");
+            try
+            {
+                handlerCommandScene.SetCommand(this, command);
+                DebugEngine.Log("End command");
+            }
+            catch
+            {
+                DebugEngine.LogException(new Exception("Error make command"));
+            }
 
             this.isCommandShow[this.scene_number][this.number_command_scene] = true;
         }

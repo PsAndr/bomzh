@@ -9,25 +9,25 @@ namespace Engine
     {
         private static readonly string path = Application.persistentDataPath + "/debugLogs.txt";
 
-        public static void Log(string message)
+        public static void Log(object message)
         {
             if (!File.Exists(path))
             {
                 File.Create(path);
             }
             Debug.Log(message);
-            string text = message + '\n' + File.ReadAllText(path);
+            string text = message.ToString() + '\n' + File.ReadAllText(path);
             File.WriteAllText(path, text);
         }
 
-        public static void LogWarning(string message)
+        public static void LogWarning(object message)
         {
             if (!File.Exists(path))
             {
                 File.Create(path);
             }
             Debug.LogWarning(message);
-            string text = "WARNING!!!: " + message + '\n' + File.ReadAllText(path);
+            string text = "WARNING!!!: " + message.ToString() + '\n' + File.ReadAllText(path);
             File.WriteAllText(path, text);
         }
 

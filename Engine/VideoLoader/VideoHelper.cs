@@ -103,10 +103,13 @@ namespace Engine
         IEnumerator PlayClipCoroutine(int cnt, VideoClip[] video, float panStereo, float volume, float playbackSpeed, float time, float startWait, float betweenWait,
             int indexVideo, VideoHandler videoHandler, Transform toSpawnVideo, RectTransformSaveValuesSerializable rectTransformVideo, int hierarchyPosition)
         {
+            Global_control global_Control = FindObjectOfType<Global_control>();
+
             VideoPlayer videoSource = videoHandler.GetVideoPlayer();
             AudioSource audioSource = videoHandler.GetAudioSource();
 
             videoSource.renderMode = VideoRenderMode.RenderTexture;
+            videoSource.audioOutputMode = VideoAudioOutputMode.Direct;
 
             Image image = new GameObject(saveClass.nameHelper + "___video").AddComponent<Image>();
             image.gameObject.transform.SetParent(toSpawnVideo);
@@ -175,14 +178,14 @@ namespace Engine
                     renderTexture.name = $"texture of video: {video[j].name}";
 
                     videoSource.playbackSpeed = playbackSpeed;
-                    videoSource.SetTargetAudioSource(0, audioSource);
-                    audioSource.volume = volume;
+                    videoSource.SetDirectAudioVolume(0, volume * (global_Control.settings.Volume / 100f));
                     audioSource.panStereo = panStereo;
                     videoSource.clip = video[j];
                     videoSource.isLooping = false;
                     videoSource.Play();
                     videoSource.time = time;
                     videoSource.playOnAwake = false;
+                    videoSource.SetTargetAudioSource(0, audioSource);
 
                     videoSource.targetTexture = renderTexture;
                     
@@ -203,6 +206,8 @@ namespace Engine
                         this.saveClass.time = (float)videoSource.time;
 
                         this.saveClass.hierarchyPosition = image.transform.GetSiblingIndex();
+
+                        videoSource.SetDirectAudioVolume(0, volume * (global_Control.settings.Volume / 100f));
 
                         yield return new WaitForSeconds(0.08f);
 

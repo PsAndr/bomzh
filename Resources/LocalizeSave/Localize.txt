@@ -1,12 +1,4 @@
-﻿{SkipTextTypeChangeButton(Skip text)
-[RU-RU
-Пропуск текста
-]
-[EN-EN
-Skip text
-]
-}
-{Localization Setting Button(Game Scene)(Localization)
+﻿{Localization Setting Button(Game Scene)(Localization)
 [RU-RU
 Локализация
 ]
@@ -52,5 +44,13 @@ Back
 ]
 [EN-EN
 Load
+]
+}
+{SkipTextTypeChangeButton(Skip text)
+[RU-RU
+Пропуск текста
+]
+[EN-EN
+Skip text
 ]
 }

@@ -41,6 +41,8 @@ namespace Engine
 
                 fs.Close();
 
+                DebugEngine.LogWarning((DynamicArray<Pair<int, Scene_class>>)scenes.GetValues());
+
                 foreach (var kvp in scenes.GetValues())
                 {
                     toReturn[kvp.first] = new bool[kvp.second.parts_scene.Length];

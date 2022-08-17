@@ -61,6 +61,7 @@ namespace Engine
             int indexAudio, AudioHandler audioHandler)
         {
             AudioSource audioSource = audioHandler.GetAudioSource();
+            Global_control global_Control = FindObjectOfType<Global_control>();
 
             int k = 1;
 
@@ -117,7 +118,7 @@ namespace Engine
                     this.saveClass.startWait = 0f;
 
                     audioSource.pitch = pitch;
-                    audioSource.volume = volume;
+                    audioSource.volume = volume * (global_Control.settings.Volume / 100f);
                     audioSource.panStereo = panStereo;
                     audioSource.clip = audio[j];
                     audioSource.loop = false;
@@ -129,6 +130,7 @@ namespace Engine
                     while (audioSource.isPlaying || this.saveClass.isPaused)
                     {
                         this.saveClass.time = audioSource.time;
+                        audioSource.volume = volume * (global_Control.settings.Volume / 100f);
 
                         yield return new WaitForSeconds(0.08f);
 

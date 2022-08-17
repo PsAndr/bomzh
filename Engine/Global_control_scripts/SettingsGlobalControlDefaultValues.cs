@@ -18,6 +18,8 @@ namespace Engine
 
         [SerializeField] private TypesSkiping typeSkiping;
 
+        [SerializeField] private float volume;
+
         public void UpdateValues()
         {
             if (global_Control == null)
@@ -35,6 +37,8 @@ namespace Engine
             global_Control.settings.SpeedTextPrinting = speedTextPrinting;
 
             global_Control.settings.TypeSkiping = typeSkiping;
+
+            global_Control.settings.Volume = volume;
         }
     }
 

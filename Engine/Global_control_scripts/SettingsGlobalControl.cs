@@ -19,6 +19,34 @@ namespace Engine
 
         [SerializeField] private TypesSkiping typeSkiping;
 
+        /// <summary>
+        /// Volume in percent
+        /// </summary>
+        [SerializeField] private float volume;
+
+        /// <summary>
+        /// Volume in percent
+        /// </summary>
+        public float Volume
+        {
+            get { return volume; }
+            set 
+            { 
+                if (value > 100f)
+                {
+                    value = 100f;
+                }
+
+                if (value < 0f)
+                {
+                    value = 0f;
+                }
+
+                volume = value;
+                UpdateSave();
+            }
+        }
+
         public TypesSkiping TypeSkiping
         {
             get { return typeSkiping; }
@@ -110,16 +138,18 @@ namespace Engine
             this.maxSpeedPrintingText = values.maxSpeedPrintingText;
             this.minSpeedPrintingText = values.minSpeedPrintingText;
             this.speedTextPrinting = values.speedTextPrinting;
+            this.volume = values.volume;
         }
 
         public object Clone()
         {
-            return new SettingsGlobalControl 
-            { 
-                minSpeedPrintingText = minSpeedPrintingText, 
-                maxSpeedPrintingText = maxSpeedPrintingText, 
+            return new SettingsGlobalControl
+            {
+                minSpeedPrintingText = minSpeedPrintingText,
+                maxSpeedPrintingText = maxSpeedPrintingText,
                 speedTextPrinting = speedTextPrinting,
                 typeSkiping = typeSkiping,
+                volume = volume,
             };
         }
     }

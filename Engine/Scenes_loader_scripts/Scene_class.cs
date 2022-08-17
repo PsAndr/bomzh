@@ -42,6 +42,24 @@ namespace Engine
             public ChoiceText choice;
             public Command command;
 
+            public System.Type GetTypePart()
+            {
+                switch (type)
+                {
+                    case 0:
+                        return typeof(DialogueText);
+
+                    case 1:
+                        return typeof(ChoiceText);
+
+                    case 2:
+                        return typeof(Command);
+
+                    default:
+                        return null;
+                }
+            }
+
             public DialogueOrChoiceOrCommand(int type, object dialogueOrChoiceOrCommand)
             {
                 this.type = type;

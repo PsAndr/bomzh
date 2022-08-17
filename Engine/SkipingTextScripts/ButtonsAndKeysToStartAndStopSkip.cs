@@ -14,22 +14,22 @@ namespace Engine
         public Global_control global_Control;
 
         [SerializeField]
-        private List<Button> buttonsStart = new();
+        private DynamicArray<Button> buttonsStart = new();
 
         [SerializeField]
-        private List<KeyCode> keysStart = new();
+        private DynamicArray<KeyCode> keysStart = new();
 
         [SerializeField]
-        private List<Button> buttonsStop = new();
+        private DynamicArray<Button> buttonsStop = new();
 
         [SerializeField]
-        private List<KeyCode> keysStop = new();
+        private DynamicArray<KeyCode> keysStop = new();
 
         [SerializeField]
-        private List<Button> buttonsStartAndStop = new();
+        private DynamicArray<Button> buttonsStartAndStop = new();
 
         [SerializeField]
-        private List<KeyCode> keysStartAndStop = new();
+        private DynamicArray<KeyCode> keysStartAndStop = new();
 
         private void Awake()
         {
