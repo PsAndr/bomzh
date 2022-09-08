@@ -111,7 +111,7 @@ namespace Engine
                 fs.Close();
                 File.WriteAllText(Application.dataPath + @"\Resources\Scenes.json", scenes);
             }
-            else if (Application.platform == RuntimePlatform.WindowsPlayer)
+            else if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.Android)
             {
                 DebugEngine.Log("Start load scenes");
                 string json_names_scenes = Resources.Load<TextAsset>("Scenes_names").text;

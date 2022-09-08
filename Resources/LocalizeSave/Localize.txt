@@ -38,6 +38,22 @@ Settings
 Back
 ]
 }
+{exitMenuButton(Exit)
+[RU-RU
+Выход
+]
+[EN-EN
+Exit
+]
+}
+{exitToMenuMenuButton(BackToMenu)
+[RU-RU
+Назад в меню
+]
+[EN-EN
+Back to menu
+]
+}
 {LoadMenuButton(Load)
 [RU-RU
 Загрузить

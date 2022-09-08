@@ -53,7 +53,7 @@ namespace Engine
 
                 File.WriteAllText(Constants.pathList, text_file_list, Constants.encoding);
             }
-            else if (Application.platform == RuntimePlatform.WindowsPlayer)
+            else if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.Android)
             {
                 string textFileList = Resources.Load<TextAsset>(Constants.pathResourceList).text;
 

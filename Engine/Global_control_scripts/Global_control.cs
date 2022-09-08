@@ -303,6 +303,8 @@ namespace Engine
 
             this.number_command_scene = num_command;
 
+            this.bufferChangeCommand = 0;
+
             this.SceneCommands();
 
             if (!this.handlerCommandScene.IsLookScene)

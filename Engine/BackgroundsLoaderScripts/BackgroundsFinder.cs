@@ -32,7 +32,7 @@ namespace Engine
             names_backgrounds = new List<string>();
             numbers_backgrounds = new List<int>();
 
-            if (Application.platform == RuntimePlatform.WindowsPlayer)
+            if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.Android)
             {
                 string text_file_list = Resources.Load<TextAsset>(Constants.pathResourceList).text;
 

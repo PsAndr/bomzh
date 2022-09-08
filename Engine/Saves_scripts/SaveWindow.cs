@@ -80,6 +80,11 @@ namespace Engine
 
                 columnIndex += lineIndex / this.countLines;
                 lineIndex %= this.countLines;
+
+                if (columnIndex >= this.countInLine)
+                {
+                    break;
+                }
             }
 
             this.SpawnNewSave();
@@ -173,6 +178,19 @@ namespace Engine
         {
             yield return null;
             this.CheckScale();
+
+            SaveModule[] saveModules = this.toSpawnModules.transform.GetComponentsInChildren<SaveModule>();
+            bool isNewModule = false;
+
+            foreach (SaveModule saveModule in saveModules)
+            {
+                isNewModule = isNewModule || saveModule.IsNew;
+            }
+
+            if (!isNewModule)
+            {
+                this.SpawnNewSave();
+            }
             yield break;
         }
     }

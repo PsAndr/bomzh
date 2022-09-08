@@ -127,6 +127,11 @@ namespace Engine.Files
         {
             string[] directories = pathDirectory.Split('/');
 
+            if (directories[^1].IndexOf('.') != -1)
+            {
+                directories[^1] = string.Empty;
+            }
+
             string path = "";
 
             foreach (string directory in directories)

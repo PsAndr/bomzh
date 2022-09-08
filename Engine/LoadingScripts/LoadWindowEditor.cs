@@ -61,7 +61,11 @@ public class LoadWindowEditor : Editor
                 i++;
             }
 
+            loadWindow.sceneIndex = Mathf.Min(loadWindow.sceneIndex, scenes.Length - 1);
+            loadWindow.sceneIndex = Mathf.Max(0, loadWindow.sceneIndex);
+
             loadWindow.sceneIndex = EditorGUILayout.Popup(dropDown, loadWindow.sceneIndex, scenes);
+
             loadWindow.newSceneStart = scenes[loadWindow.sceneIndex];
         }
         EditorGUILayout.EndVertical();
