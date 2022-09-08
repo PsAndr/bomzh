@@ -1,18 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using Engine;
+using UnityEngine.UI;
 
-public class GetIndexesOfSymbolsInTMPRO : MonoBehaviour
+namespace Engine.WorkWithTextMeshPro
 {
-    // Start is called before the first frame update
-    void Start()
+    public static class GetPositionsOfSymbolsInTMPRO
     {
-        
-    }
+        public static void Get(TextMeshProUGUI text)
+        {
+            Vector3 topLeft = text.textInfo.characterInfo[0].topLeft;
+            Vector3 bottomRight = text.textInfo.characterInfo[0].bottomRight;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            GameObject obj = GameObject.Find("test___image");
+
+            Image image = null;
+
+            if (obj != null)
+            {
+                image = obj.GetComponent<Image>();
+            }
+
+            if (image == null)
+            {
+                image = new GameObject("test___image").AddComponent<Image>();
+            }
+
+            image.transform.localPosition = topLeft;
+        }
     }
 }
