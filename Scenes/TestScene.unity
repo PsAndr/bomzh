@@ -326,10 +326,10 @@ RectTransform:
   m_Father: {fileID: 1494595925}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -669.9151, y: 464.41452}
-  m_SizeDelta: {x: 85, y: 85}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 1482.2094, y: -323.7871}
+  m_SizeDelta: {x: 627.3257, y: 552.40283}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1671638843
 MonoBehaviour:
@@ -489,8 +489,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -78, y: 0}
-  m_SizeDelta: {x: 1343.9, y: 1000}
+  m_AnchoredPosition: {x: -49, y: 0.5}
+  m_SizeDelta: {x: 1402, y: 1001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1974768013
 MonoBehaviour:
@@ -512,7 +512,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "aI\nI\tlove big\n   ducks\te\n   ducks\te"
+  m_text: "II\nI\tlove big\n   ducks\te\n   ducks\te\nddfgdfgdf"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -602,3 +602,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 1974768013}
+  image: {fileID: 1671638842}

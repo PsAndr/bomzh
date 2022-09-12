@@ -11,6 +11,7 @@ public class Test : MonoBehaviour
 {
     // Start is called before the first frame update
     public TextMeshProUGUI text;
+    public RectTransform image;
 
     void Start()
     {
@@ -19,7 +20,7 @@ public class Test : MonoBehaviour
 
     public void Init()
     {
-        GetPositionsOfSymbolsInTMPRO.Get(text);
+        GetPositionsOfSymbolsInTMPRO.SetObjectPositionAndSizeOverText(text, image);
     }
 
     // Update is called once per frame
