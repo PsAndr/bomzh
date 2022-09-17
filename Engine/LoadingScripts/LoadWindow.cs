@@ -81,7 +81,7 @@ namespace Engine
 
             foreach (string name in save_List.list_names)
             {
-                GameObject spawnObj = this.global_Control.SpawnObject(this.prefabModule,
+                GameObject spawnObj = Global_control.SpawnObject(this.prefabModule,
                     new Vector3(this.deltaHorizontal / 2 + this.deltaHorizontal * columnIndex, -((deltaVertical / 2) + lineIndex * deltaVertical)),
                         new Vector3(1, 1, 1), new Vector3(), name, this.toSpawnModules.transform);
 

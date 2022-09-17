@@ -396,7 +396,7 @@ namespace Engine
 
             for (int i = 0; i < workingButtons.count; i++)
             {
-                global_Control.SpawnObject(global_Control.button, new Vector3(0, -1 * rt.sizeDelta.y / (workingButtons.count + 1) * (i + 1) + rt.sizeDelta.y / 2, 90),
+                Global_control.SpawnObject(global_Control.button, new Vector3(0, -1 * rt.sizeDelta.y / (workingButtons.count + 1) * (i + 1) + rt.sizeDelta.y / 2, 90),
                     new Vector3(1, 1, 1), new Vector3(0, 0, 0), i.ToString(),
                     global_Control.button_field.transform).GetComponentInChildren<TextMeshProUGUI>().text = workingButtons.names[i];
             }

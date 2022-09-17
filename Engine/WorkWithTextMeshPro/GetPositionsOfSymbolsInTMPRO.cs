@@ -28,7 +28,7 @@ namespace Engine.WorkWithTextMeshPro
                 SwapClass.Swap(ref indexStart, ref indexEnd);
             }
 
-            if (indexStart < 0 || indexEnd >= text.text.Length)
+            if (indexStart < 0 || indexEnd >= text.textInfo.characterInfo.Length)
             {
                 throw new System.Exception(
                     $"class: GetPositionsOfSymbolsInTMPRO; function: Get; Wrong indexes!; " +
@@ -82,6 +82,7 @@ namespace Engine.WorkWithTextMeshPro
 
             obj.pivot = new Vector2(0.5f, 0.5f);
             obj.sizeDelta = new Vector2(Mathf.Abs(bottomRight.x - topLeft.x), Mathf.Abs(bottomRight.y - topLeft.y));
+            obj.localScale = Vector3.one;
 
             obj.anchorMin = new Vector2(0.5f, 0.5f);
             obj.anchorMax = new Vector2(0.5f, 0.5f);
@@ -90,6 +91,8 @@ namespace Engine.WorkWithTextMeshPro
             sizeDelta.y *= -1;
 
             obj.transform.localPosition = topLeft + sizeDelta;
+            obj.SetParent(text.transform.parent);
+            obj.SetSiblingIndex(text.transform.GetSiblingIndex() + 1);
         }
     }
 }

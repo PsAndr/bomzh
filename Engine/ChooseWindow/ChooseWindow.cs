@@ -98,7 +98,7 @@ namespace Engine
             int i = 0;
             foreach (string selectionOption in selectionOptions)
             {
-                GameObject newItem = this.global_Control.SpawnObject(this.item, new Vector3(0f, 
+                GameObject newItem = Global_control.SpawnObject(this.item, new Vector3(0f, 
                     -i * rectTransform.sizeDelta.y - this.deltaY * (i + 1) + this.content.sizeDelta.y / 2f, 0f),
                     Vector3.one, Vector3.zero, i.ToString(), content);
 

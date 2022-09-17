@@ -98,7 +98,7 @@ namespace Engine
             }
             DebugEngine.Log(command.name_obj);
 
-            GameObject sprite_obj = global_Control.SpawnObject(global_Control.prefab_sprites, position, size, rotation, name + "___sprite", global_Control.ToSpawnSprite.transform);
+            GameObject sprite_obj = Global_control.SpawnObject(global_Control.prefab_sprites, position, size, rotation, name + "___sprite", global_Control.ToSpawnSprite.transform);
             sprite_obj.GetComponent<Image>().sprite = sprite;
             sprite_obj.GetComponent<RectTransform>().sizeDelta = sizeDelta;
 

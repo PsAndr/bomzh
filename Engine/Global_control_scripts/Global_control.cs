@@ -356,7 +356,7 @@ namespace Engine
 
                 for (int i = 0; i < length; i++)
                 {
-                    GameObject newSprite = this.SpawnObject(this.prefab_sprites, saveClass.spritesObjectNames[i], this.ToSpawnSprite.transform);
+                    GameObject newSprite = SpawnObject(this.prefab_sprites, saveClass.spritesObjectNames[i], this.ToSpawnSprite.transform);
                     saveClass.rectTransformsSprites[i].UpdateRectTransform(newSprite.GetComponent<RectTransform>());
                     newSprite.GetComponent<Image>().sprite = this.spritesLoader.sprites[saveClass.spritesNames[i].Split(' ')[0]]; 
                 }
@@ -467,7 +467,7 @@ namespace Engine
             this.isCommandShow[this.scene_number][this.number_command_scene] = true;
         }
 
-        public GameObject SpawnObject(GameObject prefab, Vector3 position, Vector3 size, Vector3 rotation, string name, Transform parent)
+        public static GameObject SpawnObject(GameObject prefab, Vector3 position, Vector3 size, Vector3 rotation, string name, Transform parent)
         {
             GameObject spawn_object = Instantiate(prefab, position, Quaternion.identity, parent);
 
@@ -486,7 +486,7 @@ namespace Engine
             return spawn_object;
         }
 
-        public GameObject SpawnObject(GameObject prefab, RectTransform rectTransform, string name, Transform parent)
+        public static GameObject SpawnObject(GameObject prefab, RectTransform rectTransform, string name, Transform parent)
         {
             GameObject spawn_object = Instantiate(prefab, parent);
 
@@ -500,7 +500,7 @@ namespace Engine
             return spawn_object;
         }
 
-        public GameObject SpawnObject(GameObject prefab, string name, Transform parent)
+        public static GameObject SpawnObject(GameObject prefab, string name, Transform parent)
         {
             GameObject spawn_object = Instantiate(prefab, Vector3.zero, Quaternion.identity, parent);
 
@@ -592,7 +592,7 @@ namespace Engine
 
             foreach (GameObject to_spawn in this.RenderToScreenshot)
             {
-                this.SpawnObject(to_spawn, to_spawn.GetComponent<RectTransform>(), to_spawn.name, canvas.transform);
+                SpawnObject(to_spawn, to_spawn.GetComponent<RectTransform>(), to_spawn.name, canvas.transform);
             }
 
             yield return null;
@@ -649,7 +649,7 @@ namespace Engine
 
             foreach (GameObject to_spawn in this.RenderToScreenshot)
             {
-                this.SpawnObject(to_spawn, to_spawn.GetComponent<RectTransform>(), to_spawn.name, canvas.transform);
+                SpawnObject(to_spawn, to_spawn.GetComponent<RectTransform>(), to_spawn.name, canvas.transform);
             }
 
             yield return null;

@@ -51,7 +51,7 @@ namespace Engine
                     return;
             }
 
-            ChooseWindow chooseWindow = FindObjectOfType<Global_control>().SpawnObject(this.chooseWindow.gameObject, 
+            ChooseWindow chooseWindow = Global_control.SpawnObject(this.chooseWindow.gameObject, 
                 Vector3.zero, Vector3.one, Vector3.zero, null, 
                 gameObject.GetComponentInParent<Canvas>().transform).GetComponent<ChooseWindow>();
             chooseWindow.Init(this.ChangeValue, chooseHelper.GetIndex(), 100, this.nameWindow.text, chooseHelper.GetSelectionOptions());
