@@ -435,7 +435,7 @@ namespace Engine
         {
             int num_of_but = Convert.ToInt32(s);
 
-            global_Control.DestroyAllObjects(global_Control.button_field.transform);
+            Global_control.DestroyAllObjects(global_Control.button_field.transform);
 
             foreach (Scene_class.ChangeFlag changeFlag in this.save_work_choices.changeFlag[num_of_but])
             {

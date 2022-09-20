@@ -352,7 +352,7 @@ namespace Engine
             {
                 int length = Mathf.Min(saveClass.spritesNames.Length, saveClass.spritesObjectNames.Length, saveClass.rectTransformsSprites.Length);
 
-                this.DestroyAllObjects(this.ToSpawnSprite.transform);
+                DestroyAllObjects(this.ToSpawnSprite.transform);
 
                 for (int i = 0; i < length; i++)
                 {
@@ -522,7 +522,7 @@ namespace Engine
             Destroy(whereObjectIs.Find(name).gameObject);
         }
 
-        public void DestroyAllObjects(Transform from)
+        public static void DestroyAllObjects(Transform from)
         {
             for (int i = 0; i < from.childCount; i++)
             {

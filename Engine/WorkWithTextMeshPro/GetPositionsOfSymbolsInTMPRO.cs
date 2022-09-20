@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Engine;
 using UnityEngine.UI;
+using System;
 
 namespace Engine.WorkWithTextMeshPro
 {
@@ -56,6 +57,53 @@ namespace Engine.WorkWithTextMeshPro
             }
 
             return (text.transform.localPosition + topLeft, text.transform.localPosition + bottomRight);
+        }
+
+        /// <summary>
+        /// Get positions lines
+        /// </summary>
+        /// <param name="text">TextMeshProUGUI where is needed symbols</param>
+        /// <param name="indexStart">start index of string`s part</param>
+        /// <param name="indexEnd">last index of string`s part</param>
+        /// <returns>Pair(Vector3, Vector3)[]; (First: top left position, Second: bottom right position) for lines</returns>
+        public static Pair<Vector3, Vector3>[] GetLines(TextMeshProUGUI text, int indexStart = 0, int indexEnd = -1)
+        {
+            if (indexEnd == -1)
+            {
+                indexEnd = text.text.Length - 1;
+            }
+
+            if (indexStart > indexEnd)
+            {
+                SwapClass.Swap(ref indexStart, ref indexEnd);
+            }
+
+            if (indexStart < 0 || indexEnd >= text.textInfo.characterInfo.Length)
+            {
+                throw new System.Exception(
+                    $"class: GetPositionsOfSymbolsInTMPRO; function: GetLines; Wrong indexes!; " +
+                    $"indexStart: {indexStart}; indexEnd: {indexEnd}"
+                );
+            }
+
+            List<Pair<Vector3, Vector3>> lines = new List<Pair<Vector3, Vector3>>();
+
+            int indexFirstInLine = indexStart;
+            int indexLine = text.textInfo.characterInfo[indexStart].lineNumber;
+
+            for (int index = indexStart + 1; index <= indexEnd; index++)
+            {
+                if (text.textInfo.characterInfo[index].lineNumber > indexLine)
+                {
+                    lines.Add(Get(text, indexFirstInLine, index - 1));
+                    indexLine = text.textInfo.characterInfo[index].lineNumber;
+                    indexFirstInLine = index;
+                }
+            }
+
+            lines.Add(Get(text, indexFirstInLine, indexEnd));
+
+            return lines.ToArray();
         }
 
         /// <summary>
