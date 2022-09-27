@@ -19,6 +19,7 @@ namespace Engine
             int type_text = 0;
 
             Scene_class.NeedFlag[] needFlags = new Scene_class.NeedFlag[0];
+            Scene_class.DialogueText.CommandDialogue[] commandsDialogue = new Scene_class.DialogueText.CommandDialogue[0];
             string text = "";
             string character_name = "";
 
@@ -41,39 +42,7 @@ namespace Engine
 
                             if (!string.IsNullOrEmpty(parts_line[0]))
                             {
-                                needFlags = new Scene_class.NeedFlag[Count(parts_line[0], '[')];
-
-                                int index = 0;
-                                int ind_flag = 0;
-
-                                while (index != -1)
-                                {
-                                    index++;
-                                    int index_end = parts_line[0].IndexOf(']', index);
-                                    string Flag = parts_line[0][index..index_end];
-
-                                    if (Flag.IndexOf('>') != -1)
-                                    {
-                                        string flagName = Flag.Split('>')[0];
-                                        int flagValue = Convert.ToInt32(Flag.Split('>')[1]);
-                                        needFlags[ind_flag] = new Scene_class.NeedFlag(flagName, '>', flagValue);
-                                    }
-                                    else if (Flag.IndexOf('<') != -1)
-                                    {
-                                        string flagName = Flag.Split('>')[0];
-                                        int flagValue = Convert.ToInt32(Flag.Split('>')[1]);
-                                        needFlags[ind_flag] = new Scene_class.NeedFlag(flagName, '<', flagValue);
-                                    }
-                                    else if (Flag.IndexOf('=') != -1)
-                                    {
-                                        string flagName = Flag.Split('=')[0];
-                                        int flagValue = Convert.ToInt32(Flag.Split('=')[1]);
-                                        needFlags[ind_flag] = new Scene_class.NeedFlag(flagName, '=', flagValue);
-                                    }
-
-                                    index = parts_line[0].IndexOf('[', index);
-                                    ind_flag++;
-                                }
+                                needFlags = GetNeedFlags(parts_line[0]);
                             }
                             else
                             {
@@ -81,6 +50,11 @@ namespace Engine
                             }
 
                             character_name = parts_line[1];
+
+                            if (parts_line.Length > 2)
+                            {
+                                commandsDialogue = GetCommandsDialogue(parts_line[2..]);
+                            }
                         }
                         else if (line[0] == '[')
                         {
@@ -161,10 +135,12 @@ namespace Engine
                         if (line[0] == '}')
                         {
                             text = text[..^1];
-                            this.parts.Add(new Scene_class.DialogueOrChoiceOrCommand(0, new Scene_class.DialogueText(needFlags, character_name, text)));
+                            this.parts.Add(new Scene_class.DialogueOrChoiceOrCommand(0, new Scene_class.DialogueText(needFlags, character_name, text, commandsDialogue)));
 
                             text = "";
                             needFlags = new Scene_class.NeedFlag[0];
+                            commandsDialogue = new Scene_class.DialogueText.CommandDialogue[0];
+
                             character_name = "";
 
                             type_text = 0;
@@ -441,6 +417,51 @@ namespace Engine
             }
 
             return needFlags.ToArray();
+        }
+
+        public Scene_class.DialogueText.CommandDialogue[] GetCommandsDialogue(params string[] text)
+        {
+            List<Scene_class.DialogueText.CommandDialogue> commands = new();
+
+            foreach (string partText in text)
+            {
+                if (string.IsNullOrEmpty(partText))
+                {
+                    continue;
+                }
+
+                string[] partTextSplit = partText.Split(':');
+                Scene_class.DialogueText.CommandDialogue newCommand = new();
+
+                newCommand.nameCommand = partTextSplit[0];
+
+                for (int indexInPartTextSplit = 1; indexInPartTextSplit < partTextSplit.Length; indexInPartTextSplit++)
+                {
+                    string[] partsCommand = partTextSplit[indexInPartTextSplit].Split('=');
+
+                    string[] values = partsCommand[1].Split(',');
+
+                    if (partsCommand[0].IndexOf("name") == -1 && partsCommand[0].IndexOf("message") == -1)
+                    {
+                        double[] doubleValues = new double[values.Length];
+                        
+                        for (int i = 0; i < values.Length; i++)
+                        {
+                            doubleValues[i] = Convert.ToDouble(values[i]);
+                        }
+
+                        newCommand.dictValues[partsCommand[0]] = doubleValues;
+                    }
+                    else
+                    {
+                        newCommand.dictValuesString[partsCommand[0]] = values;
+                    }
+                }
+
+                commands.Add(newCommand);
+            }
+
+            return commands.ToArray();
         }
     }
 }

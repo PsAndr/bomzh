@@ -105,13 +105,31 @@ namespace Engine
         [System.Serializable]
         public class DialogueText // текст диалога и дополнительные параметры
         {
+            [System.Serializable]
+            public class CommandDialogue
+            {
+                public string nameCommand;
+
+                public MyDictionary<string, double[]> dictValues;
+                public MyDictionary<string, string[]> dictValuesString;
+
+                public CommandDialogue()
+                {
+                    nameCommand = string.Empty;
+                    dictValues = new();
+                    dictValuesString = new();
+                }
+            }
+
             public NeedFlag[] needFlags;
 
             public string character_name;
 
             public string text;
 
-            public DialogueText(NeedFlag[] needFlags, string character_name, string text)
+            public CommandDialogue[] commandsDialogue;
+
+            public DialogueText(NeedFlag[] needFlags, string character_name, string text, CommandDialogue[] commandsDialogue = null)
             {
                 this.text = text;
                 this.needFlags = needFlags;
@@ -134,11 +152,15 @@ namespace Engine
                 {
                     this.text = this.text[..^1];
                 }
-            }
 
-            public void UpdateAfterLoadingJSON()
-            {
-
+                if (commandsDialogue != null)
+                {
+                    this.commandsDialogue = commandsDialogue;
+                }
+                else
+                {
+                    this.commandsDialogue = new CommandDialogue[0];
+                }
             }
         }
 

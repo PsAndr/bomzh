@@ -239,6 +239,39 @@ namespace Engine
                 yield return null;
             }
         }
+
+#if UNITY_EDITOR
+        [MenuItem("GameObject/Engine/Choose Skip Start And Stop Buttons And Keys")]
+        private static void Spawn()
+        {
+            if (FindObjectOfType<ButtonsAndKeysToStartAndStopSkip>() != null)
+            {
+                SetActiveObject(FindObjectOfType<ButtonsAndKeysToStartAndStopSkip>().gameObject);
+                return;
+            }
+
+            GameObject buttonsAndKeysToStartAndStopSkip = new GameObject("___SkipKeysAndButtons___");
+            buttonsAndKeysToStartAndStopSkip.AddComponent<ButtonsAndKeysToStartAndStopSkip>();
+
+            Global_control globalControl = FindObjectOfType<Global_control>();
+            if (globalControl != null)
+            {
+                int siblingIndex = globalControl.transform.GetSiblingIndex();
+                buttonsAndKeysToStartAndStopSkip.transform.SetSiblingIndex(siblingIndex + 1);
+                buttonsAndKeysToStartAndStopSkip.transform.SetParent(globalControl.transform.parent);
+            }
+
+            SetActiveObject(buttonsAndKeysToStartAndStopSkip);
+
+            static void SetActiveObject(GameObject obj)
+            {
+                if (Selection.activeGameObject != obj)
+                {
+                    Selection.activeGameObject = obj;
+                }
+            }
+        }
+#endif
     }
 
 #if UNITY_EDITOR

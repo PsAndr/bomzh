@@ -3,7 +3,7 @@ spawnSprite_number=1:positionSprite=10,-12.5,0:sizeSprite=1,1,1:rotationSprite=0
 playVideo_number=0:positionVideo=5,12,231:sizeVideo=1.5,1,1:rotationVideo=0,0,25:nameVideo=testVideo:panStereoVideo=-0.8:hierarchyPositionVideo=0;
 playVideo_number=0:positionVideo=10,12,231:sizeVideo=0.5,0.5,0.5:rotationVideo=0,0,-25:nameVideo=testVideo2:panStereoVideo=-0.8:hierarchyPositionVideo=3;
 playAudio_number=0:countRepeatAudio=-1:pitchAudio=1.5:nameExtraAudio=PianoSolo:nameAudio=piano;
-{;Вася
+{;Вася;helpTextBox:indexes=2,10:message=apchi:nameBox=standartPrefab;
 Привет, я Вася! И я хочу поговорить об огурцах.
 У меня нет друзей.
 Саня бот!
