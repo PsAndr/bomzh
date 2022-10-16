@@ -8,10 +8,10 @@ Localization
 }
 {OpenSaveWindowButton(Save)
 [RU-RU
-Сохранить
+сохранить
 ]
 [EN-EN
-Save
+save
 ]
 }
 {ChooseLocalizationWindowName(Choose localization)
@@ -24,42 +24,42 @@ Choose localization
 }
 {SettingMenuButton(Setting)
 [RU-RU
-Настройки
+настройки
 ]
 [EN-EN
-Settings
+settings
 ]
 }
 {closeMenuButton(Back)
 [RU-RU
-Назад
+назад
 ]
 [EN-EN
-Back
+back
 ]
 }
 {exitMenuButton(Exit)
 [RU-RU
-Выход
+выход
 ]
 [EN-EN
-Exit
+exit
 ]
 }
 {exitToMenuMenuButton(BackToMenu)
 [RU-RU
-Назад в меню
+назад в меню
 ]
 [EN-EN
-Back to menu
+back to menu
 ]
 }
 {LoadMenuButton(Load)
 [RU-RU
-Загрузить
+загрузить
 ]
 [EN-EN
-Load
+load
 ]
 }
 {SkipTextTypeChangeButton(Skip text)

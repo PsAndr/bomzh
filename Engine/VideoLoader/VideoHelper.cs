@@ -176,6 +176,7 @@ namespace Engine
 
                     RenderTexture renderTexture = new RenderTexture((int)video[j].width, (int)video[j].height, 32);
                     renderTexture.name = $"texture of video: {video[j].name}";
+                    renderTexture.graphicsFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.R16G16B16A16_SFloat;
 
                     videoSource.playbackSpeed = playbackSpeed;
                     videoSource.SetDirectAudioVolume(0, volume * (global_Control.settings.Volume / 100f));

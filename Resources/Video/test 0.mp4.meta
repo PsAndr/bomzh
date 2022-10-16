@@ -6,7 +6,7 @@ VideoClipImporter:
   frameRange: 0
   startFrame: -1
   endFrame: -1
-  colorSpace: 0
+  colorSpace: 3
   deinterlace: 0
   encodeAlpha: 0
   flipVertical: 0
@@ -14,7 +14,7 @@ VideoClipImporter:
   importAudio: 1
   targetSettings:
     0:
-      enableTranscoding: 1
+      enableTranscoding: 0
       codec: 0
       resizeFormat: 0
       aspectRatio: 0

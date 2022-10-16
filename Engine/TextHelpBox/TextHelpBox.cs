@@ -38,7 +38,7 @@ namespace Engine
             Change(textOfBox, indexStart, indexEnd);
         }
 
-        public void Init()
+        private void Init()
         {
             if (textOver == null)
             {
