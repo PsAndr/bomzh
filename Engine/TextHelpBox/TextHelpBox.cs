@@ -38,6 +38,13 @@ namespace Engine
             Change(textOfBox, indexStart, indexEnd);
         }
 
+        public void Init(TextMeshProUGUI textOver, string textOfBox, int indexStart, int indexEnd)
+        {
+            this.textOver = textOver;
+
+            Init(textOfBox, indexStart, indexEnd);
+        }
+
         private void Init()
         {
             if (textOver == null)
@@ -79,8 +86,15 @@ namespace Engine
                 toSpawnBackgrounds.transform.SetParent(gameObject.transform);
                 toSpawnBackgrounds.transform.SetSiblingIndex(0);
 
-                toSpawnBackgrounds.AddComponent<RectMask2D>();
-                toSpawnBackgrounds.AddComponent<RectTransform>();
+                if (toSpawnBackgrounds.GetComponent<RectMask2D>() == null)
+                {
+                    toSpawnBackgrounds.AddComponent<RectMask2D>();
+                }
+
+                if (toSpawnBackgrounds.GetComponent<RectTransform>() == null)
+                {
+                    toSpawnBackgrounds.AddComponent<RectTransform>();
+                }
             }
 
             Global_control.DestroyAllObjects(toSpawnBackgrounds.transform);

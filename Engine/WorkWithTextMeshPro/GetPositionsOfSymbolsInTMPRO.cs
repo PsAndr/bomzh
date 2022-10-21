@@ -31,9 +31,10 @@ namespace Engine.WorkWithTextMeshPro
 
             if (indexStart < 0 || indexEnd >= text.textInfo.characterInfo.Length)
             {
-                throw new System.Exception(
+                throw new Exception(
                     $"class: GetPositionsOfSymbolsInTMPRO; function: Get; Wrong indexes!; " +
-                    $"indexStart: {indexStart}; indexEnd: {indexEnd}"
+                    $"indexStart: {indexStart}; indexEnd: {indexEnd}; " +
+                    $"length text: {text.textInfo.characterInfo.Length}; text: {text.text};"
                 );
             }
 

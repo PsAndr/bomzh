@@ -6,6 +6,14 @@ namespace Engine
     {
         public static T Get(Transform obj)
         {
+            if (obj == null)
+            {
+                throw new System.Exception
+                (
+                    $"Don`t find object of this type: {typeof(T)}"
+                );
+            }
+
             T result = obj.GetComponent<T>();
 
             if (result == null)

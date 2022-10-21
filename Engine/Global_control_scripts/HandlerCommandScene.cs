@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using TMPro;
 using UnityEngine.UI;
+using static Engine.Scene_class;
 
 namespace Engine
 {
@@ -112,6 +113,32 @@ namespace Engine
         public void SetCommand(Global_control global_Control, Scene_class.ChoiceText command)
         {
             this.HandleChoice(global_Control, command);
+        }
+
+        public void FinishCommand(Global_control global_Control, Scene_class.DialogueText dialogueText)
+        {
+            FinishDialogue(global_Control, dialogueText);
+        }
+
+        public void FinishCommand(Global_control global_Control, Scene_class.DialogueOrChoiceOrCommand dialogueOrChoiceOrCommand)
+        {
+            switch (dialogueOrChoiceOrCommand.type)
+            {
+                case 0:
+                    FinishDialogue(global_Control, dialogueOrChoiceOrCommand.dialogue);
+                    break;
+
+                case 1:
+                    //this.HandleChoice(global_Control, command.choice);
+                    break;
+
+                case 2:
+                    //this.HandleCommand(global_Control, command.command);
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         private void HandleCommand(Global_control global_Control, Scene_class.Command command, bool IsStartedFromScene = true)
@@ -322,6 +349,8 @@ namespace Engine
                 return;
             }
 
+            HandlerCommandDialogue.MakeCommands(global_Control, dialogueText);
+
             global_Control.gameObject.GetComponent<TextPrintingClass>().Init(global_Control, global_Control.text_dialogue,
             dialogueText.text, global_Control.settings.SpeedTextPrinting, global_Control.indexPrint);
 
@@ -354,6 +383,11 @@ namespace Engine
                     global_Control.IsSkiping = false;
                 }
             }
+        }
+
+        public void FinishDialogue(Global_control global_Control, Scene_class.DialogueText dialogueText)
+        {
+            HandlerCommandDialogue.FinishCommands(global_Control, dialogueText);
         }
 
         private void HandleChoice(Global_control global_Control, Scene_class.ChoiceText choiceText)

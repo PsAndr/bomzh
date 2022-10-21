@@ -423,6 +423,9 @@ namespace Engine
                         gameObject.GetComponent<TextPrintingClass>().StopPrinting();
                     }
 
+                    DebugEngine.Log("Finish previous command!");
+                    handlerCommandScene.FinishCommand(this, this.scenes_Loader.Scenes_dict[this.scene_number].parts_scene[this.number_command_scene]);
+
                     this.number_command_scene++;
                     DebugEngine.Log("Play new command!");
                     this.SceneCommands();
